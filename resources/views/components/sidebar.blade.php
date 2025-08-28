@@ -8,6 +8,15 @@
         </li>
         @role('admin')
             <li class="nav-item">
+                <a href="{{ route('admin.employee.index') }}"
+                    class="nav-link {{ Route::is('admin.employee.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-user"></i>
+                    <p>Employees
+                        <span class="badge badge-info right">{{ $userCount }}</span>
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('admin.user.index') }}"
                     class="nav-link {{ Route::is('admin.user.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-user"></i>
@@ -34,7 +43,7 @@
                     </p>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a href="{{ route('admin.category.index') }}"
                     class="nav-link {{ Route::is('admin.category.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-list-alt"></i>
@@ -51,8 +60,8 @@
                         <span class="badge badge-secondary right">{{ $SubCategoryCount }}</span>
                     </p>
                 </a>
-            </li>
-            <li class="nav-item">
+            </li> --}}
+            {{-- <li class="nav-item">
                 <a href="{{ route('admin.collection.index') }}"
                     class="nav-link {{ Route::is('admin.collection.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-pdf"></i>
@@ -60,8 +69,8 @@
                         <span class="badge badge-primary right">{{ $CollectionCount }}</span>
                     </p>
                 </a>
-            </li>
-            <li class="nav-item">
+            </li> --}}
+            {{-- <li class="nav-item">
                 <a href="{{ route('admin.product.index') }}"
                     class="nav-link {{ Route::is('admin.product.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-th"></i>
@@ -69,8 +78,86 @@
                         <span class="badge badge-warning right">{{ $ProductCount }}</span>
                     </p>
                 </a>
-            </li>
+            </li> --}}
+            {{-- For Dropdown menu --}}
+            <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
+                References
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                <a href="{{ route('admin.civilstatus.index') }}"
+                    class="nav-link {{ Route::is('admin.civilstatus.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Civil Status
+                   </p>
+                </a>
+                </li>
+               <li class="nav-item">
+                <a href="{{ route('admin.gender.index') }}"
+                    class="nav-link {{ Route::is('admin.gender.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Gender
+                   </p>
+                </a>
+                </li>
+                <li class="nav-item">
+                <a href="{{ route('admin.position.index') }}"
+                    class="nav-link {{ Route::is('admin.position.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Position
+                   </p>
+                </a>
+                </li>
+                <li class="nav-item">
+                <a href="{{ route('admin.department.index') }}"
+                    class="nav-link {{ Route::is('admin.department.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Department
+                   </p>
+                </a>
+                </li>
+                <li class="nav-item">
+                <a href="{{ route('admin.employeestatus.index') }}"
+                    class="nav-link {{ Route::is('admin.employeestatus.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Employee Status
+                   </p>
+                </a>
+                </li>
+            </ul>
+          </li>
         @endrole
+        {{-- For Dropdown menu --}}
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
+                Attendance
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                <a href="{{ route('attendance.raw.index') }}"
+                    class="nav-link {{ Route::is('attendance.raw.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Raw Data
+                   </p>
+                </a>
+                </li>
+            </ul>
+        </li>
         <li class="nav-item">
             <a href="{{ route('admin.profile.edit') }}"
                 class="nav-link {{ Route::is('admin.profile.edit') ? 'active' : '' }}">

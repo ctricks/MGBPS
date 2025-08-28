@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Employee;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -20,8 +21,8 @@ class Dashboard extends Component
         $user = User::count();
         view()->share('user',$user);
         
-        $category = Category::count();
-        view()->share('category',$category);
+        $employee = Employee::count();
+        view()->share('employee',$employee);
         
         $product = Product::count();
         view()->share('product',$product);

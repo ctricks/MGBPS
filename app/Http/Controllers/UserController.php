@@ -26,12 +26,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required', 'string', 'max:255',
-            'email' => 'required', 'string', 'email', 'max:255', 'unique:'.User::class,
-            'password' => 'required|max:255|min:6',
-            'role' => 'required'
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
+            'role' => ['required', 'string']
         ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
