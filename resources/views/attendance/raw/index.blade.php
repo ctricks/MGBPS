@@ -44,19 +44,37 @@
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
                     <tr>
+                        <th>Employee Code</th>
+                        <th>Date</th>
+                        <th>Day</th>
                         <th>Name</th>
+                        <th>In_1</th>
+                        <th>Out_1</th>
+                        <th>In_2</th>
+                        <th>Out_2</th>
+                        <th>In_3</th>
+                        <th>Out_3</th>
                         <th>Action</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $cat)
+                    @foreach ($data as $empDTR)
                         <tr>
-                            <td>{{ $cat->name }}</td>
-                            <td><a href="{{ route('admin.category.edit', encrypt($cat->id)) }}"
+                            <td>{{ $empDTR->employee_code }}</td>
+                            <td>{{ $empDTR->date }}</td>
+                            <td>{{ $empDTR->day }}</td>
+                            <td>{{ $empDTR->Employee }}</td>
+                            <td>{{ $empDTR->in_1 }}</td>
+                            <td>{{ $empDTR->out_1 }}</td>
+                            <td>{{ $empDTR->in_2 }}</td>
+                            <td>{{ $empDTR->out_2 }}</td>
+                            <td>{{ $empDTR->in_3 }}</td>
+                            <td>{{ $empDTR->out_3 }}</td>
+                            <td><a href="{{ route('admin.category.edit', encrypt($empDTR->id)) }}"
                                     class="btn btn-sm btn-primary">Edit</a></td>
                             <td>
-                                <form action="{{ route('admin.category.destroy', encrypt($cat->id)) }}" method="POST"
+                                <form action="{{ route('admin.category.destroy', encrypt($empDTR->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
@@ -72,7 +90,7 @@
     @section('js')
         <script>
             $(function() {
-                $('#categoryTable').DataTable({
+                $('#rawattendanceTable').DataTable({
                     "paging": true,
                     "searching": true,
                     "ordering": true,

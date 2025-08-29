@@ -61,19 +61,37 @@ unset($__sessionArgs); ?>
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
                     <tr>
+                        <th>Employee Code</th>
+                        <th>Date</th>
+                        <th>Day</th>
                         <th>Name</th>
+                        <th>In_1</th>
+                        <th>Out_1</th>
+                        <th>In_2</th>
+                        <th>Out_2</th>
+                        <th>In_3</th>
+                        <th>Out_3</th>
                         <th>Action</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $empDTR): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td><?php echo e($cat->name); ?></td>
-                            <td><a href="<?php echo e(route('admin.category.edit', encrypt($cat->id))); ?>"
+                            <td><?php echo e($empDTR->employee_code); ?></td>
+                            <td><?php echo e($empDTR->date); ?></td>
+                            <td><?php echo e($empDTR->day); ?></td>
+                            <td><?php echo e($empDTR->Employee); ?></td>
+                            <td><?php echo e($empDTR->in_1); ?></td>
+                            <td><?php echo e($empDTR->out_1); ?></td>
+                            <td><?php echo e($empDTR->in_2); ?></td>
+                            <td><?php echo e($empDTR->out_2); ?></td>
+                            <td><?php echo e($empDTR->in_3); ?></td>
+                            <td><?php echo e($empDTR->out_3); ?></td>
+                            <td><a href="<?php echo e(route('admin.category.edit', encrypt($empDTR->id))); ?>"
                                     class="btn btn-sm btn-primary">Edit</a></td>
                             <td>
-                                <form action="<?php echo e(route('admin.category.destroy', encrypt($cat->id))); ?>" method="POST"
+                                <form action="<?php echo e(route('admin.category.destroy', encrypt($empDTR->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     <?php echo method_field('DELETE'); ?>
                                     <?php echo csrf_field(); ?>
@@ -89,7 +107,7 @@ unset($__sessionArgs); ?>
     <?php $__env->startSection('js'); ?>
         <script>
             $(function() {
-                $('#categoryTable').DataTable({
+                $('#rawattendanceTable').DataTable({
                     "paging": true,
                     "searching": true,
                     "ordering": true,

@@ -75,7 +75,7 @@
                             <label for="isActive" class="form-label">Active:*</label>
                             <select name="isActive" id="isActive" class="form-control" required>
                                 <option value="" selected disabled>Select Record Status</option>
-                                <option value="1">Active</option>
+                                <option value="1" selected>Active</option>
                                 <option value="0">In-active</option>
                             </select>
                             <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>

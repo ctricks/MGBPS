@@ -2,10 +2,12 @@
 
 namespace App\Imports;
 
+use Carbon\Carbon;
 use App\Models\DailyTimeRecord;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class DailyTimeRecordImport implements ToModel, WithStartRow, WithChunkReading
 {
@@ -28,45 +30,43 @@ class DailyTimeRecordImport implements ToModel, WithStartRow, WithChunkReading
 
     public function model(array $row)
     {
-        // A row with a string in the first column is an employee header
-        if (isset($row[0]) && is_string($row[0])) {
-            // Check if the cell contains the pattern "(XXXX)"
-            if (preg_match('/\((.*?)\)/', $row[0], $matches)) {
-                $this->employeeCode = $matches[1];
-            }
-             dd($row);
-            // Skip the employee header row itself
-            return null;
+        // Check if the row contains an employee header (e.g., "AGOJO, GABRIELA MALAYO (0199)")
+        if (isset($row[0]) && is_string($row[0]) && preg_match('/\((.*?)\)/', $row[0], $matches)) {
+            $this->employeeCode = $matches[1];
+            return null; // Don't insert this row.
         }
-        
-        // A row with a numeric value in the first column is a date
-        // if ($row[0][0] != null) {
-        //     dd($date);
-        //     // Convert Excel's date serial number to a PHP date object
-        //     $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]);
-        
-        //     // Convert Excel's time serial numbers to PHP date/time objects
-        //     $in1 = isset($row[1]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('H:i:s') : null;
-        //     $out1 = isset($row[2]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[2])->format('H:i:s') : null;
-        //     $in2 = isset($row[3]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[3])->format('H:i:s') : null;
-        //     $out2 = isset($row[4]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4])->format('H:i:s') : null;
-        //     $in3 = isset($row[5]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5])->format('H:i:s') : null;
-        //     $out3 = isset($row[6]) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6])->format('H:i:s') : null;
 
-        //     // Only create a model if at least one time entry exists and an employee code is set
-        //     if ($this->employeeCode && ($in1 || $out1 || $in2 || $out2 || $in3 || $out3)) {
-        //         return new DailyTimeRecord([
-        //             'employee_code' => $this->employeeCode,
-        //             'date' => $date->format('Y-m-d'),
-        //             'in_1' => $in1,
-        //             'out_1' => $out1,
-        //             'in_2' => $in2,
-        //             'out_2' => $out2,
-        //             'in_3' => $in3,
-        //             'out_3' => $out3,
-        //         ]);
-        //     }
-        // }
-        return null; // Ignore rows that are not valid data entries
+        // Check if the row contains a date, indicating it's a data row
+        if (isset($row[0])) {
+            $datestring = substr($row[0], 0, -2);
+            
+            $carbonDate = Carbon::parse($datestring);
+            $formattedDate = $carbonDate->format('Y-m-d');
+        
+            $carbonIN_1 = Carbon::parse($row[3]);
+            
+            // Convert Excel time values to H:i:s format, or null if empty
+            $in1 = $row[1] == "" ? null:Carbon::parse($row[1])->format('H:i');
+            $out1 = $row[2] == "" ? null:Carbon::parse($row[2])->format('H:i');
+            $in2 = $row[3] == "" ? null:Carbon::parse($row[3])->format('H:i');
+            $out2 = $row[4] == "" ? null:Carbon::parse($row[4])->format('H:i');
+            $in3 = $row[5] == "" ? null:Carbon::parse($row[5])->format('H:i');
+            $out3 = $row[6] == "" ? null:Carbon::parse($row[6])->format('H:i');
+    
+            // Only create a model if we have an employee code and at least one time entry
+            if ($this->employeeCode) {
+                return DailyTimeRecord::updateOrCreate([
+                    'employee_code' => $this->employeeCode,
+                    'date' => $formattedDate,
+                    'in_1' => $in1,
+                    'out_1' => $out1,
+                    'in_2' => $in2,
+                    'out_2' => $out2,
+                    'in_3' => $in3,
+                    'out_3' => $out3,
+                ]);
+            }
+        }
+        return null; // Skip any other rows (e.g., empty rows).
     }
 }

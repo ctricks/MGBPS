@@ -22,7 +22,7 @@
                             <label for="isActive" class="form-label">Active:*</label>
                             <select name="isActive" id="isActive" class="form-control" required>
                                 <option value="" selected disabled>Select Record Status</option>
-                                <option value="1">Active</option>
+                                <option value="1" selected>Active</option>
                                 <option value="0">In-active</option>
                             </select>
                             <x-error>isActive</x-error>
