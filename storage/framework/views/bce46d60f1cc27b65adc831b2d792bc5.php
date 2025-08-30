@@ -17,7 +17,7 @@
             </div>
         </div>
 
-<div class="card-header">
+    <div class="card-header">
   
             <?php $__sessionArgs = ['success'];
 if (session()->has($__sessionArgs[0])) :
@@ -56,7 +56,6 @@ unset($__sessionArgs); ?>
                 
             </form>    
         </div>
-
         <div class="card-body">
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
@@ -103,7 +102,6 @@ unset($__sessionArgs); ?>
                 </tbody>
             </table>
         </div>
-    </div>
     <?php $__env->startSection('js'); ?>
         <script>
             $(function() {

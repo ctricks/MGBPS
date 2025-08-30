@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginWithOTPController;
 use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 /*
@@ -18,6 +19,9 @@ use Illuminate\Support\Str;
 Route::get('/', function () {
     return view('auth.login');
 });
+
+Route::get('/get-employee/{id}', [EmployeeController::class, 'getEmployeeData']);
+
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){
     Route::get('/login','login')->name('login');

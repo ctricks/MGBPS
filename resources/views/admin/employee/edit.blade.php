@@ -19,20 +19,24 @@
                                     <x-error>employeenumber</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-12">
-                            <div class="form-group col-lg-4">
+                        <div class="col-lg-4">
+                            <div class="form-group">
                                     <label for="lastname" class="form-label">Lastname:*</label>
                                     <input type="text" class="form-control" name="lastname" required
                                         value="{{ $employee->lastname }}">
                                         <x-error>lastname</x-error>
                             </div>
-                            <div class="form-group col-lg-4">
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
                                 <label for="firstname" class="form-label">Firstname:*</label>
                                 <input type="text" class="form-control" name="firstname" required
                                     value="{{ $employee->firstname }}">
                                 <x-error>lastname</x-error>
                             </div>
-                            <div class="form-group col-lg-4">
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
                                 <label for="middlename" class="form-label">Middlename:</label>
                                 <input type="text" class="form-control" name="middlename"
                                     value="{{ $employee->middlename }}">
@@ -65,7 +69,7 @@
                                 <x-error>birthday</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="civilstatus">Civil Status:</label>
                                 <select name="civilstatus" id="civilstatus" class="form-control" required>
@@ -78,7 +82,7 @@
                                 <x-error>civilstatus</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="gender">Gender:</label>
                                 <select name="gender" id="gender" class="form-control" required>
@@ -91,7 +95,7 @@
                                 <x-error>gender</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="position">Position:</label>
                                 <select name="position" id="position" class="form-control" required>
@@ -104,7 +108,7 @@
                                 <x-error>position</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="department">Department:</label>
                                 <select name="departmentname" id="departmentname" class="form-control" required>

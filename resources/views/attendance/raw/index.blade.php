@@ -8,7 +8,7 @@
             </div>
         </div>
 
-<div class="card-header">
+    <div class="card-header">
   
             @session('success')
                 <div class="alert alert-success" role="alert"> 
@@ -39,7 +39,6 @@
                 
             </form>    
         </div>
-
         <div class="card-body">
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
@@ -86,7 +85,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
     @section('js')
         <script>
             $(function() {

@@ -115,13 +115,31 @@
             </a>
             <ul class="nav nav-treeview">
                <li class="nav-item">
-                <a href="<?php echo e(route('attendance.raw.index')); ?>"
-                    class="nav-link <?php echo e(Route::is('attendance.raw.index') ? 'active' : ''); ?>">
-                  <i class="nav-icon fas fa-building "></i>
-                   <p style = "text-indent:15em;">
-                    Raw Data
-                   </p>
-                </a>
+                    <a href="<?php echo e(route('attendance.raw.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.raw.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Raw Data
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo e(route('attendance.summary.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.summary.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Final Attendance
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo e(route('attendance.restday.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.restday.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Rest Day 
+                    </p>
+                    </a>
                 </li>
             </ul>
         </li>

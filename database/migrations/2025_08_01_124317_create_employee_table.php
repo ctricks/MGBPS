@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreignId('position_id')->reference('id')->on('position');
             $table->foreignId('department_id')->reference('id')->on('department');
             $table->foreignId('employee_status_id')->reference('id')->on('employee_status');
+            $table->integer('WorkDays')->nullable();
             $table->timestamps();
         });
     }

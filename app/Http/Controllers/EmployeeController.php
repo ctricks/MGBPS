@@ -21,6 +21,15 @@ use Maatwebsite\Excel\HeadingRowImport;
 
 class EmployeeController extends Controller
 {
+    public function getEmployeeData($empnum)
+    {
+        $data = Employee::select("*")
+        //->where("lastname", "LIKE", "%{$empnum->get('query')}%")
+        ->where("id","=",$empnum)
+        ->take(10)
+        ->get();
+        return response()->json($data);
+    }
     //Display Employee index page
     public function index()
     {

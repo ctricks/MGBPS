@@ -35,6 +35,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
         Route::resource('position',PositionController::class);
         Route::resource('department',DepartmentController::class);
         Route::resource('employeestatus',EmployeeStatusController::class);
+        Route::get('/get-employee-data', [EmployeeController::class, 'getEmployeeData'])->name('employee.search');
         Route::post('employeeimport', [EmployeeController::class,'import'])->name('employee.import');
         Route::get('employeedownloadtemplate', [EmployeeController::class,'downloadFileTemplate'])->name('employee.downloadtemplate');
         Route::get('/get/subcategory',[ProductController::class,'getsubcategory'])->name('getsubcategory');
