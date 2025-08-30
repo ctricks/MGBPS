@@ -52,8 +52,6 @@ unset($__sessionArgs); ?>
                     <button class="btn btn-success"><i class="fa fa-file"></i> Import Data</button>
                     <a href="<?php echo e(route('attendance.rawattendance.downloadtemplate')); ?>" class="btn btn-primary">Download Template</a>
                 </div>
-                
-                
             </form>    
         </div>
         <div class="card-body">
@@ -90,7 +88,7 @@ unset($__sessionArgs); ?>
                 </tbody>
             </table>
         </div>
-    <?php $__env->startSection('js'); ?>
+        <?php $__env->startSection('js'); ?>
         <script>
             $(function() {
                 $('#restdayTable').DataTable({

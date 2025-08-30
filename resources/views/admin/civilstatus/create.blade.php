@@ -1,5 +1,5 @@
 <x-admin>
-    @section('title', 'Create User')
+    @section('title', 'Create Civil Status')
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Create Civil Status</h3>

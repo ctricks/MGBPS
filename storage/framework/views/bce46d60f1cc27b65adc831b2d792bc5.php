@@ -52,10 +52,79 @@ unset($__sessionArgs); ?>
                     <button class="btn btn-success"><i class="fa fa-file"></i> Import User Data</button>
                     <a href="<?php echo e(route('attendance.rawattendance.downloadtemplate')); ?>" class="btn btn-primary">Download Template</a>
                 </div>
-                
-                
             </form>    
         </div>
+    <div class="card-body">
+        Filter:
+            <form action="<?php echo e(route('attendance.rawattendance.import')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                            <label for="civilstatus">Cut-off:</label>
+                            <select name="cutoff" id="cutoff" class="form-control" required>
+                                <option value="" selected disabled>select cutoff</option>
+                                <?php $__currentLoopData = $cutOFF; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($cu->id); ?>"
+                                        <?php echo e($cu->id == old('cutoff') ? 'selected' : ''); ?>><?php echo e($cu->StartDate . " to " . $cu->EndDate); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>civilstatus <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                            <label for="civilstatus">Employee:</label>
+                            <select name="employeecode" id="employeecode" class="form-control" required>
+                                <option value="" selected disabled>select employee</option>
+                            </select>
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>civilstatus <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="button-container">
+                            <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
+                    </div>
+                </div>
+                </div>
+            </form>    
+    </div>
         <div class="card-body">
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
@@ -113,6 +182,40 @@ unset($__sessionArgs); ?>
                 });
             });
         </script>
+        <script>
+    $(document).ready(function(){
+        // Cutoff Change
+        $('#cutoff').change(function(){
+             // Cutoff id
+             var id = $(this).val();
+             
+             // AJAX request 
+             $.ajax({
+                 url: '/get-dtr-employee/'+id,
+                 type: 'get',
+                 dataType: 'json',
+                 success: function(response){
+                     var len = 0;
+                     if(response[0].employee_code != null){
+                          len = response[0].employee_code.length;
+                     }
+                     if(len > 0){
+                        const selectElement = document.getElementById('employeecode');
+
+                        // Loop through the data and create <option> elements
+                        data.forEach(data => {
+                            const option = document.createElement('option');
+                            option.value = data.employee_code; // Set the value attribute
+                            option.textContent = data.employee_code; // Set the display text
+                            selectElement.appendChild(option); // Append the option to the select
+                        });
+                     }
+
+                 }
+             });
+        });
+    });
+    </script>
     <?php $__env->stopSection(); ?>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

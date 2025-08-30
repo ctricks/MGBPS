@@ -35,8 +35,6 @@
                     <button class="btn btn-success"><i class="fa fa-file"></i> Import Data</button>
                     <a href="{{ route('attendance.rawattendance.downloadtemplate') }}" class="btn btn-primary">Download Template</a>
                 </div>
-                
-                
             </form>    
         </div>
         <div class="card-body">
@@ -73,7 +71,7 @@
                 </tbody>
             </table>
         </div>
-    @section('js')
+        @section('js')
         <script>
             $(function() {
                 $('#restdayTable').DataTable({

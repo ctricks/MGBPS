@@ -35,10 +35,43 @@
                     <button class="btn btn-success"><i class="fa fa-file"></i> Import User Data</button>
                     <a href="{{ route('attendance.rawattendance.downloadtemplate') }}" class="btn btn-primary">Download Template</a>
                 </div>
-                
-                
             </form>    
         </div>
+    <div class="card-body">
+        Filter:
+            <form action="{{ route('attendance.rawattendance.import') }}" method="POST">
+                @csrf
+                <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                            <label for="civilstatus">Cut-off:</label>
+                            <select name="cutoff" id="cutoff" class="form-control" required>
+                                <option value="" selected disabled>select cutoff</option>
+                                @foreach ($cutOFF as $cu)
+                                    <option value="{{ $cu->id }}"
+                                        {{ $cu->id == old('cutoff') ? 'selected' : '' }}>{{ $cu->StartDate . " to " . $cu->EndDate }}</option>
+                                @endforeach
+                            </select>
+                            <x-error>civilstatus</x-error>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                            <label for="civilstatus">Employee:</label>
+                            <select name="employeecode" id="employeecode" class="form-control" required>
+                                <option value="" selected disabled>select employee</option>
+                            </select>
+                            <x-error>civilstatus</x-error>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="button-container">
+                            <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
+                    </div>
+                </div>
+                </div>
+            </form>    
+    </div>
         <div class="card-body">
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
@@ -96,5 +129,39 @@
                 });
             });
         </script>
+        <script>
+    $(document).ready(function(){
+        // Cutoff Change
+        $('#cutoff').change(function(){
+             // Cutoff id
+             var id = $(this).val();
+             
+             // AJAX request 
+             $.ajax({
+                 url: '/get-dtr-employee/'+id,
+                 type: 'get',
+                 dataType: 'json',
+                 success: function(response){
+                     var len = 0;
+                     if(response[0].employee_code != null){
+                          len = response[0].employee_code.length;
+                     }
+                     if(len > 0){
+                        const selectElement = document.getElementById('employeecode');
+
+                        // Loop through the data and create <option> elements
+                        data.forEach(data => {
+                            const option = document.createElement('option');
+                            option.value = data.employee_code; // Set the value attribute
+                            option.textContent = data.employee_code; // Set the display text
+                            selectElement.appendChild(option); // Append the option to the select
+                        });
+                     }
+
+                 }
+             });
+        });
+    });
+    </script>
     @endsection
 </x-admin>

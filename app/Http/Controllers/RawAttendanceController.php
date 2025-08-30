@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
+use Carbon\Carbon;
 
 class RawAttendanceController extends Controller
 {
@@ -90,6 +91,9 @@ class RawAttendanceController extends Controller
         }else{
         $data = $RawAttendanceData->toQuery()->paginate(10);
         }
+
+        //$result = $this->createcufoff();
+
         return view('attendance.raw.index',compact('data'));
     }
 
@@ -158,4 +162,5 @@ class RawAttendanceController extends Controller
         Category::where('id',decrypt($id))->delete();
         return redirect()->route('admin.category.index')->with('error','Category deleted successfully.');   
     }
+    
 }

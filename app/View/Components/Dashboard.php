@@ -27,8 +27,8 @@ class Dashboard extends Component
         $product = Product::count();
         view()->share('product',$product);
         
-        $collection = Collection::count();
-        view()->share('collection',$collection);
+        // $collection = Collection::count();
+        // view()->share('collection',$collection);
     }
 
     /**

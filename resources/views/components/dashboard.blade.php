@@ -27,28 +27,28 @@
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-primary">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ $product }}</h3>
-                    <p>Total Products</p>
+                    <h3>{{ $employee }}</h3>
+                    <p>Processed Attendance</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fas fa-th"></i>
+                    <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="{{ route('admin.product.index') }}" class="small-box-footer">View <i
+                <a href="{{ route('admin.employee.index') }}" class="small-box-footer">View <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-secondary">
+            <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>{{ $collection }}</h3>
-                    <p>Total Collections</p>
+                    <h3>{{ $employee }}</h3>
+                    <p>Processed Payroll</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fas fa-file-pdf"></i>
+                    <i class="ion ion-bag"></i>
                 </div>
-                <a href="{{ route('admin.collection.index') }}" class="small-box-footer">View <i
+                <a href="{{ route('admin.employee.index') }}" class="small-box-footer">View <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
