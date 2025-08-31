@@ -57,7 +57,7 @@ class RestdayController extends Controller
         }else{
             $msg = 'Restday created successfully.';
         }
-        return redirect()->view('attendance.restday.index')->with('success',$msg);
+        return redirect()->route('attendance.restday.index')->with('success',$msg);
     }
 
     /**
@@ -71,17 +71,32 @@ class RestdayController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         //
+        $data = Restday::where('id',decrypt($id))->first();
+        return view('attendance.restday.edit',compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,Restday $restday)
     {
         //
+        //
+        $request->validate([
+            "Restday"=>'required','string','max:255',
+        ]);
+
+        $restday = Restday::find($request->id);
+        $restday->EmployeeCodeKey = $request->id . "-" . $request->Restday; 
+        $restday->Restday = $request->Restday;
+        $restday->Remarks = $request->remarks;
+        $restday->isActive = $request->isActive;
+        $restday->save();
+        
+        return redirect()->route('attendance.restday.index')->with('Success','Restday updated successfully');
     }
 
     /**
@@ -90,6 +105,8 @@ class RestdayController extends Controller
     public function destroy(string $id)
     {
         //
+        Restday::where('id',decrypt($id))->delete();
+        return redirect()->back()->with('success','Restday deleted successfully.');
     }
      public function import(Request $request)
     {

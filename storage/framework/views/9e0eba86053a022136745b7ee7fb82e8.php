@@ -182,10 +182,9 @@
 <!-- Script -->
 <script>
     $(document).ready(function(){
-
-        // Department Change
+        // EmployeeCode Change
         $('#empcode').change(function(){
-             // Department id
+             // Employee id
              var id = $(this).val();
              
              // AJAX request 

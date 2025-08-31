@@ -50,7 +50,7 @@ class DailyTimeRecordController extends Controller
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $currentMonthName = Carbon::now()->format('F');
-
+        $ProcessStatus = "Not Process yet"; 
         $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         
         if(isset($cutOFF))
@@ -87,7 +87,49 @@ class DailyTimeRecordController extends Controller
         //dd(count($RawAttendanceData));
 
 
-        return view('attendance.raw.index',compact('data','cutOFF'));
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
+    }
+    public function getemployeelist(Request $request)
+    {
+        $cutoffData = Cutoff::where('id',$request->cutoff)->get();
+        $firstDayOfMonth = Carbon::now()->startOfMonth();
+        $lastDayOfMonth = Carbon::now()->lastOfMonth();
+        $currentMonthName = Carbon::now()->format('F');
+
+        $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
+        
+        $ProcessStatus = "Not Process";
+
+        if(isset($cutOFF))
+        {
+            $this->createcufoff();
+            $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
+        }
+    
+        if($cutoffData[0] != null)
+        {
+            //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
+            $data = DB::select(
+                        "Select 
+                            dtr.id,dtr.employee_code,
+                            concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,
+                            dtr.date,DATENAME(WEEKDAY,dtr.date) as day,
+                            CONVERT(Varchar(5),dtr.in_1,108) as in_1,
+                            CONVERT(Varchar(5),dtr.out_1,108) as out_1,
+                            CONVERT(Varchar(5),dtr.in_2,108) as in_2,
+                            CONVERT(Varchar(5),dtr.out_2,108) as out_2,
+                            CONVERT(Varchar(5),dtr.in_3,108) as in_3,
+                            CONVERT(Varchar(5),dtr.out_3,108) as out_3
+                        from 
+                            daily_time_records dtr left join employees emp on dtr.employee_code = emp.employeenumber
+                        where 
+                            dtr.date between '". $firstDayOfMonth ."' and '" . $lastDayOfMonth ."'
+                            and dtr.employee_code = ". $request->employeecode ."
+                            order by 
+                                emp.lastname,dtr.employee_code,dtr.date desc"
+                    );
+        }
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
     }
     public function getEmployeeDTRData($empnum)
     {
@@ -95,8 +137,11 @@ class DailyTimeRecordController extends Controller
 
         if($cutoffData[0] != null)
         {
-            $data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
-            ->select('employee_code')
+            //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
+            $data = DB::table('daily_time_records')
+            ->LeftJoin('employees','daily_time_records.employee_code','=','employees.employeenumber')
+            ->select('daily_time_records.employee_code')
+            ->whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             ->distinct()
             ->get();
         }
