@@ -12,7 +12,7 @@
                     class="nav-link <?php echo e(Route::is('admin.employee.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-user"></i>
                     <p>Employees
-                        <span class="badge badge-info right"><?php echo e($userCount); ?></span>
+                        <span class="badge badge-info right"><?php echo e($EmployeeCount); ?></span>
                     </p>
                 </a>
             </li>

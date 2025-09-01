@@ -7,6 +7,7 @@ use App\Models\Collection;
 use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\User;
+use App\Models\Employee;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -28,6 +29,10 @@ class Sidebar extends Component
         
         $PermissionCount = Permission::count();
         view()->share('PermissionCount',$PermissionCount);
+
+        //For Employee Count
+        $EmployeeCount = Employee::count();
+        view()->share('EmployeeCount',$EmployeeCount);
         
         // $CategoryCount = Category::count();
         // view()->share('CategoryCount',$CategoryCount);
