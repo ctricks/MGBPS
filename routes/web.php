@@ -23,6 +23,7 @@ Route::get('/', function () {
 
 Route::get('/get-employee/{id}', [EmployeeController::class, 'getEmployeeData']);
 Route::get('/get-dtr-employee/{id}', [DailyTimeRecordController::class, 'getEmployeeDTRData']);
+Route::get('/get-cutoff/{id}', [DailyTimeRecordController::class, 'getCutoffData']);
 
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){

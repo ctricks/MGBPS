@@ -24,8 +24,8 @@ class Dashboard extends Component
         $employee = Employee::count();
         view()->share('employee',$employee);
         
-        $product = Product::count();
-        view()->share('product',$product);
+        // $product = Product::count();
+        // view()->share('product',$product);
         
         // $collection = Collection::count();
         // view()->share('collection',$collection);

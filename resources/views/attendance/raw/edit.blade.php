@@ -1,11 +1,11 @@
 <x-admin>
-    @section('title','Edit Category')
+    @section('title','Edit Raw Attendance')
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Category</h3>
+                        <h3 class="card-title">Edit Raw Attendance</h3>
                         <div class="card-tools">
                             <a href="{{ route('admin.category.index') }}" class="btn btn-info btn-sm">Back</a>
                         </div>
@@ -18,7 +18,7 @@
                             <div class="form-group">
                                 <label for="name">Category Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter category name" required value="{{ $data->name }}">
+                                    placeholder="Enter category name" required value="{{ $data->id }}">
                             </div>
                             <x-error>name</x-error>
                         </div>

@@ -45,14 +45,28 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="form-group">
+                            <label for="selectmonth">Month:</label>
+                            <select name="monthfilter" id="monthfilter" class="form-control" required>
+                                <option value="" selected disabled>select month</option>
+                                @for ($month = 1; $month <= 12; $month++)
+                                    {{ $monthName = date('F', mktime(0, 0, 0, $month, 1)) }}
+                                    <option value="{{ $month }}">
+                                        {{ $monthName }} </option>
+                                @endfor
+                            </select>
+                            <x-error>civilstatus</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
                             <label for="civilstatus">Cut-off:</label>
                             <select name="cutoff" id="cutoff" class="form-control" required>
                                 <option value="" selected disabled>select cutoff</option>
-                                @foreach ($cutOFF as $cu)
+                                {{-- @foreach ($cutOFF as $cu)
                                     <option value="{{ $cu->id }}"
                                         {{ $cu->id == old('cutoff') ? 'selected' : '' }}>
                                         {{ $cu->StartDate . ' to ' . $cu->EndDate }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                             <x-error>civilstatus</x-error>
                         </div>
@@ -66,7 +80,7 @@
                             <x-error>employeecode</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <label for="empname">Status:</label>
                             <input type="text" class="form-control" id="payrollprocess" name="payrollprocess"
@@ -88,43 +102,65 @@
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
                     <tr>
-                        <th>Employee Code</th>
+                        <th>ID</th>
                         <th>Date</th>
                         <th>Day</th>
-                        <th>Name</th>
+                        {{-- <th>Name</th> --}}
                         <th>In_1</th>
                         <th>Out_1</th>
                         <th>In_2</th>
                         <th>Out_2</th>
                         <th>In_3</th>
                         <th>Out_3</th>
+                        <th>Final In</th>
+                        <th>Final Out</th>
+                        <th>Work Hrs</th>
+                        <th>ND Hrs</th>
+                        {{-- <th>ND8 Hours</th> --}}
+                        <th>OT Hrs</th>
+                        {{-- <th>OT8 Hours</th> --}}
+                        <th>Absent</th>
+                        <th>Late</th>
+                        <th>Undertime</th>
                         <th>Action</th>
-                        <th></th>
+                        {{-- <th></th> --}}
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($data as $empDTR)
                         <tr>
-                            <td>{{ $empDTR->employee_code }}</td>
+                            <td>{{ $empDTR->id }}</td>
                             <td>{{ $empDTR->date }}</td>
-                            <td>{{ $empDTR->day }}</td>
-                            <td>{{ $empDTR->Employee }}</td>
-                            <td>{{ $empDTR->in_1 }}</td>
-                            <td>{{ $empDTR->out_1 }}</td>
-                            <td>{{ $empDTR->in_2 }}</td>
-                            <td>{{ $empDTR->out_2 }}</td>
-                            <td>{{ $empDTR->in_3 }}</td>
-                            <td>{{ $empDTR->out_3 }}</td>
-                            <td><a href={{ route('attendance.raw.index', encrypt($empDTR->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a></td>
-                            <td>
-                                <form action="{{ route('attendance.raw.index', encrypt($empDTR->id)) }}"
-                                    method="POST" onsubmit="return confirm('Are sure want to delete?')">
+                            <td>{{ $empDTR->Day }}</td>
+                            {{-- <td>{{ $empDTR->Employee }}</td> --}}
+                            <td>{{ $empDTR->TimeIN }}</td>
+                            <td>{{ $empDTR->TimeOUT }}</td>
+                            <td>{{ $empDTR->TimeIN_2 }}</td>
+                            <td>{{ $empDTR->TimeOUT_2 }}</td>
+                            <td>{{ $empDTR->TimeIN_3 }}</td>
+                            <td>{{ $empDTR->TimeOUT_3 }}</td>
+                            <td>{{ $empDTR->Final_IN }}</td>
+                            <td>{{ $empDTR->Final_OUT }}</td>
+                            <td>{{ $empDTR->WorkingHours }}</td>
+                            <td>{{ $empDTR->NDHours }}</td>
+                            <td>{{ $empDTR->OTHours }}</td>
+                            <td>{{ $empDTR->Absent }}</td>
+                            <td>{{ $empDTR->Late }}</td>
+                            <td>{{ $empDTR->Undertime }}</td>
+                            {{-- <td>{{ $empDTR->WorkingHours }}</td>
+                            <td>{{ $empDTR->WorkingHours }}</td> --}}
+
+                            <td><a href="{{ route('attendance.raw.edit', encrypt($empDTR->id)) }}"
+                                    class="btn btn-sm btn-primary">Edit</a>
+                                <form action="{{ route('attendance.raw.index', encrypt($empDTR->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                            </td>
+                                </form></td>
+                            {{-- <td>
+                                
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
@@ -139,6 +175,35 @@
                         "ordering": true,
                         "responsive": true,
                         pageLength: 15,
+                    });
+                });
+            </script>
+            <script>
+                $(document).ready(function() {
+                    // Cutoff Change
+                    $('#monthfilter').change(function() {
+                        // Cutoff id
+                        var id = $(this).val();
+                        //$('#employeecode').find('option').remove().end();
+                        // AJAX request 
+                        $.ajax({
+                            url: '/get-cutoff/' + id,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                if (response.length > 0) {
+                                    $('#cutoff').find('option').remove().end();
+                                    response.forEach(response => {
+                                        // Create a new option
+                                        const newOption = new Option(response.StartDate +
+                                            ' to ' + response.EndDate, response.id);
+                                        // Append the new option to the dropdown
+                                        $('#cutoff').append(newOption);
+                                    });
+                                }
+                            }
+                        });
                     });
                 });
             </script>
@@ -165,26 +230,17 @@
                                     // Loop through the data and create <option> elements
                                     response.forEach(response => {
                                         const option = document.createElement('option');
-                                        option.value = response.employee_code; // Set the value attribute
-                                        option.textContent = response.employee_code; // Set the display text
-                                        selectElement.appendChild(option); // Append the option to the select
+                                        option.value = response
+                                        .employee_code; // Set the value attribute
+                                        option.textContent = response
+                                        .employee_code; // Set the display text
+                                        selectElement.appendChild(
+                                        option); // Append the option to the select
                                     });
                                 }
 
                             }
                         });
-                    });
-                });
-            </script>
-            <script>
-                $(document).ready(function() {
-                    // Cutoff Change
-                    $('#employeecode').change(function() {
-                        // Cutoff id
-                        var val = $(this).val();
-                        console.log(val);
-                        const empName = document.getElementById('empname');
-                        set empName.value = val;
                     });
                 });
             </script>
