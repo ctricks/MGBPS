@@ -134,6 +134,19 @@
                                 <x-error>employeestatus</x-error>
                             </div>
                         </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="employeestatus">Work Schedule:</label>
+                                <select name="workschedule" id="workchedule" class="form-control" required>
+                                    <option value="" selected disabled>select work schedule</option>
+                                    @foreach ($workschedule as $ws)
+                                        <option value="{{ $ws->id }}"
+                                            {{ $ws->id == $employee->WorkDays ? 'selected' : '' }}>{{ $ws->KeySchedule }} ({{ date('h:i A',strtotime($ws->StartTime)) }} to {{ date('h:i A',strtotime($ws->EndTime)) }})</option>
+                                    @endforeach
+                                </select>
+                                <x-error>employeestatus</x-error>
+                            </div>
+                        </div>
                     <div class="col-lg-12">
                         <div class="float-right">
                             <button class="btn btn-primary" type="submit">Save</button>

@@ -173,25 +173,25 @@ unset($__sessionArgs); ?>
                         <th>ID</th>
                         <th>Date</th>
                         <th>Day</th>
-                        
+                        <th>EmployeeCode</th>
                         <th>In_1</th>
                         <th>Out_1</th>
                         <th>In_2</th>
                         <th>Out_2</th>
                         <th>In_3</th>
                         <th>Out_3</th>
-                        <th>Final In</th>
-                        <th>Final Out</th>
-                        <th>Work Hrs</th>
-                        <th>ND Hrs</th>
+                        <th>Fin In</th>
+                        <th>Fin Out</th>
+                        <th>W Hrs</th>
+                        <th>ND</th>
                         
-                        <th>OT Hrs</th>
+                        <th>OT</th>
                         
                         <th>Absent</th>
                         <th>Late</th>
-                        <th>Undertime</th>
+                        <th>Utime</th>
                         <th>Action</th>
-                        
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -199,8 +199,8 @@ unset($__sessionArgs); ?>
                         <tr>
                             <td><?php echo e($empDTR->id); ?></td>
                             <td><?php echo e($empDTR->date); ?></td>
-                            <td><?php echo e($empDTR->day); ?></td>
-                            
+                            <td><?php echo e($empDTR->Day); ?></td>
+                            <td><?php echo e($empDTR->employee_code); ?></td>
                             <td><?php echo e($empDTR->TimeIN); ?></td>
                             <td><?php echo e($empDTR->TimeOUT); ?></td>
                             <td><?php echo e($empDTR->TimeIN_2); ?></td>
@@ -216,15 +216,22 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->Late); ?></td>
                             <td><?php echo e($empDTR->Undertime); ?></td>
                             
-
-                            <td><a href="<?php echo e(route('attendance.raw.edit', encrypt($empDTR->id))); ?>"
+                            
+                            <td><div style = "flex; justify-content: center; gap: 1px;">
+                                <a href="<?php echo e(route('attendance.raw.edit', encrypt($empDTR->id))); ?>"
                                     class="btn btn-sm btn-primary">Edit</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
                                 <form action="<?php echo e(route('attendance.raw.index', encrypt($empDTR->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     <?php echo method_field('DELETE'); ?>
                                     <?php echo csrf_field(); ?>
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form></td>
+                                </form>
+                            </div>
+                            </td>
                             
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

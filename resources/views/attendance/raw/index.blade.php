@@ -105,25 +105,25 @@
                         <th>ID</th>
                         <th>Date</th>
                         <th>Day</th>
-                        {{-- <th>Name</th> --}}
+                        <th>EmployeeCode</th>
                         <th>In_1</th>
                         <th>Out_1</th>
                         <th>In_2</th>
                         <th>Out_2</th>
                         <th>In_3</th>
                         <th>Out_3</th>
-                        <th>Final In</th>
-                        <th>Final Out</th>
-                        <th>Work Hrs</th>
-                        <th>ND Hrs</th>
+                        <th>Fin In</th>
+                        <th>Fin Out</th>
+                        <th>W Hrs</th>
+                        <th>ND</th>
                         {{-- <th>ND8 Hours</th> --}}
-                        <th>OT Hrs</th>
+                        <th>OT</th>
                         {{-- <th>OT8 Hours</th> --}}
                         <th>Absent</th>
                         <th>Late</th>
-                        <th>Undertime</th>
+                        <th>Utime</th>
                         <th>Action</th>
-                        {{-- <th></th> --}}
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,8 +131,8 @@
                         <tr>
                             <td>{{ $empDTR->id }}</td>
                             <td>{{ $empDTR->date }}</td>
-                            <td>{{ $empDTR->day }}</td>
-                            {{-- <td>{{ $empDTR->Employee }}</td> --}}
+                            <td>{{ $empDTR->Day }}</td>
+                            <td>{{ $empDTR->employee_code }}</td>
                             <td>{{ $empDTR->TimeIN }}</td>
                             <td>{{ $empDTR->TimeOUT }}</td>
                             <td>{{ $empDTR->TimeIN_2 }}</td>
@@ -149,15 +149,22 @@
                             <td>{{ $empDTR->Undertime }}</td>
                             {{-- <td>{{ $empDTR->WorkingHours }}</td>
                             <td>{{ $empDTR->WorkingHours }}</td> --}}
-
-                            <td><a href="{{ route('attendance.raw.edit', encrypt($empDTR->id)) }}"
+                            
+                            <td><div style = "flex; justify-content: center; gap: 1px;">
+                                <a href="{{ route('attendance.raw.edit', encrypt($empDTR->id)) }}"
                                     class="btn btn-sm btn-primary">Edit</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
                                 <form action="{{ route('attendance.raw.index', encrypt($empDTR->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form></td>
+                                </form>
+                            </div>
+                            </td>
                             {{-- <td>
                                 
                             </td> --}}

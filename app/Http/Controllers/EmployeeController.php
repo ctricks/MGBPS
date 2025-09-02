@@ -9,6 +9,7 @@ use App\Models\Gender;
 use App\Models\Position;
 use App\Models\Department;
 use App\Models\EmployeeStatus;
+use App\Models\DefaultWorkSchedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,9 @@ class EmployeeController extends Controller
         $position = Position::where('isActive',1)->get();
         $department = Department::where('isActive',1)->get();
         $employeestatus = EmployeeStatus::where('isActive',1)->get();
-        return view('admin.employee.create',compact('civilstatus','gender','position','department','employeestatus'));
+        $workschedule = DefaultWorkSchedule::where('isActive',1)->get();
+
+        return view('admin.employee.create',compact('civilstatus','gender','position','department','employeestatus','workschedule'));
     }
     public function store(Request $request)
     {
@@ -67,6 +70,7 @@ class EmployeeController extends Controller
             'position_id' => $request->position,
             'department_id' => $request->departmentname,
             'employee_status_id'=>$request->employeestatus,
+            'WorkDays'=>$request->workschedule,
         ]);
         return redirect()->route('admin.employee.index')->with('success','Employee created successfully.');
     }
@@ -79,8 +83,8 @@ class EmployeeController extends Controller
         $department = Department::where('isActive',1)->get();
         $employeestatus = EmployeeStatus::where('isActive',1)->get();
         $empBirthDate = Carbon::parse($employee->Birthday)->format('Y-m-d');
-        
-        return view('admin.employee.edit',compact('civilstatus','employee','gender','position','department','employeestatus','empBirthDate'));
+        $workschedule = DefaultWorkSchedule::where('isActive',1)->get();
+        return view('admin.employee.edit',compact('civilstatus','employee','gender','position','department','employeestatus','empBirthDate','workschedule'));
     }
     public function update(Request $request, Employee $employee)
     {
@@ -103,6 +107,7 @@ class EmployeeController extends Controller
         $employee->position_id = $request->position;
         $employee->department_id = $request->departmentname;
         $employee->employee_status_id = $request->employeestatus;
+        $employee->WorkDays = $request->workschedule;
         
         $employee->save();
         return redirect()->route('admin.employee.index')->with('success','Employee updated successfully.');
