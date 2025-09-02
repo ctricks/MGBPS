@@ -199,7 +199,7 @@ unset($__sessionArgs); ?>
                         <tr>
                             <td><?php echo e($empDTR->id); ?></td>
                             <td><?php echo e($empDTR->date); ?></td>
-                            <td><?php echo e($empDTR->Day); ?></td>
+                            <td><?php echo e($empDTR->day); ?></td>
                             
                             <td><?php echo e($empDTR->TimeIN); ?></td>
                             <td><?php echo e($empDTR->TimeOUT); ?></td>

@@ -131,7 +131,7 @@
                         <tr>
                             <td>{{ $empDTR->id }}</td>
                             <td>{{ $empDTR->date }}</td>
-                            <td>{{ $empDTR->Day }}</td>
+                            <td>{{ $empDTR->day }}</td>
                             {{-- <td>{{ $empDTR->Employee }}</td> --}}
                             <td>{{ $empDTR->TimeIN }}</td>
                             <td>{{ $empDTR->TimeOUT }}</td>
