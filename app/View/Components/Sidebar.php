@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\User;
 use App\Models\Employee;
+use App\Models\LeaveType;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;

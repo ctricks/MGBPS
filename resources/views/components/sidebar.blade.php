@@ -134,6 +134,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="{{ route('attendance.leavetype.index') }}"
+                    class="nav-link {{ Route::is('attendance.leavetype.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Leave Type
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         @endrole
@@ -180,6 +189,15 @@
                     <i class="nav-icon fas fa-building "></i>
                     <p style = "text-indent:15em;">
                         Work Schedule
+                    </p>
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a href="{{ route('attendance.leave.index') }}"
+                        class="nav-link {{ Route::is('attendance.leave.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Leave Management
                     </p>
                     </a>
                 </li>

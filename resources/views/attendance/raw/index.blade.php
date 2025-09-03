@@ -113,14 +113,14 @@
                         <th>In_3</th>
                         <th>Out_3</th>
                         <th>DType</th>
-                        <th>Fin In</th>
-                        <th>Fin Out</th>
+                        <th>F.In</th>
+                        <th>F.Out</th>
                         <th>Work</th>
                         <th>ND</th>
                         {{-- <th>ND8 Hours</th> --}}
                         <th>OT</th>
                         <th>Leave</th>
-                        <th>Absent</th>
+                        <th>Abs</th>
                         <th>Late</th>
                         <th>Utime</th>
                         <th>Action</th>
