@@ -183,11 +183,11 @@ unset($__sessionArgs); ?>
                         <th>DType</th>
                         <th>Fin In</th>
                         <th>Fin Out</th>
-                        <th>W Hrs</th>
+                        <th>Work</th>
                         <th>ND</th>
                         
                         <th>OT</th>
-                        
+                        <th>Leave</th>
                         <th>Absent</th>
                         <th>Late</th>
                         <th>Utime</th>
@@ -211,16 +211,17 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->RestDay); ?></td>
                             <td><?php echo e($empDTR->Final_IN); ?></td>
                             <td><?php echo e($empDTR->Final_OUT); ?></td>
-                            <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>                  
                             <td><?php echo e($empDTR->NDHours); ?></td>
                             <td><?php echo e($empDTR->OTHours); ?></td>
+                            <td><?php echo e($empDTR->Leave); ?></td>
                             <?php if($empDTR->Absent == 8): ?>
                                 <td style="color:red;"><?php echo e($empDTR->Absent); ?></td>
                             <?php else: ?>
                                 <td><?php echo e($empDTR->Absent); ?></td>
                             <?php endif; ?>
-                            <td><?php echo e($empDTR->Late); ?></td>
-                            <td><?php echo e($empDTR->Undertime); ?></td>
+                            <td><?php echo e(number_format($empDTR->Late,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Undertime,2)); ?></td>
                             
                             
                             <td><div style = "flex; justify-content: center; gap: 1px;">

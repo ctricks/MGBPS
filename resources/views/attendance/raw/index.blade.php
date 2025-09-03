@@ -115,11 +115,11 @@
                         <th>DType</th>
                         <th>Fin In</th>
                         <th>Fin Out</th>
-                        <th>W Hrs</th>
+                        <th>Work</th>
                         <th>ND</th>
                         {{-- <th>ND8 Hours</th> --}}
                         <th>OT</th>
-                        {{-- <th>OT8 Hours</th> --}}
+                        <th>Leave</th>
                         <th>Absent</th>
                         <th>Late</th>
                         <th>Utime</th>
@@ -143,16 +143,17 @@
                             <td>{{ $empDTR->RestDay }}</td>
                             <td>{{ $empDTR->Final_IN }}</td>
                             <td>{{ $empDTR->Final_OUT }}</td>
-                            <td>{{ number_format($empDTR->WorkingHours,2) }}</td>
+                            <td>{{ number_format($empDTR->WorkingHours,2) }}</td>                  
                             <td>{{ $empDTR->NDHours }}</td>
                             <td>{{ $empDTR->OTHours }}</td>
+                            <td>{{ $empDTR->Leave }}</td>
                             @if($empDTR->Absent == 8)
                                 <td style="color:red;">{{ $empDTR->Absent }}</td>
                             @else
                                 <td>{{ $empDTR->Absent }}</td>
                             @endif
-                            <td>{{ $empDTR->Late }}</td>
-                            <td>{{ $empDTR->Undertime }}</td>
+                            <td>{{ number_format($empDTR->Late,2) }}</td>
+                            <td>{{ number_format($empDTR->Undertime,2) }}</td>
                             {{-- <td>{{ $empDTR->WorkingHours }}</td>
                             <td>{{ $empDTR->WorkingHours }}</td> --}}
                             

@@ -156,13 +156,23 @@ class DailyTimeRecordController extends Controller
                         0 as 'NDHours',
                         0 as 'ND8Hours',
                         0 as 'OTHours',
+                        0 as 'Leave',
                         0 as 'OT8Hours',
                         case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
 								  ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
 								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then
                         8 else 0 end as 'Absent',
-                        0 as 'Late',
-                        0 as 'Undertime'
+                        Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
+							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
+						when dws.GracePeriodMins > 0  then
+							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108)) / 60.0 * -1
+						end as 'Late',
+                        (case when dws.GracePeriodMins > 0 then
+						  DATEDIFF(HOUR,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
+						when dws.GracePeriodMins = 0 and dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+						  DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1
+						else 0 
+						end) as 'Undertime'
                         from daily_time_records dtr left join
                         employees emp on dtr.employee_code = emp.employeenumber
                         left join defaultworkschedule dws on emp.WorkDays = dws.id
