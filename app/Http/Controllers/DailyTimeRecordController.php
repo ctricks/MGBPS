@@ -164,14 +164,13 @@ class DailyTimeRecordController extends Controller
                         8 else 0 end as 'Absent',
                         Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
 							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
-						when dws.GracePeriodMins > 0  then
-							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108)) / 60.0 * -1
+						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+							DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)) / 60.0
+						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+						    0							
 						end as 'Late',
-                        (case when dws.GracePeriodMins > 0 then
-						  DATEDIFF(HOUR,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
-						when dws.GracePeriodMins = 0 and dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-						  DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1
-						else 0 
+                        (case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+						  DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1 
 						end) as 'Undertime'
                         from daily_time_records dtr left join
                         employees emp on dtr.employee_code = emp.employeenumber

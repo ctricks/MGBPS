@@ -42,6 +42,14 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
+                                    <label for="lblRemarks" class="form-label">Grace Period:*</label>
+                                    <input type="number" class="form-control" id="GracePeriod" name="GracePeriod"
+                                        placeholder="Enter Grace Period" value="{{ $data->GracePeriodMins }}" required>
+                                    <x-error>GracePeriod</x-error>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
                                     <label for="isActive" class="form-label">Active:*</label>
                                     <select name="isActive" id="isActive" class="form-control" required>
                                         <option value="" selected disabled>Select Record Status</option>
@@ -49,14 +57,6 @@
                                         <option value="0">In-active</option>
                                     </select>
                                     <x-error>isActive</x-error>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="lblRemarks" class="form-label">Grace Period:*</label>
-                                    <input type="number" class="form-control" id="GracePeriod" name="GracePeriod"
-                                        placeholder="Enter Grace Period" value="{{ $data->GracePeriodMins }}" required>
-                                    <x-error>GracePeriod</x-error>
                                 </div>
                             </div>
                         </div>
