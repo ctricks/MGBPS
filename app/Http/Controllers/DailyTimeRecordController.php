@@ -59,61 +59,7 @@ class DailyTimeRecordController extends Controller
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
 
-        $data = DB::select(
-            // "Select 
-            //     dtr.id,dtr.employee_code,
-            //     concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,
-            //     dtr.date,DATENAME(WEEKDAY,dtr.date) as day,
-            //     CONVERT(Varchar(5),dtr.in_1,108) as in_1,
-            //     CONVERT(Varchar(5),dtr.out_1,108) as out_1,
-            //     CONVERT(Varchar(5),dtr.in_2,108) as in_2,
-            //     CONVERT(Varchar(5),dtr.out_2,108) as out_2,
-            //     CONVERT(Varchar(5),dtr.in_3,108) as in_3,
-            //     CONVERT(Varchar(5),dtr.out_3,108) as out_3
-            // from 
-            //     daily_time_records dtr left join employees emp on dtr.employee_code = emp.employeenumber"
-            // //where 
-            // //    dtr.date between '". $firstDayOfMonth ."' and '" . $lastDayOfMonth ."'
-            //     ." order by 
-            //         emp.lastname,dtr.employee_code,dtr.date desc"
-            "
-            select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,Datename(WEEKDAY,dtr.date) as 'Day',
-                        (Case when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'Working Day'
-                                when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RestDay' 
-                                else '' end)as RestDay,
-                        convert(varchar, dtr.in_1, 108) as 'TimeIN',convert(varchar, dtr.in_2, 108) as 'TimeIN_2',convert(varchar, dtr.in_3, 108) as 'TimeIN_3',
-                        convert(varchar, dtr.out_1, 108) as 'TimeOUT',convert(varchar, dtr.out_2, 108) as 'TimeOUT_2',convert(varchar, dtr.out_3, 108) as 'TimeOUT_3',
-                        convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) as 'Final_IN',
-                        convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) as 'Final_OUT',
-                        (case when dws.GracePeriodMins > 0 then 
-                            convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end) as 'StartTime',
-                            convert(varchar,dws.EndTime,108) as 'EndTime',
-                                (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                                convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
-                                then 8 
-                                when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                                convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
-                                then 
-                                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
-                        when dws.GracePeriodMins = 0 or dws.GracePeriodMins is NULL then
-                            Case when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                                DATEDIFF(minute,dws.EndTime, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60 * -1
-                            when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                                DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108), CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60.0 * -1
-                            end
-                        end) as 'WorkingHours',
-                        0 as 'NDHours',
-                        0 as 'ND8Hours',
-                        0 as 'OTHours',
-                        0 as 'OT8Hours',
-                        0 as 'Absent',
-                        0 as 'Late',
-                        0 as 'Undertime'
-                        from daily_time_records dtr left join
-                        employees emp on dtr.employee_code = emp.employeenumber
-                        left join defaultworkschedule dws on emp.WorkDays = dws.id
-            "
-        );
+        $data = DB::select($this->DTRQuery(''));
 
         // if($RawAttendanceData->count() == 0)
         // {
@@ -171,29 +117,20 @@ class DailyTimeRecordController extends Controller
 
         if($cutoffData[0] != null)
         {
+            $criteria = "where
+                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
+                        and dtr.employee_code = ". $request->employeecode ."";
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
-            $data = DB::select(
-                        // "Select 
-                        //     dtr.id,dtr.employee_code,
-                        //     concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,
-                        //     dtr.date,DATENAME(WEEKDAY,dtr.date) as day,
-                        //     CONVERT(Varchar(5),dtr.in_1,108) as in_1,
-                        //     CONVERT(Varchar(5),dtr.out_1,108) as out_1,
-                        //     CONVERT(Varchar(5),dtr.in_2,108) as in_2,
-                        //     CONVERT(Varchar(5),dtr.out_2,108) as out_2,
-                        //     CONVERT(Varchar(5),dtr.in_3,108) as in_3,
-                        //     CONVERT(Varchar(5),dtr.out_3,108) as out_3
-                        // from 
-                        //     daily_time_records dtr left join employees emp on dtr.employee_code = emp.employeenumber
-                        // where 
-                        //     dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
-                        //     and dtr.employee_code = ". $request->employeecode ."
-                        //     order by 
-                        //         emp.lastname,dtr.employee_code,dtr.date desc"
-                        "
-                        select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,Datename(WEEKDAY,dtr.date) as 'Day',
-                        (Case when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'Working Day'
-                                when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RestDay' 
+            $data = DB::select($this->DTRQuery($criteria));
+        }
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
+    }
+    private function DTRQuery($criteria)
+    {
+        return "
+            select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,LEFT(Datename(WEEKDAY,dtr.date),3) as 'Day',
+                        (Case when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
+                                when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
                                 else '' end)as RestDay,
                         convert(varchar, dtr.in_1, 108) as 'TimeIN',convert(varchar, dtr.in_2, 108) as 'TimeIN_2',convert(varchar, dtr.in_3, 108) as 'TimeIN_3',
                         convert(varchar, dtr.out_1, 108) as 'TimeOUT',convert(varchar, dtr.out_2, 108) as 'TimeOUT_2',convert(varchar, dtr.out_3, 108) as 'TimeOUT_3',
@@ -220,19 +157,16 @@ class DailyTimeRecordController extends Controller
                         0 as 'ND8Hours',
                         0 as 'OTHours',
                         0 as 'OT8Hours',
-                        0 as 'Absent',
+                        case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
+								  ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
+								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then
+                        8 else 0 end as 'Absent',
                         0 as 'Late',
                         0 as 'Undertime'
                         from daily_time_records dtr left join
                         employees emp on dtr.employee_code = emp.employeenumber
                         left join defaultworkschedule dws on emp.WorkDays = dws.id
-                    where
-                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
-                        and dtr.employee_code = ". $request->employeecode .""
-                        
-                    );
-        }
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
+            " . $criteria;
     }
     public function getEmployeeDTRData($empnum)
     {

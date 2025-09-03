@@ -141,6 +141,15 @@
                     </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?php echo e(route('attendance.workschedule.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.workschedule.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Work Schedule
+                    </p>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nav-item">

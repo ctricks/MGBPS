@@ -173,13 +173,14 @@ unset($__sessionArgs); ?>
                         <th>ID</th>
                         <th>Date</th>
                         <th>Day</th>
-                        <th>EmployeeCode</th>
+                        <th>EmpCode</th>
                         <th>In_1</th>
                         <th>Out_1</th>
                         <th>In_2</th>
                         <th>Out_2</th>
                         <th>In_3</th>
                         <th>Out_3</th>
+                        <th>DType</th>
                         <th>Fin In</th>
                         <th>Fin Out</th>
                         <th>W Hrs</th>
@@ -207,12 +208,17 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->TimeOUT_2); ?></td>
                             <td><?php echo e($empDTR->TimeIN_3); ?></td>
                             <td><?php echo e($empDTR->TimeOUT_3); ?></td>
+                            <td><?php echo e($empDTR->RestDay); ?></td>
                             <td><?php echo e($empDTR->Final_IN); ?></td>
                             <td><?php echo e($empDTR->Final_OUT); ?></td>
-                            <td><?php echo e($empDTR->WorkingHours); ?></td>
+                            <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
                             <td><?php echo e($empDTR->NDHours); ?></td>
                             <td><?php echo e($empDTR->OTHours); ?></td>
-                            <td><?php echo e($empDTR->Absent); ?></td>
+                            <?php if($empDTR->Absent == 8): ?>
+                                <td style="color:red;"><?php echo e($empDTR->Absent); ?></td>
+                            <?php else: ?>
+                                <td><?php echo e($empDTR->Absent); ?></td>
+                            <?php endif; ?>
                             <td><?php echo e($empDTR->Late); ?></td>
                             <td><?php echo e($empDTR->Undertime); ?></td>
                             
@@ -224,7 +230,7 @@ unset($__sessionArgs); ?>
                             </td>
                             <td>
                                 <div>
-                                <form action="<?php echo e(route('attendance.raw.index', encrypt($empDTR->id))); ?>" method="POST"
+                                <form action="<?php echo e(route('attendance.raw.destroy', encrypt($empDTR->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     <?php echo method_field('DELETE'); ?>
                                     <?php echo csrf_field(); ?>
@@ -232,7 +238,6 @@ unset($__sessionArgs); ?>
                                 </form>
                             </div>
                             </td>
-                            
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
@@ -265,7 +270,6 @@ unset($__sessionArgs); ?>
                             success: function(response) {
                                 var len = 0;
                                 if (response.length > 0) {
-                                    $('#cutoff').find('option').remove().end();
                                     response.forEach(response => {
                                         // Create a new option
                                         const newOption = new Option(response.StartDate +
@@ -285,6 +289,8 @@ unset($__sessionArgs); ?>
                     $('#cutoff').change(function() {
                         // Cutoff id
                         var id = $(this).val();
+                        if(id > 0)
+                        {
                         //$('#employeecode').find('option').remove().end();
                         // AJAX request 
                         $.ajax({
@@ -295,24 +301,32 @@ unset($__sessionArgs); ?>
                                 var len = 0;
                                 if (response[0].employee_code != null) {
                                     len = response[0].employee_code.length;
+                                    $('#employeecode').find('option').remove().end();
                                 }
                                 if (len > 0) {
-                                    const selectElement = document.getElementById('employeecode');
-                                    $('#employeecode').find('option').remove().end();
-                                    // Loop through the data and create <option> elements
                                     response.forEach(response => {
-                                        const option = document.createElement('option');
-                                        option.value = response
-                                        .employee_code; // Set the value attribute
-                                        option.textContent = response
-                                        .employee_code; // Set the display text
-                                        selectElement.appendChild(
-                                        option); // Append the option to the select
+                                        // Create a new option
+                                        const newOption = new Option(response.employee_code, response.employee_code);
+                                        // Append the new option to the dropdown
+                                        $('#employeecode').append(newOption);
                                     });
+                                    
+                                    // const selectElement = document.getElementById('employeecode');
+                                    // // Loop through the data and create <option> elements
+                                    // response.forEach(response => {
+                                    //     //const option = document.createElement('option');
+                                    //     option.value = response
+                                    //     .employee_code; // Set the value attribute
+                                    //     option.textContent = response
+                                    //     .employee_code; // Set the display text
+                                    //     selectElement.appendChild(
+                                    //     option); // Append the option to the select
+                                    // });
                                 }
 
                             }
                         });
+                        }
                     });
                 });
             </script>

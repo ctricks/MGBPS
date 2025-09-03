@@ -174,6 +174,15 @@
                     </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('attendance.workschedule.index') }}"
+                        class="nav-link {{ Route::is('attendance.workschedule.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        Work Schedule
+                    </p>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nav-item">

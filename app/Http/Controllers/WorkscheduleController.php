@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\workschedule;
+use App\Models\Restday;
+use App\Models\Employee;
+use App\Models\WorkSchedule;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class WorkscheduleController extends Controller
 {
@@ -13,6 +20,8 @@ class WorkscheduleController extends Controller
     public function index()
     {
         //
+        $data = WorkSchedule::orderBy('id','DESC')->get();
+        return view('attendance.workschedule.index',compact('data'));
     }
 
     /**
@@ -21,6 +30,8 @@ class WorkscheduleController extends Controller
     public function create()
     {
         //
+        $data = Employee::orderBy('id','ASC')->get();
+        return view('attendance.workschedule.create',compact('data'));
     }
 
     /**
@@ -29,6 +40,21 @@ class WorkscheduleController extends Controller
     public function store(Request $request)
     {
         //
+        WorkSchedule::updateOrCreate(
+            [
+                'KeySchedule'=>$request->KeySchedule,
+                'StartTime'=>$request->starttime,
+                'EndTime'=>$request->endtime,
+                'GracePeriodMins'=>$request->GracePeriod,
+                'isActive'=>$request->isActive,
+            ],
+        );
+        if($request->id){
+            $msg = 'Work Schedule updated successfully.';
+        }else{
+            $msg = 'Work Schedule created successfully.';
+        }
+        return redirect()->route('attendance.workschedule.index')->with('success',$msg);
     }
 
     /**
@@ -42,9 +68,12 @@ class WorkscheduleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(workschedule $workschedule)
+    public function edit($id)
     {
         //
+        $data = WorkSchedule::where('id',decrypt($id))->first();
+      
+        return view('attendance.workschedule.edit',compact('data'));
     }
 
     /**
@@ -53,13 +82,28 @@ class WorkscheduleController extends Controller
     public function update(Request $request, workschedule $workschedule)
     {
         //
+        $request->validate([
+            "KeySchedule"=>'required','string','max:255',
+        ]);
+
+        $skedday = WorkSchedule::find($request->id);
+        $skedday->KeySchedule = $request->KeySchedule; 
+        $skedday->StartTime = $request->starttime;
+        $skedday->EndTime = $request->endtime;
+        $skedday->GracePeriodMins = $request->GracePeriod;
+        $skedday->isActive = $request->isActive;
+        $skedday->save();
+        
+        return redirect()->route('attendance.workschedule.index')->with('Success','Restday updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(workschedule $workschedule)
+    public function destroy($id)
     {
         //
+        WorkSchedule::where('id',decrypt($id))->delete();
+        return redirect()->back()->with('success','Schedule deleted successfully.');
     }
 }
