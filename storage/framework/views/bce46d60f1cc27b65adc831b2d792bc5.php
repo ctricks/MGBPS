@@ -262,7 +262,7 @@ unset($__sessionArgs); ?>
                     $('#monthfilter').change(function() {
                         // Cutoff id
                         var id = $(this).val();
-                        //$('#employeecode').find('option').remove().end();
+                        $('#cutoff').find('option').remove().end();
                         // AJAX request 
                         $.ajax({
                             url: '/get-cutoff/' + id,

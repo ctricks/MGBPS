@@ -1,24 +1,64 @@
 <x-admin>
-    @section('title', 'Create Leave Type')
+    @section('title', 'Create Leave')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Create Leave Type</h3>
+            <h3 class="card-title">Create Leave</h3>
             <div class="card-tools"><a href="{{ route('attendance.leavetype.index') }}" class="btn btn-sm btn-dark">Back</a></div>
         </div>
         <div class="card-body">
-            <form action="{{ route('attendance.leavetype.store') }}" method="POST">
+            <form action="{{ route('attendance.leave.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="empnumber" class="form-label">Leave Type Name:*</label>
-                            <input type="text" class="form-control" id="leavetype" name="leavetype"
-                                placeholder="Enter Leave Type" required >
-                                <x-error>KeySchedule</x-error>
+                            <label for="lblleavetype" class="form-label">Applied For:*</label>
+                            <select name="leavetype" id="leavetype" class="form-control" required>
+                                <option value="" selected disabled>Select a Leave Type</option>
+                                @foreach ($LeaveType as $lt)
+                                    <option value="{{ $lt->id }}">{{ $lt->LeaveType }} ( {{ $lt->Description }} )</option>                                
+                                @endforeach
+                            </select>
+                            <x-error>leavetype</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                     </div>
+                    <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="employeecode" class="form-label">Employee Code:*</label>
+                             <select name="empcode" id="empcode" class="form-control" required>
+                                <option value="" selected disabled>Select Employee Code</option>
+                                @foreach ($employee as $emp)
+                                    <option value="{{ $emp->id }}">({{ $emp->employeenumber }}) - {{ $emp->lastname.','.$emp->firstname.' '.$emp->middlename }} </option>                                
+                                @endforeach
+                            </select>    
+                            <x-error>employeecode</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="name">Firstname:</label>
+                            <input type="string" class="form-control" id="firstname" name="firstname"
+                                placeholder="Enter Firstname" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="name">Middlename:*</label>
+                            <input type="string" class="form-control" id="middlename" name="middlename"
+                                placeholder="Enter Middlename" disabled >
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="name">Lastname:*</label>
+                            <input type="string" class="form-control" id="lastname" name="lastname"
+                                placeholder="Enter Lastname" disabled >
+                        </div>
+                    </div>
+                    
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label for="name">Description:*</label>
@@ -26,7 +66,21 @@
                                 placeholder="Enter Description" required >
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="name">Start Date:*</label>
+                            <input type="date" class="form-control" id="StartDate" name="StartDate"
+                                placeholder="Enter Date" required >
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="name">End Date:*</label>
+                            <input type="date" class="form-control" id="EndDate" name="EndDate"
+                                placeholder="Enter Date" required >
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <label for="isActive" class="form-label">Active:*</label>
                             <select name="isActive" id="isActive" class="form-control" required>

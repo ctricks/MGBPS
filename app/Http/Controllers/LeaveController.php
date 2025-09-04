@@ -3,15 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use App\Models\LeaveType;
+use App\Models\Employee;
 use App\Http\Requests\StoreLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
+use Illuminate\Support\Facades\DB;
 
 class LeaveController extends Controller
 {
    public function index()
     {
         //
-        $data = LeaveType::orderBy('id','DESC')->get();
+        //$data = Leave::orderBy('id','DESC')->get();
+        $data = DB::raw(
+            "select  
+                l.id,l.EmpCode,e.lastname + ',' + e.firstname as 'EmployeeName',l.LeaveType,lt.Description,l.StartDate,l.EndDate,l.ApprovedDate,
+                u.name as 'ApprovedBy',l.Status
+            from 
+                leaves l
+            left join employees e on l.EmpCode = e.employeenumber
+            left join leave_type lt on l.LeaveType = lt.LeaveType 
+            left join users u on l.ApprovedBy = u.id
+            order by 
+                id desc;"
+        );
+    
         return view('attendance.leave.index', compact('data'));
     }
 
@@ -21,7 +37,10 @@ class LeaveController extends Controller
     public function create()
     {
         //
-        return view('attendance.leave.create');
+        $LeaveType = LeaveType::orderBy('id','DESC')->get();
+        $employee = Employee::orderBy('id','DESC')->get();
+        
+        return view('attendance.leave.create',compact('LeaveType','employee'));
     }
 
     /**

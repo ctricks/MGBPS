@@ -32,20 +32,31 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
                         <th>Leave Type</th>
-                        <th>Description</th>
+                        <th>Leave</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Approved By</th>
+                        <th>Approved Date</th>
                         <th>Status</th>
                         <th>Action</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $ltDet)
+                    @foreach ($data as $lvDet)
                         <tr>
                             <td>{{ $ltDet->id }}</td>
+                            <td>{{ $ltDet->EmpCode}}</td>
+                            <td>{{ $ltDet->EmployeeName }}</td>
                             <td>{{ $ltDet->LeaveType }}</td>
                             <td>{{ $ltDet->Description }}</td>
-                            <td>{{ $ltDet->isActive == 1 ? "Active":"In-active" }}</td>
+                            <td>{{ $ltDet->StartDate }}</td>
+                            <td>{{ $ltDet->EndDate }}</td>
+                            <td>{{ $ltDet->ApprovedDate }}</td>
+                            <td>{{ $ltDet->ApprovedBy }}</td>
+                            <td>{{ $ltDet->Status }}</td>
                             <td><a href="{{ route('attendance.leave.edit', encrypt($ltDet->id)) }}"
                                     class="btn btn-sm btn-primary">Edit</a></td>
                             <td>

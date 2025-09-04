@@ -22,6 +22,7 @@ return new class extends Migration
             $table->datetime('ApprovedDate');
             $table->integer('ApprovedBy');
             $table->string('Status');
+            $table->integer('isActive')->default(1);
             $table->timestamps();
         });
     }

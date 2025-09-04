@@ -160,8 +160,8 @@
                     </a>
                 </li>
                  <li class="nav-item">
-                    <a href="<?php echo e(route('attendance.workschedule.index')); ?>"
-                        class="nav-link <?php echo e(Route::is('attendance.workschedule.index') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('attendance.leave.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.leave.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-building "></i>
                     <p style = "text-indent:15em;">
                         Leave Management

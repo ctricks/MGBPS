@@ -55,7 +55,7 @@ class DailyTimeRecordController extends Controller
         
         if(isset($cutOFF))
         {
-            $this->createcufoff();
+            $this->createcufoff('');
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
 
@@ -82,7 +82,9 @@ class DailyTimeRecordController extends Controller
     public function getCutoffData($monthnum)
     {
         $monthName = Carbon::create()->month($monthnum)->format('F');
-    
+        
+        $this->createcufoff($monthName);
+
          $data = DB::select(
                         "
                         SELECT [id]
@@ -109,11 +111,10 @@ class DailyTimeRecordController extends Controller
 
         if(isset($cutOFF))
         {
-            $this->createcufoff();
+            $this->createcufoff('');
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
         
-       
 
         if($cutoffData[0] != null)
         {
@@ -194,32 +195,52 @@ class DailyTimeRecordController extends Controller
 
         return response()->json($data);
     }
-    public function createcufoff()
+    public function createcufoff($monthName)
     {
-        $currentMonthName = Carbon::now()->format('F');
-        $firstDayOfMonth = Carbon::now()->startOfMonth();
-        $startOfMonth = Carbon::now()->startOfMonth()->toDateTimeString();
-        $firstCutoff = $firstDayOfMonth->addDays(14);
-        
-        Cutoff::updateOrCreate(
-            [
-                'CutoffKey'=>$currentMonthName . "-" . $firstDayOfMonth->format('Y-d-m'),
-                'Month'=>$currentMonthName,
-                'StartDate'=>$startOfMonth,
-                'EndDate'=>$firstCutoff,
-            ],
-        );
-        $secondCOStartDay = $firstCutoff->addDays(1);
-        $lastDayOfMonth = Carbon::now()->lastOfMonth();
+        try{
 
-        Cutoff::updateOrCreate(
-            [
-                'CutoffKey'=>$currentMonthName . "-" . $secondCOStartDay->format('Y-d-m'),
-                'Month'=>$currentMonthName,
-                'StartDate'=>$secondCOStartDay,
-                'EndDate'=>$lastDayOfMonth,
-            ],
-        );
+            
+            $currentMonthName = Carbon::now()->format('F');
+            $firstDayOfMonth = Carbon::now()->startOfMonth();
+            $startOfMonth = Carbon::now()->startOfMonth()->toDateTimeString();
+            $firstCutoff = $firstDayOfMonth->addDays(14);
+            
+            if($monthName != '')
+            {
+                $currentMonthName = $monthName;
+                $firstDayOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->firstOfMonth();
+                $startOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->startOfMonth()->toDateTimeString();
+                $firstCutoff = $firstDayOfMonth->addDays(14);
+            }
 
+            Cutoff::updateOrCreate(
+                [
+                    'CutoffKey'=>$currentMonthName . "-" . $firstDayOfMonth->format('Y-d-m'),
+                    'Month'=>$currentMonthName,
+                    'StartDate'=>$startOfMonth,
+                    'EndDate'=>$firstCutoff,
+                ],
+            );
+            $secondCOStartDay = $firstCutoff->addDays(1);
+            $lastDayOfMonth = Carbon::now()->lastOfMonth();
+
+            if($monthName != '')
+            {
+                $secondCOStartDay = $firstCutoff;
+                $lastDayOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->lastOfMonth();
+            }
+
+            Cutoff::updateOrCreate(
+                [
+                    'CutoffKey'=>$currentMonthName . "-" . $secondCOStartDay->format('Y-d-m'),
+                    'Month'=>$currentMonthName,
+                    'StartDate'=>$secondCOStartDay,
+                    'EndDate'=>$lastDayOfMonth,
+                ],
+            );
+        }catch(Exception $e)
+        {
+            return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());
+        }
     }
 }
