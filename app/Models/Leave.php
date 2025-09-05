@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Leave extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'LeaveKey','EmpCode','LeaveType','Remarks','StartDate','EndDate','Status','isActive'];
 }

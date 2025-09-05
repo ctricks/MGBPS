@@ -5,6 +5,25 @@
             <h3 class="card-title">Create Leave</h3>
             <div class="card-tools"><a href="{{ route('attendance.leavetype.index') }}" class="btn btn-sm btn-dark">Back</a></div>
         </div>
+          <div class="card-header">
+  
+            @session('success')
+                <div class="alert alert-success" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+  
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif    
+        </div>
         <div class="card-body">
             <form action="{{ route('attendance.leave.store') }}" method="POST">
                 @csrf
@@ -37,7 +56,7 @@
                             <x-error>employeecode</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    {{-- <div class="col-lg-3">
                         <div class="form-group">
                             <label for="name">Firstname:</label>
                             <input type="string" class="form-control" id="firstname" name="firstname"
@@ -57,9 +76,9 @@
                             <input type="string" class="form-control" id="lastname" name="lastname"
                                 placeholder="Enter Lastname" disabled >
                         </div>
-                    </div>
+                    </div> --}}
                     
-                    <div class="col-lg-6">
+                    <div class="col-lg-9">
                         <div class="form-group">
                             <label for="name">Description:*</label>
                             <input type="string" class="form-control" id="description" name="description"
@@ -71,6 +90,7 @@
                             <label for="name">Start Date:*</label>
                             <input type="date" class="form-control" id="StartDate" name="StartDate"
                                 placeholder="Enter Date" required >
+                            <x-error>StartDate</x-error>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -78,6 +98,7 @@
                             <label for="name">End Date:*</label>
                             <input type="date" class="form-control" id="EndDate" name="EndDate"
                                 placeholder="Enter Date" required >
+                                <x-error>EndDate</x-error>
                         </div>
                     </div>
                     <div class="col-lg-3">

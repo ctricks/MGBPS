@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Leave;
 use App\Models\LeaveType;
 use App\Models\Employee;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LeaveController extends Controller
 {
@@ -49,12 +51,25 @@ class LeaveController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "leavetype"=>'required','string','max:255'
+            "leavetype"=>'required','string','max:255',
         ]);
 
-        $leavetype = LeaveType::create([
+        $Sdate = Carbon::parse($request->StartDate)->format('M d, Y');
+        $Edate = Carbon::parse($request->EndDate)->format('M d, Y');
+        
+        $result = $Sdate > $Edate;
+
+        if($result)
+             return redirect()->route('attendance.leave.create')->with('failed','End Date must be greater than Start.');
+
+        $leavetype = Leave::create([
+            'LeaveKey' =>$request->leavetype.$request->empcode.$request->StartDate,
+            'EmpCode'=>$request->empcode,
             'LeaveType'=>$request->leavetype,
-            'Description'=>$request->description,
+            'Remarks'=>$request->description,
+            'StartDate'=>$request->StartDate,
+            'EndDate'=>$request->EndDate,
+            'Status'=>'For Approval',
             'isActive'=>$request->isActive,
         ]);
 

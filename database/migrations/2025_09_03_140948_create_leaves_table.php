@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('Remarks', 100)->nullable();
             $table->datetime('StartDate');
             $table->datetime('EndDate');
-            $table->datetime('ApprovedDate');
-            $table->integer('ApprovedBy');
+            $table->datetime('ApprovedDate')->nullable();
+            $table->integer('ApprovedBy')->nullable();
             $table->string('Status');
             $table->integer('isActive')->default(1);
             $table->timestamps();

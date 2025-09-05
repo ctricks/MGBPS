@@ -14,6 +14,33 @@
             <h3 class="card-title">Create Leave</h3>
             <div class="card-tools"><a href="<?php echo e(route('attendance.leavetype.index')); ?>" class="btn btn-sm btn-dark">Back</a></div>
         </div>
+          <div class="card-header">
+  
+            <?php $__sessionArgs = ['success'];
+if (session()->has($__sessionArgs[0])) :
+if (isset($value)) { $__sessionPrevious[] = $value; }
+$value = session()->get($__sessionArgs[0]); ?>
+                <div class="alert alert-success" role="alert"> 
+                    <?php echo e($value); ?>
+
+                </div>
+            <?php unset($value);
+if (isset($__sessionPrevious) && !empty($__sessionPrevious)) { $value = array_pop($__sessionPrevious); }
+if (isset($__sessionPrevious) && empty($__sessionPrevious)) { unset($__sessionPrevious); }
+endif;
+unset($__sessionArgs); ?>
+  
+            <?php if($errors->any()): ?>
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+            <?php endif; ?>    
+        </div>
         <div class="card-body">
             <form action="<?php echo e(route('attendance.leave.store')); ?>" method="POST">
                 <?php echo csrf_field(); ?>
@@ -58,7 +85,7 @@
                              <select name="empcode" id="empcode" class="form-control" required>
                                 <option value="" selected disabled>Select Employee Code</option>
                                 <?php $__currentLoopData = $employee; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $emp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($emp->id); ?>">(<?php echo e($emp->employeecode); ?>) - <?php echo e($emp->lastname.','.$emp->firstname.' '.$emp->middlename); ?> </option>                                
+                                    <option value="<?php echo e($emp->id); ?>">(<?php echo e($emp->employeenumber); ?>) - <?php echo e($emp->lastname.','.$emp->firstname.' '.$emp->middlename); ?> </option>                                
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>    
                             <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
@@ -82,29 +109,9 @@
 <?php endif; ?>
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label for="name">Firstname:</label>
-                            <input type="string" class="form-control" id="firstname" name="firstname"
-                                placeholder="Enter Firstname" disabled>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label for="name">Middlename:*</label>
-                            <input type="string" class="form-control" id="middlename" name="middlename"
-                                placeholder="Enter Middlename" disabled >
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label for="name">Lastname:*</label>
-                            <input type="string" class="form-control" id="lastname" name="lastname"
-                                placeholder="Enter Lastname" disabled >
-                        </div>
-                    </div>
                     
-                    <div class="col-lg-6">
+                    
+                    <div class="col-lg-9">
                         <div class="form-group">
                             <label for="name">Description:*</label>
                             <input type="string" class="form-control" id="description" name="description"
@@ -116,6 +123,25 @@
                             <label for="name">Start Date:*</label>
                             <input type="date" class="form-control" id="StartDate" name="StartDate"
                                 placeholder="Enter Date" required >
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>StartDate <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -123,6 +149,25 @@
                             <label for="name">End Date:*</label>
                             <input type="date" class="form-control" id="EndDate" name="EndDate"
                                 placeholder="Enter Date" required >
+                                <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>EndDate <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
                         </div>
                     </div>
                     <div class="col-lg-3">

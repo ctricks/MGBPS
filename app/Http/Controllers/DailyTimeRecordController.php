@@ -198,8 +198,6 @@ class DailyTimeRecordController extends Controller
     public function createcufoff($monthName)
     {
         try{
-
-            
             $currentMonthName = Carbon::now()->format('F');
             $firstDayOfMonth = Carbon::now()->startOfMonth();
             $startOfMonth = Carbon::now()->startOfMonth()->toDateTimeString();
