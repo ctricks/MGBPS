@@ -15,7 +15,9 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::resource('raw',DailyTimeRecordController::class);
         Route::resource('leavetype',LeaveTypeController::class);
         Route::resource('leave',LeaveController::class);
-        Route::post('restdayimport', [RestdayController::class,'import'])->name('restday.import');
+        Route::patch('leaveapprove/{id}',[LeaveController::class,'approve'])->name('leave.approve');
+        Route::patch('leavedecline/{id}',[LeaveController::class,'decline'])->name('leave.decline');
+        Route::get('restdayimport', [RestdayController::class,'import'])->name('restday.import');
         Route::post('rawattendanceimport', [DailyTimeRecordController::class,'import'])->name('rawattendance.import');
         Route::post('rawattendancelist', [DailyTimeRecordController::class,'getemployeelist'])->name('rawattendance.list');
         Route::get('rawattendancedownloadtemplate', [DailyTimeRecordController::class,'downloadFileTemplate'])->name('rawattendance.downloadtemplate');       

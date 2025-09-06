@@ -10,6 +10,7 @@ use App\Http\Requests\StoreLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LeaveController extends Controller
 {
@@ -17,19 +18,20 @@ class LeaveController extends Controller
     {
         //
         //$data = Leave::orderBy('id','DESC')->get();
-        $data = DB::raw(
+        $data = DB::select(
             "select  
-                l.id,l.EmpCode,e.lastname + ',' + e.firstname as 'EmployeeName',l.LeaveType,lt.Description,l.StartDate,l.EndDate,l.ApprovedDate,
+                l.id,l.EmpCode,e.lastname + ',' + e.firstname as 'EmployeeName',lt.LeaveType,lt.Description,l.StartDate,l.EndDate,l.ApprovedDate,
                 u.name as 'ApprovedBy',l.Status
             from 
                 leaves l
             left join employees e on l.EmpCode = e.employeenumber
-            left join leave_type lt on l.LeaveType = lt.LeaveType 
+            left join leave_type lt on l.LeaveType = lt.id 
             left join users u on l.ApprovedBy = u.id
             order by 
                 id desc;"
         );
-    
+        
+
         return view('attendance.leave.index', compact('data'));
     }
 
@@ -60,8 +62,8 @@ class LeaveController extends Controller
         $result = $Sdate > $Edate;
 
         if($result)
-             return redirect()->route('attendance.leave.create')->with('failed','End Date must be greater than Start.');
-
+            return redirect()->route('attendance.leave.index')->with('failed','Leave created failed - Unable to save your Leave. Please check Dates.');
+            
         $leavetype = Leave::create([
             'LeaveKey' =>$request->leavetype.$request->empcode.$request->StartDate,
             'EmpCode'=>$request->empcode,
@@ -123,5 +125,25 @@ class LeaveController extends Controller
         //
         Leave::where('id',decrypt($id))->delete();
         return redirect()->back()->with('success','Leave deleted successfully.');
+    }
+    public function approve(Request $request,$id)
+    {
+        $leave = Leave::find(decrypt($id));
+        $leave->status = "Approved";
+        $leave->ApprovedBy =$request->user()->id;
+        $leave->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
+        $leave->save();
+
+        return redirect()->back()->with('success','Leave Approved successfully.');
+    }
+    public function decline(Request $request,$id)
+    {
+        $leave = Leave::find(decrypt($id));
+        $leave->status = "Declined";
+        $leave->ApprovedBy =$request->user()->id;
+        $leave->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
+        $leave->save();
+
+        return redirect()->back()->with('success','Leave Declined successfully.');
     }
 }

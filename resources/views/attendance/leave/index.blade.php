@@ -15,6 +15,11 @@
                     {{ $value }}
                 </div>
             @endsession
+            @session('failed')
+                <div class="alert alert-danger" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
   
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -38,14 +43,14 @@
                         <th>Leave</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Approved By</th>
-                        <th>Approved Date</th>
+                        <th>Approved/Decline Date</th>
+                        <th>Approved/Decline By</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th width = "250px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $lvDet)
+                    @foreach ($data as $ltDet)
                         <tr>
                             <td>{{ $ltDet->id }}</td>
                             <td>{{ $ltDet->EmpCode}}</td>
@@ -56,16 +61,38 @@
                             <td>{{ $ltDet->EndDate }}</td>
                             <td>{{ $ltDet->ApprovedDate }}</td>
                             <td>{{ $ltDet->ApprovedBy }}</td>
-                            <td>{{ $ltDet->Status }}</td>
-                            <td><a href="{{ route('attendance.leave.edit', encrypt($ltDet->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a></td>
-                            <td>
+                            @if($ltDet->Status == "Declined")
+                                <td style="color:red;">{{ $ltDet->Status }}</td>
+                            @else
+                                <td>{{ $ltDet->Status }}</td>
+                            @endif
+                            {{-- <td>{{ $ltDet->Status }}</td> --}}
+                            <td><div style="display:inline-block;margin-right:5px;"><a href="{{ route('attendance.leave.edit', encrypt($ltDet->id)) }}"
+                                    class="btn btn-sm btn-primary">Edit</a></div>
+                                <div style="display:inline-block;margin-right:5px;">
                                 <form action="{{ route('attendance.leave.destroy', encrypt($ltDet->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                 </form>
+                                </div>
+                                <div style="display:inline-block;margin-right:5px;">
+                                <form action="{{ route('attendance.leave.approve', encrypt($ltDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to approve?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                </form>
+                                </div>
+                                <div style="display:inline-block;margin-right:5px;">
+                                <form action="{{ route('attendance.leave.decline', encrypt($ltDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to Decline?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-warning">Decline</button>
+                                </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
