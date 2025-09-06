@@ -138,8 +138,10 @@
                             <select name="workschedule" id="workschedule" class="form-control" required>
                                 <option value="" selected disabled>select work schedule</option>
                                 @foreach ($workschedule as $ws)
-                                    <option value="{{ $ws->id }}"
-                                        {{ $ws->id == $employee->WorkDays ? 'selected' : '' }}>{{ $ws->KeySchedule }} ({{ date('h:i A',strtotime($ws->StartTime)) }} to {{ date('h:i A',strtotime($ws->EndTime)) }})</option>                                @endforeach
+                                    <option value="{{ $ws->id }}">
+                                        {{ $ws->KeySchedule }} ({{ date('h:i A',strtotime($ws->StartTime)) }} to 
+                                        {{ date('h:i A',strtotime($ws->EndTime)) }})</option>                                
+                                @endforeach
                             </select>
                             <x-error>workschedule</x-error>
                         </div>

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->time('out_2')->nullable();
             $table->time('in_3')->nullable();
             $table->time('out_3')->nullable();
+            $table->integer('LastUpdateBy')->nullable()->default(-1);
+            $table->timestamp('LastUpdateDate')->nullable();
             $table->timestamps();
         });
     }

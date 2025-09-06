@@ -105,6 +105,32 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
+                                    <label for="lblRemarks" class="form-label">Grace Period:*</label>
+                                    <input type="number" class="form-control" id="GracePeriod" name="GracePeriod"
+                                        placeholder="Enter Grace Period" value="<?php echo e($data->GracePeriodMins); ?>" required>
+                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>GracePeriod <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
                                     <label for="isActive" class="form-label">Active:*</label>
                                     <select name="isActive" id="isActive" class="form-control" required>
                                         <option value="" selected disabled>Select Record Status</option>
@@ -121,32 +147,6 @@
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>isActive <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
-<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
-<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
-<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
-<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
-<?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="lblRemarks" class="form-label">Grace Period:*</label>
-                                    <input type="number" class="form-control" id="GracePeriod" name="GracePeriod"
-                                        placeholder="Enter Grace Period" value="<?php echo e($data->GracePeriodMins); ?>" required>
-                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
-<?php $component->withName('error'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
-<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>GracePeriod <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
 <?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>

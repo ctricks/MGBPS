@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyTimeRecord;
 use App\Models\CutOff;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\DailyTimeRecordImport;
@@ -76,7 +77,45 @@ class DailyTimeRecordController extends Controller
     {
         //
         $data = DailyTimeRecord::where('id',decrypt($id))->first();
-        return view('attendance.raw.edit',compact('data'));
+        $employee = Employee::where('employeenumber',$data->employee_code)->first();
+        // if($data->in_1 != null)
+        // {
+        //     $data->in_1 = Carbon::createFromFormat('H:i:s',substr(rtrim($data->in_1,"0"),0,8))->format('h:i:s A');
+        // }
+        // if($data->in_2 != null)
+        // {
+        //     $data->in_2 = Carbon::createFromFormat('H:i:s',substr(rtrim($data->in_2,"0"),0,8))->format('h:i:s A');
+        // }
+            
+        
+        return view('attendance.raw.edit',compact('data','employee'));
+    }
+
+    public function update(Request $request, DailyTimeRecord $dtr)
+    {
+        //
+        // $request->validate([
+        //     "civilstatus"=>'required','string','max:255',
+        //     "isActive"=>'required','integer',
+        // ]);
+        try{
+        $dtr = DailyTimeRecord::find($request->id);
+        $dtr->in_1 = $request->time_in;
+        $dtr->out_1 = $request->time_out;
+        $dtr->in_2 = $request->time_in2;
+        $dtr->out_2 = $request->time_out2;
+        $dtr->in_3 = $request->time_in3;
+        $dtr->out_3 = $request->time_out3;
+     
+        $dtr->LastUpdateBy =$request->user()->id;
+        $dtr->LastUpdateDate = Carbon::now()->timezone('Asia/Manila');
+        //$dtr->isActive = $request->isActive;
+        $dtr->save();
+        }catch(Exception $ex)
+        {
+            dd($ex);   
+        }
+        return redirect()->route('attendance.raw.index')->with('Success','DTR updated successfully');
     }
 
     public function getCutoffData($monthnum)
@@ -130,17 +169,22 @@ class DailyTimeRecordController extends Controller
     {
         return "
             select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,LEFT(Datename(WEEKDAY,dtr.date),3) as 'Day',
-                        (Case when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
-                                when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
+                        (Case 
+                            when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then 'LD'      
+                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
+                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
                                 else '' end)as RestDay,
                         convert(varchar, dtr.in_1, 108) as 'TimeIN',convert(varchar, dtr.in_2, 108) as 'TimeIN_2',convert(varchar, dtr.in_3, 108) as 'TimeIN_3',
                         convert(varchar, dtr.out_1, 108) as 'TimeOUT',convert(varchar, dtr.out_2, 108) as 'TimeOUT_2',convert(varchar, dtr.out_3, 108) as 'TimeOUT_3',
                         convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) as 'Final_IN',
                         convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) as 'Final_OUT',
                         (case when dws.GracePeriodMins > 0 then 
-                            convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end) as 'StartTime',
+							convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) 
+						 when dws.GracePeriodMins = 0 then
+							convert(varchar,dws.StartTime,108) 
+						 else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end) as 'StartTime',
                             convert(varchar,dws.EndTime,108) as 'EndTime',
-                                (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
+                       (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
                                 convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
                                 then 8 
                                 when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
@@ -148,8 +192,14 @@ class DailyTimeRecordController extends Controller
                                 then 
                                     DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
                         when dws.GracePeriodMins = 0 or dws.GracePeriodMins is NULL then
-                            Case when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                                DATEDIFF(minute,dws.EndTime, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60 * -1
+                            Case 
+							when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) and
+								 convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)
+							then
+                                8
+							when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
+								convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+								(DATEDIFF(minute, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME),dws.EndTime) / 60.0) - 1
                             when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
                                 DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108), CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60.0 * -1
                             end
@@ -157,11 +207,14 @@ class DailyTimeRecordController extends Controller
                         0 as 'NDHours',
                         0 as 'ND8Hours',
                         0 as 'OTHours',
-                        0 as 'Leave',
+                        case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
+                        8 else 0 end as 'Leave',
                         0 as 'OT8Hours',
                         case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
 								  ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
-								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then
+								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
+								  (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
+						then
                         8 else 0 end as 'Absent',
                         Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
 							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
@@ -239,6 +292,23 @@ class DailyTimeRecordController extends Controller
         }catch(Exception $e)
         {
             return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());
+        }
+    }
+    public function downloadFileTemplate()
+    {
+        $filename = "DTRTemplate.xls";
+        $path = storage_path("app/public/template/{$filename}");
+
+        try {
+            
+            return response()->download($path, $filename, [
+            'Content-Type' => 'application/text',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to download the file.',
+                'details' => $e->getMessage(),
+            ], 500);
         }
     }
 }
