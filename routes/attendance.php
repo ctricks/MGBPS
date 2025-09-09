@@ -15,6 +15,7 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::resource('raw',DailyTimeRecordController::class);
         Route::resource('leavetype',LeaveTypeController::class);
         Route::resource('leave',LeaveController::class);
+        Route::get('processpayroll/{cutoff}/{empcode}',[DailyTimeRecordController::class,'processpayroll'])->name('raw.processpayroll');
         Route::patch('leaveapprove/{id}',[LeaveController::class,'approve'])->name('leave.approve');
         Route::patch('leavedecline/{id}',[LeaveController::class,'decline'])->name('leave.decline');
         Route::get('restdayimport', [RestdayController::class,'import'])->name('restday.import');

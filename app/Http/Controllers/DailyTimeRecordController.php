@@ -165,6 +165,73 @@ class DailyTimeRecordController extends Controller
         }
         return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
     }
+    private function DTRUpdate($criteria)
+    {
+        return "update 
+                        daily_time_records 
+                    set 
+                        DType = 
+                        (Case 
+                            when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then 'LD'
+                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
+                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
+                        else 
+                            '' 
+                        end),
+                        Final_IN = convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),
+                        Final_OUT = convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),
+                        StartTime = (case when dws.GracePeriodMins > 0 then 
+                    convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) 
+                    when dws.GracePeriodMins = 0 then
+                    convert(varchar,dws.StartTime,108) 
+                    else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end),
+                        EndTime = convert(varchar,dws.EndTime,108),
+                        WorkingHours = isnull((case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
+                    convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                    then 8 
+                    when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
+                    convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                    then 
+                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
+                    when dws.GracePeriodMins = 0 or dws.GracePeriodMins is NULL then
+                    Case 
+                    when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) and
+                    convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)
+                    then
+                    8
+                    when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
+                    convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+                    (DATEDIFF(minute, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME),dws.EndTime) / 60.0) - 1
+                    when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+                    DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108), CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60.0 * -1
+                    end
+                    end),0.00),
+                        NightDiffHours = 0,
+                        OTHours = 0,
+                        Leaves = (case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
+                    8 else 0 end),
+                        [Absent] = (case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
+                    ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
+                    (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
+                    (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
+                    then
+                    8 else 0 end),
+                        Late = isnull((Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
+                    DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
+                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+                    DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)) / 60.0
+                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+                    0							
+                    end),0.00),
+                        Undertime = isnull((case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
+                    DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1 
+                    end),'0.00'),
+                        ProcessedDate = CURRENT_TIMESTAMP
+                    from daily_time_records dtr left join
+                    employees emp on dtr.employee_code = emp.employeenumber
+                    left join defaultworkschedule dws on emp.WorkDays = dws.id
+                            " . $criteria;
+    }
     private function DTRQuery($criteria)
     {
         return "
@@ -293,6 +360,23 @@ class DailyTimeRecordController extends Controller
         {
             return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());
         }
+    }
+    public function ProcessPayroll($cutoff,$empcode)
+    {
+        $CutOFF = Cutoff::find($cutoff);
+        $StartDate = ($CutOFF->StartDate);
+        $EndDate = ($CutOFF->EndDate);   
+        $Criteria = "where 
+	dtr.date between '" . $StartDate . "' and '".$EndDate."' and
+	dtr.employee_code = '".$empcode."'";
+
+        // $Criteria = "where 
+        //     dtr.date between '?' and '?' and
+        //     dtr.employee_code = '?'";
+
+
+    $data = DB::statement($this->DTRUpdate($Criteria));
+        return response()->json($data);
     }
     public function downloadFileTemplate()
     {

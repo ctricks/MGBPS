@@ -92,6 +92,7 @@
                             <div class="button-container">
                                 <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
                                 <a href="{{ route('attendance.raw.index') }}" class="btn btn-md btn-info">Show All</a>
+                                <a class="btn btn-md btn-warning" id="processpayroll" onclick="PayrollProcess()">Process Payroll</a>
                             </div>
                         </div>
                     </div>
@@ -223,6 +224,8 @@
                     $('#cutoff').change(function() {
                         // Cutoff id
                         var id = $(this).val();
+                        $('#employeecode').find('option').remove().end();
+                       
                         if(id > 0)
                         {
                         //$('#employeecode').find('option').remove().end();
@@ -233,29 +236,13 @@
                             dataType: 'json',
                             success: function(response) {
                                 var len = 0;
-                                if (response[0].employee_code != null) {
-                                    len = response[0].employee_code.length;
-                                    $('#employeecode').find('option').remove().end();
-                                }
-                                if (len > 0) {
+                                if (response.length > 0) {
                                     response.forEach(response => {
                                         // Create a new option
-                                        const newOption = new Option(response.employee_code, response.employee_code);
+                                        const newOption = new Option(response.employee_code, response.id);
                                         // Append the new option to the dropdown
                                         $('#employeecode').append(newOption);
                                     });
-                                    
-                                    // const selectElement = document.getElementById('employeecode');
-                                    // // Loop through the data and create <option> elements
-                                    // response.forEach(response => {
-                                    //     //const option = document.createElement('option');
-                                    //     option.value = response
-                                    //     .employee_code; // Set the value attribute
-                                    //     option.textContent = response
-                                    //     .employee_code; // Set the display text
-                                    //     selectElement.appendChild(
-                                    //     option); // Append the option to the select
-                                    // });
                                 }
 
                             }
@@ -266,3 +253,27 @@
             </script>
         @endsection
 </x-admin>
+<script>
+function PayrollProcess(){
+    let userResponse = confirm("Are you sure you want to proceed?");
+    
+    const cutoff = document.getElementById('cutoff').value;
+    const empcode = document.getElementById('employeecode').value;
+    
+    if (userResponse) {
+        $.ajax({
+                            url: 'processpayroll/'+cutoff+'/'+empcode,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                console.log(response);
+                                if (response === true) {
+                                       alert('Process Done: ' + empcode);
+                                }
+
+                            }
+                        });
+    }
+};
+</script>

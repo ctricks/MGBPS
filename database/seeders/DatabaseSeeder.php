@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(CivilStatusSeeder::class);
         $this->call(GenderSeeder::class);
+        $this->call(LeaveTypeSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(EmployeeStatusSeeder::class);
