@@ -45,7 +45,7 @@ unset($__sessionArgs); ?>
         </div>
         <div class="card-body">
             Filter:
-            <form action="<?php echo e(route('attendance.rawattendance.list')); ?>" method="POST">
+            <form action="<?php echo e(route('attendance.summaryattendance.list')); ?>" method="POST">
                 <?php echo csrf_field(); ?>
                 <div class="row">
                     <div class="col-lg-3">

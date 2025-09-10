@@ -21,6 +21,7 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::get('restdayimport', [RestdayController::class,'import'])->name('restday.import');
         Route::post('rawattendanceimport', [DailyTimeRecordController::class,'import'])->name('rawattendance.import');
         Route::post('rawattendancelist', [DailyTimeRecordController::class,'getemployeelist'])->name('rawattendance.list');
+        Route::post('summaryattendancelist', [SummaryAttendanceController::class,'getemployeelist'])->name('summaryattendance.list');
         Route::get('rawattendancedownloadtemplate', [DailyTimeRecordController::class,'downloadFileTemplate'])->name('rawattendance.downloadtemplate');       
     });
 

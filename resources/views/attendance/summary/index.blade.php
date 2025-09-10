@@ -28,7 +28,7 @@
         </div>
         <div class="card-body">
             Filter:
-            <form action="{{ route('attendance.rawattendance.list') }}" method="POST">
+            <form action="{{ route('attendance.summaryattendance.list') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-3">

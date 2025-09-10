@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DailyTimeRecord;
+use App\Models\CutOff;
+use App\Models\Employee;
 use Illuminate\Http\Request;
-use App\Models\Cutoff;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +25,81 @@ class SummaryAttendanceController extends Controller
         $data = DB::select($this->SummaryAttendanceQuery(""));
         return view('attendance.summary.index',compact('defaultCutoff','data'));
     }
+
+    public function getemployeelist(Request $request)
+    {
+        $cutoffData = Cutoff::where('id',$request->cutoff)->get();
+        $firstDayOfMonth = Carbon::now()->startOfMonth();
+        $lastDayOfMonth = Carbon::now()->lastOfMonth();
+        $currentMonthName = Carbon::now()->format('F');
+
+        $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
+        
+        $ProcessStatus = "Not Process";
+
+        if(isset($cutOFF))
+        {
+            $this->createcufoff('');
+            $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
+        }
+        
+
+        if($cutoffData[0] != null)
+        {
+            $criteria = "and
+                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
+                        and dtr.employee_code = ". $request->employeecode ."";
+            //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
+            $data = DB::select($this->SummaryAttendanceQuery($criteria));
+        }
+        return view('attendance.summary.index',compact('data','cutOFF','ProcessStatus'));
+    }
+public function createcufoff($monthName)
+    {
+        try{
+            $currentMonthName = Carbon::now()->format('F');
+            $firstDayOfMonth = Carbon::now()->startOfMonth();
+            $startOfMonth = Carbon::now()->startOfMonth()->toDateTimeString();
+            $firstCutoff = $firstDayOfMonth->addDays(14);
+            
+            if($monthName != '')
+            {
+                $currentMonthName = $monthName;
+                $firstDayOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->firstOfMonth();
+                $startOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->startOfMonth()->toDateTimeString();
+                $firstCutoff = $firstDayOfMonth->addDays(14);
+            }
+
+            Cutoff::updateOrCreate(
+                [
+                    'CutoffKey'=>$currentMonthName . "-" . $firstDayOfMonth->format('Y-d-m'),
+                    'Month'=>$currentMonthName,
+                    'StartDate'=>$startOfMonth,
+                    'EndDate'=>$firstCutoff,
+                ],
+            );
+            $secondCOStartDay = $firstCutoff->addDays(1);
+            $lastDayOfMonth = Carbon::now()->lastOfMonth();
+
+            if($monthName != '')
+            {
+                $secondCOStartDay = $firstCutoff;
+                $lastDayOfMonth = Carbon::createFromFormat('F Y', $monthName.' '.Carbon::now()->year)->lastOfMonth();
+            }
+
+            Cutoff::updateOrCreate(
+                [
+                    'CutoffKey'=>$currentMonthName . "-" . $secondCOStartDay->format('Y-d-m'),
+                    'Month'=>$currentMonthName,
+                    'StartDate'=>$secondCOStartDay,
+                    'EndDate'=>$lastDayOfMonth,
+                ],
+            );
+        }catch(Exception $e)
+        {
+            return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());
+        }
+    }
     public function SummaryAttendanceQuery($Criteria)
     {
         return "
@@ -39,7 +116,7 @@ class SummaryAttendanceController extends Controller
                 SUM(dtr.Late) as 'Late',
                 SUM(dtr.Undertime) as 'Undertime'
                 FROM 
-                    [PS].[dbo].[daily_time_records] dtr
+                    daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber
                 left join cutoff cu on dtr.cutoff = cu.id 
                 where [date] between cu.StartDate and cu.EndDate
