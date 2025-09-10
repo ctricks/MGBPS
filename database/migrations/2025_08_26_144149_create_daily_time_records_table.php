@@ -33,6 +33,7 @@ return new class extends Migration
             $table->double('Absent',8,2)->default(0.00);
             $table->double('Late',8,2)->default(0.00);
             $table->double('Undertime',8,2)->default(0.00);
+            $table->integer('Cutoff')->nullable()->default(-1);
             $table->timestamp('ProcessedDate')->nullable();
             $table->integer('ProcessedBy')->nullable()->default(-1);
             $table->integer('LastUpdateBy')->nullable()->default(-1);

@@ -165,7 +165,7 @@ class DailyTimeRecordController extends Controller
         }
         return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
     }
-    private function DTRUpdate($criteria)
+    private function DTRUpdate($criteria,$cutoff)
     {
         return "update 
                         daily_time_records 
@@ -226,6 +226,7 @@ class DailyTimeRecordController extends Controller
                         Undertime = isnull((case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
                     DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1 
                     end),'0.00'),
+                        CutOff = ".$cutoff.",
                         ProcessedDate = CURRENT_TIMESTAMP
                     from daily_time_records dtr left join
                     employees emp on dtr.employee_code = emp.employeenumber
@@ -373,9 +374,7 @@ class DailyTimeRecordController extends Controller
         // $Criteria = "where 
         //     dtr.date between '?' and '?' and
         //     dtr.employee_code = '?'";
-
-
-    $data = DB::statement($this->DTRUpdate($Criteria));
+    $data = DB::statement($this->DTRUpdate($Criteria,$cutoff));
         return response()->json($data);
     }
     public function downloadFileTemplate()

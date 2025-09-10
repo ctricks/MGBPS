@@ -1,5 +1,5 @@
 <x-admin>
-    @section('title','Attendance Inquiry')
+    @section('title','Attendance Summary')
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Final Attendance Table</h3>
@@ -7,7 +7,6 @@
                 <a href="{{ route('attendance.raw.create') }}" class="btn btn-sm btn-info">New</a>
             </div>
         </div>
-
     <div class="card-header">
   
             @session('success')
@@ -26,62 +25,109 @@
                     </ul>
                 </div>
             @endif
-  
-            <form action="{{ route('attendance.rawattendance.import') }}" method="POST" enctype="multipart/form-data">
+        </div>
+        <div class="card-body">
+            Filter:
+            <form action="{{ route('attendance.rawattendance.list') }}" method="POST">
                 @csrf
-                <input type="file" name="file" class="form-control" style="margin-right:30px;">
-                <p></p>
-                <div class="button-container">
-                    <button class="btn btn-success"><i class="fa fa-file"></i> Import User Data</button>
-                    <a href="{{ route('attendance.rawattendance.downloadtemplate') }}" class="btn btn-primary">Download Template</a>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="selectmonth">Month:</label>
+                            <select name="monthfilter" id="monthfilter" class="form-control" required>
+                                <option value="" selected disabled>select month</option>
+                                @for ($month = 1; $month <= 12; $month++)
+                                    {{ $monthName = date('F', mktime(0, 0, 0, $month, 1)) }}
+                                    <option value="{{ $month }}">
+                                        {{ $monthName }} </option>
+                                @endfor
+                            </select>
+                            <x-error>civilstatus</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="civilstatus">Cut-off:</label>
+                            <select name="cutoff" id="cutoff" class="form-control" required>
+                                <option value="" selected disabled>select cutoff</option>
+                                {{-- @foreach ($cutOFF as $cu)
+                                    <option value="{{ $cu->id }}"
+                                        {{ $cu->id == old('cutoff') ? 'selected' : '' }}>
+                                        {{ $cu->StartDate . ' to ' . $cu->EndDate }}</option>
+                                @endforeach --}}
+                            </select>
+                            <x-error>civilstatus</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="employee">Employee:*</label>
+                            <select name="employeecode" id="employeecode" class="form-control" required>
+                                <option value="" selected disabled>select employee</option>
+                            </select>
+                            <x-error>employeecode</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="empname">Status:</label>
+                            <input type="text" class="form-control" id="payrollprocess" name="payrollprocess"
+                                placeholder="Attendance Summary Status" disabled >
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="button-container">
+                                <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
+                                <a href="{{ route('attendance.raw.index') }}" class="btn btn-md btn-info">Show All</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                
-            </form>    
+            </form>
         </div>
         <div class="card-body">
             <table class="table table-striped" id="rawattendanceTable">
                 <thead>
                     <tr>
+                        <th>Month</th>
+                        <th>Cutoff</th>
                         <th>Employee Code</th>
-                        <th>Date</th>
-                        <th>Day</th>
-                        <th>Name</th>
-                        <th>In_1</th>
-                        <th>Out_1</th>
-                        <th>In_2</th>
-                        <th>Out_2</th>
-                        <th>In_3</th>
-                        <th>Out_3</th>
+                        <th>Employee Name</th>
+                        <th>Total Working Hours</th>
+                        <th>Total Night Diff Hours</th>
+                        <th>Total Overtime Hours</th>
+                        <th>Total Leaves</th>
+                        <th>Total Absent</th>
+                        <th>Total Late</th>
+                        <th>Total Undertime</th>
                         <th>Action</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @if($data != null)
                     @foreach ($data as $empDTR)
                         <tr>
+                            <td>{{ $empDTR->Month }}</td>
+                            <td>{{ $empDTR->StartDate }} to {{ $empDTR->EndDate}}</td>
                             <td>{{ $empDTR->employee_code }}</td>
-                            <td>{{ $empDTR->date }}</td>
-                            <td>{{ $empDTR->day }}</td>
-                            <td>{{ $empDTR->Employee }}</td>
-                            <td>{{ $empDTR->in_1 }}</td>
-                            <td>{{ $empDTR->out_1 }}</td>
-                            <td>{{ $empDTR->in_2 }}</td>
-                            <td>{{ $empDTR->out_2 }}</td>
-                            <td>{{ $empDTR->in_3 }}</td>
-                            <td>{{ $empDTR->out_3 }}</td>
-                            <td><a href="{{ route('admin.category.edit', encrypt($empDTR->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a></td>
+                            <td>{{ $empDTR->EmployeeName }}</td>
+                            <td>{{ $empDTR->WorkingHours }}</td>
+                            <td>{{ $empDTR->NDHours }}</td>
+                            <td>{{ $empDTR->OTHours }}</td>
+                            <td>{{ $empDTR->Leaves }}</td>
+                            <td>{{ $empDTR->Absent }}</td>
+                            <td>{{ $empDTR->Late }}</td>
+                            <td>{{ $empDTR->Undertime }}</td>
+                            <td><a href="{{ route('admin.category.edit', encrypt(-1)) }}"
+                                    class="btn btn-sm btn-primary">View Details</a></td>
                             <td>
-                                <form action="{{ route('admin.category.destroy', encrypt($empDTR->id)) }}" method="POST"
-                                    onsubmit="return confirm('Are sure want to delete?')">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
+                                
                             </td>
                         </tr>
                     @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -98,3 +144,64 @@
         </script>
     @endsection
 </x-admin>
+<script>
+                $(document).ready(function() {
+                    // Cutoff Change
+                    $('#monthfilter').change(function() {
+                        // Cutoff id
+                        var id = $(this).val();
+                        $('#cutoff').find('option').remove().end();
+                        // AJAX request 
+                        $.ajax({
+                            url: '/get-cutoff/' + id,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                if (response.length > 0) {
+                                    response.forEach(response => {
+                                        // Create a new option
+                                        const newOption = new Option(response.StartDate +
+                                            ' to ' + response.EndDate, response.id);
+                                        // Append the new option to the dropdown
+                                        $('#cutoff').append(newOption);
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+            </script>
+            <script>
+                $(document).ready(function() {
+                    // Cutoff Change
+                    $('#cutoff').change(function() {
+                        // Cutoff id
+                        var id = $(this).val();
+                        $('#employeecode').find('option').remove().end();
+                       
+                        if(id > 0)
+                        {
+                        //$('#employeecode').find('option').remove().end();
+                        // AJAX request 
+                        $.ajax({
+                            url: '/get-dtr-employee/' + id,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                if (response.length > 0) {
+                                    response.forEach(response => {
+                                        // Create a new option
+                                        const newOption = new Option(response.employee_code, response.id);
+                                        // Append the new option to the dropdown
+                                        $('#employeecode').append(newOption);
+                                    });
+                                }
+
+                            }
+                        });
+                        }
+                    });
+                });
+            </script>
