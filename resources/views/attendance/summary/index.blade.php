@@ -62,7 +62,7 @@
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label for="employee">Employee:*</label>
-                            <select name="employeecode" id="employeecode" class="form-control" required>
+                            <select name="employeecode" id="employeecode" class="form-control">
                                 <option value="" selected disabled>select employee</option>
                             </select>
                             <x-error>employeecode</x-error>
@@ -79,7 +79,7 @@
                         <div class="form-group">
                             <div class="button-container">
                                 <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
-                                <a href="{{ route('attendance.raw.index') }}" class="btn btn-md btn-info">Show All</a>
+                                <a href="{{ route('attendance.summary.index') }}" class="btn btn-md btn-info">Show All</a>
                             </div>
                         </div>
                     </div>
@@ -94,9 +94,10 @@
                         <th>Cutoff</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Worked Days</th>
                         <th>Total Working Hours</th>
-                        <th>Total Night Diff Hours</th>
-                        <th>Total Overtime Hours</th>
+                        <th>Total ND Hours</th>
+                        <th>Total OT Hours</th>
                         <th>Total Leaves</th>
                         <th>Total Absent</th>
                         <th>Total Late</th>
@@ -113,14 +114,15 @@
                             <td>{{ $empDTR->StartDate }} to {{ $empDTR->EndDate}}</td>
                             <td>{{ $empDTR->employee_code }}</td>
                             <td>{{ $empDTR->EmployeeName }}</td>
-                            <td>{{ $empDTR->WorkingHours }}</td>
-                            <td>{{ $empDTR->NDHours }}</td>
-                            <td>{{ $empDTR->OTHours }}</td>
-                            <td>{{ $empDTR->Leaves }}</td>
-                            <td>{{ $empDTR->Absent }}</td>
-                            <td>{{ $empDTR->Late }}</td>
-                            <td>{{ $empDTR->Undertime }}</td>
-                            <td><a href="{{ route('admin.category.edit', encrypt(-1)) }}"
+                            <td>{{ number_format($empDTR->WorkingDays,2) }}</td>
+                            <td>{{ number_format($empDTR->WorkingHours,2) }}</td>
+                            <td>{{ number_format($empDTR->NDHours,2) }}</td>
+                            <td>{{ number_format($empDTR->OTHours,2) }}</td>
+                            <td>{{ number_format($empDTR->Leaves,2) }}</td>
+                            <td>{{ number_format($empDTR->Absent,2) }}</td>
+                            <td>{{ number_format($empDTR->Late,2) }}</td>
+                            <td>{{ number_format($empDTR->Undertime,2) }}</td>
+                            <td><a href="{{ route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code]) }}"
                                     class="btn btn-sm btn-primary">View Details</a></td>
                             <td>
                                 

@@ -88,7 +88,6 @@ class EmployeeController extends Controller
     }
     public function update(Request $request, Employee $employee)
     {
-          
         $request->validate([
             'employeenumber' => 'required', 'integer', 'max:255',
             'lastname' => 'required', 'string', 'max:255',
@@ -96,6 +95,7 @@ class EmployeeController extends Controller
         ]);  
         
         $employee = Employee::find($request->id);
+        $employee->employeenumber = $request->employeenumber;
         $employee->lastname = $request->lastname;
         $employee->firstname = $request->firstname;
         $employee->middlename = $request->middlename;

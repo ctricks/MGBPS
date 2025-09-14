@@ -143,6 +143,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="{{ route('attendance.holiday.index') }}"
+                    class="nav-link {{ Route::is('attendance.holiday.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Holiday
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         @endrole

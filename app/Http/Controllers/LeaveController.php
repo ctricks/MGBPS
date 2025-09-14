@@ -31,7 +31,6 @@ class LeaveController extends Controller
                 id desc;"
         );
         
-
         return view('attendance.leave.index', compact('data'));
     }
 

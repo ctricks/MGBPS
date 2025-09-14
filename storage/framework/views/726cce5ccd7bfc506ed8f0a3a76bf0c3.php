@@ -112,7 +112,7 @@ unset($__sessionArgs); ?>
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label for="employee">Employee:*</label>
-                            <select name="employeecode" id="employeecode" class="form-control" required>
+                            <select name="employeecode" id="employeecode" class="form-control">
                                 <option value="" selected disabled>select employee</option>
                             </select>
                             <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
@@ -147,7 +147,7 @@ unset($__sessionArgs); ?>
                         <div class="form-group">
                             <div class="button-container">
                                 <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
-                                <a href="<?php echo e(route('attendance.raw.index')); ?>" class="btn btn-md btn-info">Show All</a>
+                                <a href="<?php echo e(route('attendance.summary.index')); ?>" class="btn btn-md btn-info">Show All</a>
                             </div>
                         </div>
                     </div>
@@ -162,9 +162,10 @@ unset($__sessionArgs); ?>
                         <th>Cutoff</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Worked Days</th>
                         <th>Total Working Hours</th>
-                        <th>Total Night Diff Hours</th>
-                        <th>Total Overtime Hours</th>
+                        <th>Total ND Hours</th>
+                        <th>Total OT Hours</th>
                         <th>Total Leaves</th>
                         <th>Total Absent</th>
                         <th>Total Late</th>
@@ -181,14 +182,15 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->StartDate); ?> to <?php echo e($empDTR->EndDate); ?></td>
                             <td><?php echo e($empDTR->employee_code); ?></td>
                             <td><?php echo e($empDTR->EmployeeName); ?></td>
-                            <td><?php echo e($empDTR->WorkingHours); ?></td>
-                            <td><?php echo e($empDTR->NDHours); ?></td>
-                            <td><?php echo e($empDTR->OTHours); ?></td>
-                            <td><?php echo e($empDTR->Leaves); ?></td>
-                            <td><?php echo e($empDTR->Absent); ?></td>
-                            <td><?php echo e($empDTR->Late); ?></td>
-                            <td><?php echo e($empDTR->Undertime); ?></td>
-                            <td><a href="<?php echo e(route('admin.category.edit', encrypt(-1))); ?>"
+                            <td><?php echo e(number_format($empDTR->WorkingDays,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->NDHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->OTHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Leaves,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Absent,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Late,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Undertime,2)); ?></td>
+                            <td><a href="<?php echo e(route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code])); ?>"
                                     class="btn btn-sm btn-primary">View Details</a></td>
                             <td>
                                 

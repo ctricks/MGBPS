@@ -110,6 +110,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="<?php echo e(route('attendance.holiday.index')); ?>"
+                    class="nav-link <?php echo e(Route::is('attendance.holiday.index') ? 'active' : ''); ?>">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Holiday
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         <?php endif; ?>

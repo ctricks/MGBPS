@@ -81,7 +81,7 @@ unset($__sessionArgs); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>civilstatus <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?>monthfilter <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
 <?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
@@ -109,7 +109,7 @@ unset($__sessionArgs); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>civilstatus <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?>cutoff <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
 <?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
@@ -212,10 +212,14 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->RestDay); ?></td>
                             <td><?php echo e($empDTR->Final_IN); ?></td>
                             <td><?php echo e($empDTR->Final_OUT); ?></td>
-                            <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>                  
-                            <td><?php echo e($empDTR->NDHours); ?></td>
-                            <td><?php echo e($empDTR->OTHours); ?></td>
-                            <td><?php echo e($empDTR->Leave); ?></td>
+                            <?php if($empDTR->WorkingHours < 8): ?>
+                                <td style="color:red;"><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
+                            <?php else: ?>
+                                <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
+                            <?php endif; ?>
+                            <td><?php echo e(number_format($empDTR->NDHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->OTHours,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Leave,2)); ?></td>
                             <?php if($empDTR->Absent == 8): ?>
                                 <td style="color:red;"><?php echo e($empDTR->Absent); ?></td>
                             <?php else: ?>
@@ -331,25 +335,34 @@ unset($__sessionArgs); ?>
 <?php endif; ?>
 <script>
 function PayrollProcess(){
+    const empcode = document.getElementById('employeecode').value;
+    
+    if(empcode == '')
+    {
+        alert('Please select filter the employee')   
+    }
+    else
+    {
     let userResponse = confirm("Are you sure you want to proceed?");
     
     const cutoff = document.getElementById('cutoff').value;
-    const empcode = document.getElementById('employeecode').value;
     
-    if (userResponse) {
-        $.ajax({
-                            url: 'processpayroll/'+cutoff+'/'+empcode,
-                            type: 'get',
-                            dataType: 'json',
-                            success: function(response) {
-                                var len = 0;
-                                console.log(response);
-                                if (response === true) {
-                                       alert('Process Done: ' + empcode);
-                                }
 
-                            }
-                        });
+        if (userResponse) {
+            $.ajax({
+                                url: 'processpayroll/'+cutoff+'/'+empcode,
+                                type: 'get',
+                                dataType: 'json',
+                                success: function(response) {
+                                    var len = 0;
+                                    console.log(response);
+                                    if (response === true) {
+                                        alert('Done: Employee Code:' + empcode);
+                                    }
+
+                                }
+                            });
+        }
     }
 };
 </script>

@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\DailyTimeRecordImport;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 
 class DailyTimeRecordController extends Controller
 {
@@ -146,7 +146,7 @@ class DailyTimeRecordController extends Controller
 
         $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
         
-        $ProcessStatus = "Not Process";
+        $ProcessStatus = "Unprocess";
 
         if(isset($cutOFF))
         {
@@ -154,7 +154,6 @@ class DailyTimeRecordController extends Controller
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
         
-
         if($cutoffData[0] != null)
         {
             $criteria = "where
@@ -163,10 +162,24 @@ class DailyTimeRecordController extends Controller
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             $data = DB::select($this->DTRQuery($criteria));
         }
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
+
+        $CheckedProcess = "Select count(id) as 'RowCount' from daily_time_records where processedby = 1 and " .
+                            "date between '". $cutoffData[0]->StartDate ."' and '" . 
+                            $cutoffData[0]->EndDate ."'and employee_code = ". $request->employeecode ."";
+        
+        $processeddata = DB::select($CheckedProcess);
+        $processcount = $processeddata[0]->RowCount;
+
+        if($processcount > 0)
+            $ProcessStatus = 'Processed';
+
+        $employeecode = $request->employeecode;
+
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode'));
     }
     private function DTRUpdate($criteria,$cutoff)
     {
+        $activeUser = Auth::id();
         return "update 
                         daily_time_records 
                     set 
@@ -178,62 +191,63 @@ class DailyTimeRecordController extends Controller
                         else 
                             '' 
                         end),
-                        Final_IN = convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),
-                        Final_OUT = convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),
+                        Final_IN = convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),
+                        Final_OUT = convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),
                         StartTime = (case when dws.GracePeriodMins > 0 then 
                     convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) 
                     when dws.GracePeriodMins = 0 then
                     convert(varchar,dws.StartTime,108) 
-                    else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end),
+                    else convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) end),
                         EndTime = convert(varchar,dws.EndTime,108),
-                        WorkingHours = isnull((case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                    convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                        WorkingHours = isnull((case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                    convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) >= convert(varchar,dws.EndTime,108)
                     then 8 
-                    when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                    convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                    when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                    convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) >= convert(varchar,dws.EndTime,108)
                     then 
-                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
+                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108))
                     when dws.GracePeriodMins = 0 or dws.GracePeriodMins is NULL then
                     Case 
-                    when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) and
-                    convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)
+                    when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) and
+                    convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108)
                     then
                     8
-                    when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                    convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                    (DATEDIFF(minute, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME),dws.EndTime) / 60.0) - 1
-                    when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                    DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108), CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60.0 * -1
+                    when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                    convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+                    (DATEDIFF(minute, CAST(COALESCE(dtr.in_3,dtr.in_2,dtr.in_1) as DATETIME),dws.EndTime) / 60.0) - 1
+                    when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+                    DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108), CAST(COALESCE(dtr.in_3,dtr.in_2,dtr.in_1) as DATETIME)) / 60.0 * -1
                     end
                     end),0.00),
                         NightDiffHours = 0,
                         OTHours = 0,
                         Leaves = (case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
                     8 else 0 end),
-                        [Absent] = (case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
-                    ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
+                        [Absent] = (case when (ISNULL(convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),'') = '' or 
+                    ISNULL(convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),'') = '') and 
                     (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
                     (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
                     then
                     8 else 0 end),
-                        Late = isnull((Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
-                    DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
-                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
-                    DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)) / 60.0
-                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+                        Late = isnull((Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) then
+                    DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
+                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+                    DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108)) / 60.0
+                    when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
                     0							
                     end),0.00),
-                        Undertime = isnull((case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                    DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1 
+                        Undertime = isnull((case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+                    DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108)) / 60.0 * -1 
                     end),'0.00'),
                         CutOff = ".$cutoff.",
+                        ProcessedBy = ".$activeUser.",
                         ProcessedDate = CURRENT_TIMESTAMP
                     from daily_time_records dtr left join
                     employees emp on dtr.employee_code = emp.employeenumber
                     left join defaultworkschedule dws on emp.WorkDays = dws.id
                             " . $criteria;
     }
-    private function DTRQuery($criteria)
+    public function DTRQuery($criteria)
     {
         return "
             select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,LEFT(Datename(WEEKDAY,dtr.date),3) as 'Day',
@@ -244,32 +258,32 @@ class DailyTimeRecordController extends Controller
                                 else '' end)as RestDay,
                         convert(varchar, dtr.in_1, 108) as 'TimeIN',convert(varchar, dtr.in_2, 108) as 'TimeIN_2',convert(varchar, dtr.in_3, 108) as 'TimeIN_3',
                         convert(varchar, dtr.out_1, 108) as 'TimeOUT',convert(varchar, dtr.out_2, 108) as 'TimeOUT_2',convert(varchar, dtr.out_3, 108) as 'TimeOUT_3',
-                        convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) as 'Final_IN',
-                        convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) as 'Final_OUT',
+                        convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) as 'Final_IN',
+                        convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) as 'Final_OUT',
                         (case when dws.GracePeriodMins > 0 then 
 							convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) 
 						 when dws.GracePeriodMins = 0 then
 							convert(varchar,dws.StartTime,108) 
-						 else convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) end) as 'StartTime',
+						 else convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) end) as 'StartTime',
                             convert(varchar,dws.EndTime,108) as 'EndTime',
-                       (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                                convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                       (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                                convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) >= convert(varchar,dws.EndTime,108)
                                 then 8 
-                                when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-                                convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) >= convert(varchar,dws.EndTime,108)
+                                when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                                convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) >= convert(varchar,dws.EndTime,108)
                                 then 
-                                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108))
+                                    DATEDIFF(HOUR,convert(varchar,dws.EndTime,108),convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108))
                         when dws.GracePeriodMins = 0 or dws.GracePeriodMins is NULL then
                             Case 
-							when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) and
-								 convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)
+							when convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) and
+								 convert(varchar,dws.StartTime,108) >= convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108)
 							then
                                 8
-							when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) and
-								convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-								(DATEDIFF(minute, CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME),dws.EndTime) / 60.0) - 1
-                            when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-                                DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108), CAST(COALESCE(dtr.in_1,dtr.in_2,dtr.in_3) as DATETIME)) / 60.0 * -1
+							when convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+								convert(varchar,dws.EndTime,108) <=  convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+								(DATEDIFF(minute, CAST(COALESCE(dtr.in_3,dtr.in_2,dtr.in_1) as DATETIME),dws.EndTime) / 60.0) - 1
+                            when convert(varchar,dws.EndTime,108) > convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+                                DATEDIFF(minute,convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108), CAST(COALESCE(dtr.in_3,dtr.in_2,dtr.in_1) as DATETIME)) / 60.0 * -1
                             end
                         end) as 'WorkingHours',
                         0 as 'NDHours',
@@ -278,21 +292,21 @@ class DailyTimeRecordController extends Controller
                         case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
                         8 else 0 end as 'Leave',
                         0 as 'OT8Hours',
-                        case when (ISNULL(convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),'') = '' or 
-								  ISNULL(convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108),'') = '') and 
+                        case when (ISNULL(convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),'') = '' or 
+								  ISNULL(convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),'') = '') and 
 								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
 								  (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
 						then
                         8 else 0 end as 'Absent',
-                        Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) then
-							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
-						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
-							DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108)) / 60.0
-						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_1,dtr.in_2,dtr.in_3),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+                        Case when dws.GracePeriodMins = 0 and Convert(varchar,dws.StartTime,108) < convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) then
+							DateDIFF(MINUTE,convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),Convert(varchar,dws.StartTime,108)) / 60.0 * -1
+						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) > convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
+							DateDIFF(MINUTE,convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108),convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108)) / 60.0
+						when dws.GracePeriodMins > 0 and convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) < convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) then
 						    0							
 						end as 'Late',
-                        (case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108) then
-						  DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_1,dtr.out_2,dtr.out_3),108)) / 60.0 * -1 
+                        (case when  dws.EndTime > convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) then
+						  DATEDIFF(HOUR,dws.EndTime,convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108)) / 60.0 * -1 
 						end) as 'Undertime'
                         from daily_time_records dtr left join
                         employees emp on dtr.employee_code = emp.employeenumber

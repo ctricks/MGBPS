@@ -54,7 +54,7 @@
                                         {{ $monthName }} </option>
                                 @endfor
                             </select>
-                            <x-error>civilstatus</x-error>
+                            <x-error>monthfilter</x-error>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -68,7 +68,7 @@
                                         {{ $cu->StartDate . ' to ' . $cu->EndDate }}</option>
                                 @endforeach --}}
                             </select>
-                            <x-error>civilstatus</x-error>
+                            <x-error>cutoff</x-error>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -144,10 +144,14 @@
                             <td>{{ $empDTR->RestDay }}</td>
                             <td>{{ $empDTR->Final_IN }}</td>
                             <td>{{ $empDTR->Final_OUT }}</td>
-                            <td>{{ number_format($empDTR->WorkingHours,2) }}</td>                  
-                            <td>{{ $empDTR->NDHours }}</td>
-                            <td>{{ $empDTR->OTHours }}</td>
-                            <td>{{ $empDTR->Leave }}</td>
+                            @if($empDTR->WorkingHours < 8)
+                                <td style="color:red;">{{ number_format($empDTR->WorkingHours,2) }}</td>
+                            @else
+                                <td>{{ number_format($empDTR->WorkingHours,2) }}</td>
+                            @endif
+                            <td>{{ number_format($empDTR->NDHours,2) }}</td>
+                            <td>{{ number_format($empDTR->OTHours,2) }}</td>
+                            <td>{{ number_format($empDTR->Leave,2) }}</td>
                             @if($empDTR->Absent == 8)
                                 <td style="color:red;">{{ $empDTR->Absent }}</td>
                             @else
@@ -255,25 +259,34 @@
 </x-admin>
 <script>
 function PayrollProcess(){
+    const empcode = document.getElementById('employeecode').value;
+    
+    if(empcode == '')
+    {
+        alert('Please select filter the employee')   
+    }
+    else
+    {
     let userResponse = confirm("Are you sure you want to proceed?");
     
     const cutoff = document.getElementById('cutoff').value;
-    const empcode = document.getElementById('employeecode').value;
     
-    if (userResponse) {
-        $.ajax({
-                            url: 'processpayroll/'+cutoff+'/'+empcode,
-                            type: 'get',
-                            dataType: 'json',
-                            success: function(response) {
-                                var len = 0;
-                                console.log(response);
-                                if (response === true) {
-                                       alert('Process Done: ' + empcode);
-                                }
 
-                            }
-                        });
+        if (userResponse) {
+            $.ajax({
+                                url: 'processpayroll/'+cutoff+'/'+empcode,
+                                type: 'get',
+                                dataType: 'json',
+                                success: function(response) {
+                                    var len = 0;
+                                    console.log(response);
+                                    if (response === true) {
+                                        alert('Done: Employee Code:' + empcode);
+                                    }
+
+                                }
+                            });
+        }
     }
 };
 </script>

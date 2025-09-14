@@ -8,7 +8,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Controllers\DailyTimeRecordController;
 
 class SummaryAttendanceController extends Controller
 {
@@ -22,10 +22,31 @@ class SummaryAttendanceController extends Controller
         //Get Current Cut-off as default display
         $now = Carbon::now()->format('F');
         $defaultCutoff = Cutoff::where('Month','=',$now)->get();
-        $data = DB::select($this->SummaryAttendanceQuery(""));
+        $data = DB::select($this->SummaryAttendanceQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
+
         return view('attendance.summary.index',compact('defaultCutoff','data'));
     }
+    public function getemployeesummary($cutoff,$empcode)
+    {
+        $cutoffData = Cutoff::where('id',$cutoff)->get();
+        
+        $DTRController = new DailyTimeRecordController();
 
+        $criteria = "where dtr.employee_code = ". $empcode ."";
+        
+        if($cutoffData[0] != null)
+        {
+            $criteria = "where
+                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
+                        and dtr.employee_code = ". $empcode ."";
+        }
+
+        $DTRQuery = $DTRController->DTRQuery($criteria);
+        
+        $data = DB::select($DTRQuery);
+
+        return view('attendance.summary.view',compact('data'));
+    }
     public function getemployeelist(Request $request)
     {
         $cutoffData = Cutoff::where('id',$request->cutoff)->get();
@@ -42,13 +63,19 @@ class SummaryAttendanceController extends Controller
             $this->createcufoff('');
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
-        
 
         if($cutoffData[0] != null)
         {
-            $criteria = "and
-                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
-                        and dtr.employee_code = ". $request->employeecode ."";
+            if($request->employeecode != "")
+            {
+                $criteria = "and
+                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'".
+                        "and dtr.employee_code = '" . $request->employeecode. "'";
+            }else
+            {
+                $criteria = "and
+                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'";
+            }
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             $data = DB::select($this->SummaryAttendanceQuery($criteria));
         }
@@ -105,9 +132,11 @@ public function createcufoff($monthName)
         return "
             SELECT 
                 cu.Month,
+                cu.id as 'cutoffid',
                 cu.StartDate,cu.EndDate,
                 dtr.employee_code,
                 emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
+                SUM(dtr.WorkingHours)/8 as 'WorkingDays',
                 SUM(dtr.WorkingHours) as 'WorkingHours',
                 SUM(dtr.NightDiffHours) as 'NDHours',
                 SUM(dtr.OTHours) as 'OTHours',
@@ -122,7 +151,7 @@ public function createcufoff($monthName)
                 where [date] between cu.StartDate and cu.EndDate
                 " . $Criteria . "
                 group by 
-                    cu.Month,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
+                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
                 order by emp.lastname desc
         ";
     }   
@@ -153,7 +182,7 @@ public function createcufoff($monthName)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Employee $id)
     {
         //
     }
