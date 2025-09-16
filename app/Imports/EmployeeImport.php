@@ -32,6 +32,15 @@ class EmployeeImport implements ToModel
             $position = Position::where('PositionName',$row[9])->first();
             $department = Department::where('departmentname',$row[10])->first();
             $employeestatus = EmployeeStatus::where('employeestatus',$row[11])->first();
+            $daily_rate = 0;
+
+            if (is_numeric($row[12])) {
+                // Cast the string to a double (float)
+                $daily_rate = (double) $row[12];
+            } else {
+                // If conversion fails, use 0 as the default
+                $daily_rate = 0.0;
+            }
 
             return new Employee([
                 'employeenumber'=> $row[0],
@@ -46,6 +55,11 @@ class EmployeeImport implements ToModel
                 'position_id'=> ($position->id),
                 'department_id'=> ($department->id),
                 'employee_status_id'=> ($employeestatus->id),
+                'DailyRate'=>$daily_rate,
+                'PHIC_Number'=>$row[14], 
+                'SSS_Number'=>$row[13],
+                'HDMF_Number'=>$row[15],
+                'TIN_Number'=>$row[16],
             ]);
         }
     }

@@ -1,9 +1,9 @@
 <x-admin>
-    @section('title', 'Create Leave')
+    @section('title', 'Create Holiday')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Create Leave</h3>
-            <div class="card-tools"><a href="{{ route('attendance.leavetype.index') }}" class="btn btn-sm btn-dark">Back</a></div>
+            <h3 class="card-title">Create Holiday</h3>
+            <div class="card-tools"><a href="{{ route('attendance.holiday.index') }}" class="btn btn-sm btn-dark">Back</a></div>
         </div>
           <div class="card-header">
   
@@ -25,12 +25,12 @@
             @endif    
         </div>
         <div class="card-body">
-            <form action="{{ route('attendance.leave.store') }}" method="POST">
+            <form action="{{ route('attendance.holiday.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="lblleavetype" class="form-label">Applied For:*</label>
+                            <label for="lblleavetype" class="form-label">Holiday Year:*</label>
                             <select name="leavetype" id="leavetype" class="form-control" required>
                                 <option value="" selected disabled>Select a Leave Type</option>
                                 @foreach ($LeaveType as $lt)

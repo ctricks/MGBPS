@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\HolidayImport;
 use App\Models\Holiday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use Carbon\Carbon;
 
 class HolidayController extends Controller
@@ -17,8 +21,8 @@ class HolidayController extends Controller
         //
         //$data = Holiday::orderBy('Date','ASC')->get();
         $data = DB::select(
-            "select h.id, h.year,h.HolidayName,h.Date,h.HolidayType,h.isActive,
-                c.name as 'CreatedBy',h.created_at as 'CreatedDate',u.name as 'UpdatedBy',h.UpdatedDate from holiday h
+            "select h.id, h.year as 'EventYear',h.HolidayName,h.Date,h.HolidayType,h.isActive,
+                c.name as 'CreatedBy',h.created_at as 'CreatedDate',u.name as 'UpdatedBy',h.UpdatedDate as 'UpdatedDate' from holiday h
                 left join users c on h.CreatedBy = c.id
                 left join users u on h.UpdatedBy = u.id
                 where year = year(CURRENT_TIMESTAMP)"
@@ -45,14 +49,11 @@ class HolidayController extends Controller
 
         // Step 2: Read the entire file to check for additional rows
         $rows = Excel::toArray(null, $file);
-        dd($rows);
+        
         //Validate if the excel file is for DTR Process
         if($rows[0][0] == null || $rows[0][0][0] != 'Event')
             return back()->with('error', 'Data Imported Failed!\n'.'Invalid DTR File. Please check or download the template first');           
-        // Check if the Employee Start in Row 7 as per given Template
-        if($rows[0][6] == null)
-            return back()->with('error', 'Data Imported Failed!\n'.'The employee must start in Row 7.');
-
+        
         // Check if there are no rows beyond the header
         if (count($rows[0]) <= 1) {
             // return response()->json([
@@ -62,7 +63,7 @@ class HolidayController extends Controller
             return back()->with('error', 'Data Imported Failed!\n'.'The file contains only the header row.');
         }
         
-        $import = new RawAttendanceImport();
+        $import = new HolidayImport();
 
             Excel::import($import, $request->file('file'));
 
@@ -98,6 +99,7 @@ class HolidayController extends Controller
     public function create()
     {
         //
+         return view('attendance.holiday.create');
     }
 
     /**
@@ -138,5 +140,7 @@ class HolidayController extends Controller
     public function destroy(string $id)
     {
         //
+        Holiday::where('id',decrypt($id))->delete();
+        return redirect()->back()->with('success','Leave deleted successfully.');
     }
 }

@@ -13,6 +13,7 @@ class Employee extends Model
     protected $fillable = [
         'employeenumber','lastname','firstname','middlename','Address','Telephone',
         'birthday','civil_status_id','gender_id','position_id','department_id','employee_status_id',
+        'DailyRate','SSS_Number','PHIC_Number','HDMF_Number','TIN_Number'
     ];
     
 

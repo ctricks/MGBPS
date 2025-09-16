@@ -134,7 +134,7 @@
                                 <x-error>employeestatus</x-error>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="employeestatus">Work Schedule:</label>
                                 <select name="workschedule" id="workchedule" class="form-control" required>
@@ -147,6 +147,46 @@
                                 <x-error>employeestatus</x-error>
                             </div>
                         </div>
+                        <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="dailyrate" class="form-label">Daily Rate:</label>
+                            <input type="text" class="form-control" name="dailyrate"
+                                value="{{ $employee->DailyRate }}">
+                            <x-error>dailyrate</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="sssnumber" class="form-label">SSS Number:</label>
+                            <input type="text" class="form-control" name="sssnumber"
+                                value="{{ $employee->SSS_Number }}">
+                            <x-error>sssnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="phicnumber" class="form-label">PHIC Number:</label>
+                            <input type="text" class="form-control" name="phicnumber"
+                                value="{{ $employee->PHIC_Number }}">
+                            <x-error>phicnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="hdmfnumber" class="form-label">HDMF Number:</label>
+                            <input type="text" class="form-control" name="hdmfnumber"
+                                value="{{ $employee->HDMF_Number }}">
+                            <x-error>hdmfnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="tinnumber" class="form-label">TIN Number:</label>
+                            <input type="text" class="form-control" name="tinnumber"
+                                value="{{ $employee->TIN_Number }}">
+                            <x-error>tinnumber</x-error>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
                         <div class="float-right">
                             <button class="btn btn-primary" type="submit">Save</button>

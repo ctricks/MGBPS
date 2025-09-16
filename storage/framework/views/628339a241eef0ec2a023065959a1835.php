@@ -13,7 +13,7 @@
         <div class="card-header">
             <h3 class="card-title">Holiday Table</h3>
             <div class="card-tools">
-                <a href="<?php echo e(route('attendance.holiday.create')); ?>" class="btn btn-sm btn-info">New</a>
+                
             </div>
         </div>
 
@@ -84,26 +84,26 @@ unset($__sessionArgs); ?>
                         <th>Updated By</th>
                         <th>Created Date</th>
                         <th>Created By</th>
-                        <th width = "250px;">Action</th>
+                        <th width = "50px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $hDet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td><?php echo e($hDet->id); ?></td>
-                            <td><?php echo e($hDet->Year); ?></td>
+                            <td><?php echo e($hDet->EventYear); ?></td>
                             <td><?php echo e($hDet->HolidayName); ?></td>
                             <td><?php echo e($hDet->Date); ?></td>
                             <td><?php echo e($hDet->HolidayType); ?></td>
                             <td><?php echo e($hDet->isActive); ?></td>
                             <td><?php echo e($hDet->CreatedBy); ?></td>
                             <td><?php echo e($hDet->CreatedDate); ?></td>
+                            <td><?php echo e($hDet->UpdatedDate); ?></td>
                             <td><?php echo e($hDet->UpdatedBy); ?></td>
-                            <td><?php echo e($ltDet->UpdatedDate); ?></td>
-                            <td><div style="display:inline-block;margin-right:5px;"><a href="<?php echo e(route('attendance.leave.edit', encrypt($ltDet->id))); ?>"
-                                    class="btn btn-sm btn-primary">Edit</a></div>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="<?php echo e(route('attendance.leave.destroy', encrypt($hDet->id))); ?>" method="POST"
+                            
+                            <td>
+                                <div>
+                                <form action="<?php echo e(route('attendance.holiday.destroy', encrypt($hDet->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     <?php echo method_field('DELETE'); ?>
                                     <?php echo csrf_field(); ?>
@@ -119,11 +119,12 @@ unset($__sessionArgs); ?>
         <?php $__env->startSection('js'); ?>
         <script>
             $(function() {
-                $('#leaveTable').DataTable({
+                $('#HolidayTable').DataTable({
                     "paging": true,
                     "searching": true,
                     "ordering": true,
                     "responsive": true,
+                    pageLength: 25,
                 });
             });
         </script>

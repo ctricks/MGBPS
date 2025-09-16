@@ -132,7 +132,7 @@
                             <x-error>employeestatus</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <label for="workschedule">Work Schedule:</label>
                             <select name="workschedule" id="workschedule" class="form-control" required>
@@ -144,6 +144,46 @@
                                 @endforeach
                             </select>
                             <x-error>workschedule</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="dailyrate" class="form-label">Daily Rate:</label>
+                            <input type="text" class="form-control" name="dailyrate"
+                                value="{{ old('dailyrate') }}">
+                            <x-error>dailyrate</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="sssnumber" class="form-label">SSS Number:</label>
+                            <input type="text" class="form-control" name="sssnumber"
+                                value="{{ old('sssnumber') }}">
+                            <x-error>sssnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="phicnumber" class="form-label">PHIC Number:</label>
+                            <input type="text" class="form-control" name="phicnumber"
+                                value="{{ old('phicnumber') }}">
+                            <x-error>phicnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="hdmfnumber" class="form-label">HDMF Number:</label>
+                            <input type="text" class="form-control" name="hdmfnumber"
+                                value="{{ old('hdmfnumber') }}">
+                            <x-error>hdmfnumber</x-error>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="tinnumber" class="form-label">TIN Number:</label>
+                            <input type="text" class="form-control" name="tinnumber"
+                                value="{{ old('tinnumber') }}">
+                            <x-error>tinnumber</x-error>
                         </div>
                     </div>
                     <div class="col-lg-12">

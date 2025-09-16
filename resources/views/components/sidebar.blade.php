@@ -144,6 +144,15 @@
                 </a>
                 </li>
                 <li class="nav-item">
+                <a href="{{ route('admin.loantype.index') }}"
+                    class="nav-link {{ Route::is('admin.loantype.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Loan Type
+                   </p>
+                </a>
+                </li>
+                <li class="nav-item">
                 <a href="{{ route('attendance.holiday.index') }}"
                     class="nav-link {{ Route::is('attendance.holiday.index') ? 'active' : '' }}">
                   <i class="nav-icon fas fa-building "></i>
@@ -207,6 +216,64 @@
                     <i class="nav-icon fas fa-building "></i>
                     <p style = "text-indent:15em;">
                         Leave Management
+                    </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
+                Deduction
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                    <a href="{{ route('payroll.payroll.index') }}"
+                        class="nav-link {{ Route::is('payroll.payroll.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-file-alt "></i>
+                    <p style = "text-indent:15em;">
+                        Filling Loans
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('attendance.raw.index') }}"
+                        class="nav-link {{ Route::is('attendance.raw.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        Paid Loans
+                    </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
+                Payroll
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                    <a href="{{ route('payroll.payroll.index') }}"
+                        class="nav-link {{ Route::is('payroll.payroll.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-file-alt "></i>
+                    <p style = "text-indent:15em;">
+                        Process Payroll
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('attendance.raw.index') }}"
+                        class="nav-link {{ Route::is('attendance.raw.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        Payslip
                     </p>
                     </a>
                 </li>

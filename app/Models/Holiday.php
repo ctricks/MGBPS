@@ -10,6 +10,6 @@ class Holiday extends Model
     use HasFactory;
     protected $table = 'Holiday';
     protected $fillable = [
-        'Year','HolidayName','Date','HolidayType','isActive','UpdatedDate','UpdatedBy','CreatedBy']; 
+        'HolidayKey','Year','HolidayName','Date','HolidayType','isActive','UpdatedDate','UpdatedBy','CreatedBy']; 
 
 }

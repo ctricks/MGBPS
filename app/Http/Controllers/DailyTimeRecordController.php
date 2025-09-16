@@ -185,6 +185,7 @@ class DailyTimeRecordController extends Controller
                     set 
                         DType = 
                         (Case 
+                            when (select count(id) from holiday where date = dtr.date) = 1 then 'HD'
                             when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then 'LD'
                             when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
                             when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
@@ -224,7 +225,8 @@ class DailyTimeRecordController extends Controller
                         Leaves = (case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
                     8 else 0 end),
                         [Absent] = (case when (ISNULL(convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),'') = '' or 
-                    ISNULL(convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),'') = '') and 
+                    ISNULL(convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),'') = '') and
+                    (select count(id) from holiday where date = dtr.date) = 0 and 
                     (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
                     (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
                     then
@@ -252,6 +254,7 @@ class DailyTimeRecordController extends Controller
         return "
             select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,LEFT(Datename(WEEKDAY,dtr.date),3) as 'Day',
                         (Case 
+                            when (select count(id) from holiday where date = dtr.date) = 1 then 'HD'
                             when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then 'LD'      
                             when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
                             when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
@@ -294,6 +297,7 @@ class DailyTimeRecordController extends Controller
                         0 as 'OT8Hours',
                         case when (ISNULL(convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108),'') = '' or 
 								  ISNULL(convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108),'') = '') and 
+                                  (select count(id) from holiday where date = dtr.date) = 0 and 
 								  (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and 
 								  (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') = 0 
 						then

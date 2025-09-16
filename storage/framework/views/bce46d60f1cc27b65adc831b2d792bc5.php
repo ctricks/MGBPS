@@ -212,7 +212,7 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->RestDay); ?></td>
                             <td><?php echo e($empDTR->Final_IN); ?></td>
                             <td><?php echo e($empDTR->Final_OUT); ?></td>
-                            <?php if($empDTR->WorkingHours < 8): ?>
+                            <?php if($empDTR->WorkingHours < 8 && $empDTR->RestDay <> 'RD' && $empDTR->RestDay <> 'HD' ): ?>
                                 <td style="color:red;"><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>
                             <?php else: ?>
                                 <td><?php echo e(number_format($empDTR->WorkingHours,2)); ?></td>

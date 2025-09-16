@@ -14,6 +14,7 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeStatusController;
+use App\Http\Controllers\LoanTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
@@ -32,6 +33,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
         Route::resource('product',ProductController::class);
         Route::resource('civilstatus',CivilStatusController::class);
         Route::resource('gender',GenderController::class);
+        Route::resource('loantype',LoanTypeController::class);
         Route::resource('position',PositionController::class);
         Route::resource('department',DepartmentController::class);
         Route::resource('employeestatus',EmployeeStatusController::class);

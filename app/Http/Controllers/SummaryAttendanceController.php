@@ -22,8 +22,11 @@ class SummaryAttendanceController extends Controller
         //Get Current Cut-off as default display
         $now = Carbon::now()->format('F');
         $defaultCutoff = Cutoff::where('Month','=',$now)->get();
-        $data = DB::select($this->SummaryAttendanceQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
-
+        $data = DB::select($this->SummaryAttendanceQuery(''));
+        if($defaultCutoff->count() > 0)
+        {
+            $data = DB::select($this->SummaryAttendanceQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
+        }
         return view('attendance.summary.index',compact('defaultCutoff','data'));
     }
     public function getemployeesummary($cutoff,$empcode)
@@ -129,25 +132,26 @@ public function createcufoff($monthName)
     }
     public function SummaryAttendanceQuery($Criteria)
     {
-        return "
-            SELECT 
+        return "Select
                 cu.Month,
                 cu.id as 'cutoffid',
                 cu.StartDate,cu.EndDate,
                 dtr.employee_code,
                 emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
-                SUM(dtr.WorkingHours)/8 as 'WorkingDays',
+                CAST(SUM(dtr.WorkingHours) / 8 as DECIMAL(9,2)) as 'WorkingDays',
                 SUM(dtr.WorkingHours) as 'WorkingHours',
                 SUM(dtr.NightDiffHours) as 'NDHours',
                 SUM(dtr.OTHours) as 'OTHours',
                 SUM(dtr.Leaves) as 'Leaves',
                 SUM(dtr.Absent) as 'Absent',
                 SUM(dtr.Late) as 'Late',
-                SUM(dtr.Undertime) as 'Undertime'
+                SUM(dtr.Undertime) as 'Undertime',
+                ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday'
                 FROM 
                     daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber
-                left join cutoff cu on dtr.cutoff = cu.id 
+                left join cutoff cu on dtr.cutoff = cu.id
+				left join payroll p on p.employeecode = emp.employeenumber 
                 where [date] between cu.StartDate and cu.EndDate
                 " . $Criteria . "
                 group by 

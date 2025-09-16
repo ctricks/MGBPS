@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('holiday', function (Blueprint $table) {
             $table->id();
+            $table->string('HolidayKey')->unique();
             $table->integer('Year');
-            $table->string('HolidayName')->unique();
+            $table->string('HolidayName');
             $table->date('Date');
             $table->string('HolidayType');
             $table->integer('isActive')->default(1);

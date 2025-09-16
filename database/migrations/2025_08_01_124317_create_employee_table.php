@@ -27,6 +27,11 @@ return new class extends Migration
             $table->foreignId('department_id')->reference('id')->on('department');
             $table->foreignId('employee_status_id')->reference('id')->on('employee_status');
             $table->integer('WorkDays')->nullable();
+            $table->double('DailyRate',8,2)->default('0.00');
+            $table->string('SSS_Number')->nullable();
+            $table->string('PHIC_Number')->nullable();
+            $table->string('HDMF_Number')->nullable();
+            $table->string('TIN_Number')->nullable();
             $table->timestamps();
         });
     }

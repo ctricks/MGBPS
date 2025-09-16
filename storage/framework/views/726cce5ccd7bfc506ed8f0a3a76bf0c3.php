@@ -170,8 +170,8 @@ unset($__sessionArgs); ?>
                         <th>Total Absent</th>
                         <th>Total Late</th>
                         <th>Total Undertime</th>
+                        <th>Holidays</th>
                         <th>Action</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -190,11 +190,12 @@ unset($__sessionArgs); ?>
                             <td><?php echo e(number_format($empDTR->Absent,2)); ?></td>
                             <td><?php echo e(number_format($empDTR->Late,2)); ?></td>
                             <td><?php echo e(number_format($empDTR->Undertime,2)); ?></td>
+                            <td><?php echo e(number_format($empDTR->Holiday,2)); ?></td>
                             <td><a href="<?php echo e(route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code])); ?>"
-                                    class="btn btn-sm btn-primary">View Details</a></td>
-                            <td>
-                                
+                                    class="btn btn-sm btn-primary">View Details</a>
                             </td>
+                            
+                            </td> --}}
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>

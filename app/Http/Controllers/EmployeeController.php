@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -34,8 +35,21 @@ class EmployeeController extends Controller
     //Display Employee index page
     public function index()
     {
-        $data = Employee::orderBy('id','DESC')->get();
-        
+        //$data = Employee::orderBy('id','DESC')->get();
+        $data = DB::select(
+            "SELECT 
+                emp.id
+                ,emp.employeenumber
+                ,emp.lastname
+                ,emp.firstname
+                ,emp.middlename,
+                UPPER(dep.departmentname) as 'department',
+                UPPER(pos.PositionName) as 'position'
+            FROM employees emp
+            left join departments dep on emp.department_id = dep.id 
+            left join positions pos on emp.position_id = pos.id"
+        );
+
         return view('admin.employee.index', compact('data'));
     }
     public function create()
@@ -71,6 +85,11 @@ class EmployeeController extends Controller
             'department_id' => $request->departmentname,
             'employee_status_id'=>$request->employeestatus,
             'WorkDays'=>$request->workschedule,
+            'DailyRate'=>$requet->dailyrate,
+            'SSS_Number'=>$requet->sssnumber,
+            'PHIC_Number'=>$requet->phicnumber,
+            'HDMF_Number'=>$requet->hdmfnumber,
+            'TIN_Number'=>$requet->tinnumber,
         ]);
         return redirect()->route('admin.employee.index')->with('success','Employee created successfully.');
     }
@@ -84,6 +103,7 @@ class EmployeeController extends Controller
         $employeestatus = EmployeeStatus::where('isActive',1)->get();
         $empBirthDate = Carbon::parse($employee->Birthday)->format('Y-m-d');
         $workschedule = DefaultWorkSchedule::where('isActive',1)->get();
+    
         return view('admin.employee.edit',compact('civilstatus','employee','gender','position','department','employeestatus','empBirthDate','workschedule'));
     }
     public function update(Request $request, Employee $employee)
@@ -108,6 +128,11 @@ class EmployeeController extends Controller
         $employee->department_id = $request->departmentname;
         $employee->employee_status_id = $request->employeestatus;
         $employee->WorkDays = $request->workschedule;
+        $employee->DailyRate = $request->dailyrate;
+        $employee->SSS_Number = $request->sssnumber;
+        $employee->PHIC_Number = $request->phicnumber;
+        $employee->HDMF_Number = $request->hdmfnumber;
+        $employee->TIN_Number = $request->tinnumber;
         
         $employee->save();
         return redirect()->route('admin.employee.index')->with('success','Employee updated successfully.');

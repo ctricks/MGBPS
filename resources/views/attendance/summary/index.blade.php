@@ -102,8 +102,8 @@
                         <th>Total Absent</th>
                         <th>Total Late</th>
                         <th>Total Undertime</th>
+                        <th>Holidays</th>
                         <th>Action</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,11 +122,14 @@
                             <td>{{ number_format($empDTR->Absent,2) }}</td>
                             <td>{{ number_format($empDTR->Late,2) }}</td>
                             <td>{{ number_format($empDTR->Undertime,2) }}</td>
+                            <td>{{ number_format($empDTR->Holiday,2) }}</td>
                             <td><a href="{{ route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code]) }}"
-                                    class="btn btn-sm btn-primary">View Details</a></td>
-                            <td>
-                                
+                                    class="btn btn-sm btn-primary">View Details</a>
                             </td>
+                            {{-- <td width="70px;">
+                                {{-- <a href="{{ route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code]) }}"
+                                    class="btn btn-sm btn-success">Payroll</a> --}}
+                            </td> --}}
                         </tr>
                     @endforeach
                     @endif
