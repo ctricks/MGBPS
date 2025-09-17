@@ -120,7 +120,11 @@ class PayrollController extends Controller
                 cu.id as 'cutoffid',
                 cu.StartDate,cu.EndDate,
                 dtr.employee_code as 'Employee_Code',
-                emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName'
+                emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
+                emp.DailyRate,
+                CAST(s.WorkHours * (emp.DailyRate / 8)as DECIMAL(9,2)) as 'BasicPay',
+                s.Absent,
+                CAST((s.Absent / 8 ) * emp.DailyRate as DECIMAL(9,2)) as 'AbsentPay'
                 FROM 
                     daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber
@@ -128,13 +132,15 @@ class PayrollController extends Controller
 				left join payroll p on p.employeecode = emp.employeenumber 
 				left join users u on u.id = p.PreparedBy 
                 left join users a on a.id = p.ApprovedBy
+                left join summary_attendance s on s.employeecode = emp.employeenumber and s.StartDateCutoff = cu.StartDate and s.EndDateCutoff = cu.EndDate
                 where [date] between cu.StartDate and cu.EndDate
                 and
 				cu.id = ". $cutoff ." 
                 and 
                 dtr.employee_code = ". $empcode ."
                 group by 
-                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
+                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename,
+                    emp.DailyRate,s.WorkHours,s.Absent
                 order by emp.lastname desc";
         
 $data = DB::select($PayrollQuery);

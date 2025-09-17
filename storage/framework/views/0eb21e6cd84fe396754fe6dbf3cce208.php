@@ -96,6 +96,27 @@ unset($__sessionArgs); ?>
 <?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
 <?php endif; ?>
                             </div>
+
+                            <div class="form-group col-lg-4"></div>
+                            <div class="form-group col-lg-2">EARNINGS</div>
+                            <div class="form-group col-lg-2">HOUR/s</div>
+                            <div class="form-group col-lg-2">AMOUNT</div>
+                            <div class="form-group col-lg-2">DEDUCTIONS</div>
+                            <div class="form-group col-lg-2">HOUR/s</div>
+                            <div class="form-group col-lg-2">AMOUNT</div>
+                            <div class="form-group col-lg-2">BASIC PAY:</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->DailyRate); ?> / day</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->BasicPay); ?></div>
+                            <div class="form-group col-lg-2">ABSENCES:</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->Absent); ?> hrs</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->AbsentPay); ?></div>
+                            
+                            <div class="form-group col-lg-2">Regular OT:</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->DailyRate); ?> / day</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->BasicPay); ?></div>
+                            <div class="form-group col-lg-2">ABSENCES:</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->Absent); ?> hrs</div>
+                            <div class="form-group col-lg-2"><?php echo e($data[0]->AbsentPay); ?></div>
                         <div class = "form-group col-lg-12">
                                 <button type="submit" class="btn btn-primary float-left">Save</button>
                         </div>

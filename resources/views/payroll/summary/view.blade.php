@@ -43,6 +43,27 @@
                                     value="{{ $data[0]->EmployeeName }}" readonly>
                                     <x-error>employeenumber</x-error>
                             </div>
+
+                            <div class="form-group col-lg-4"></div>
+                            <div class="form-group col-lg-2">EARNINGS</div>
+                            <div class="form-group col-lg-2">HOUR/s</div>
+                            <div class="form-group col-lg-2">AMOUNT</div>
+                            <div class="form-group col-lg-2">DEDUCTIONS</div>
+                            <div class="form-group col-lg-2">HOUR/s</div>
+                            <div class="form-group col-lg-2">AMOUNT</div>
+                            <div class="form-group col-lg-2">BASIC PAY:</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->DailyRate }} / day</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->BasicPay }}</div>
+                            <div class="form-group col-lg-2">ABSENCES:</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->Absent }} hrs</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->AbsentPay }}</div>
+                            {{-- second row --}}
+                            <div class="form-group col-lg-2">Regular OT:</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->DailyRate }} / day</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->BasicPay }}</div>
+                            <div class="form-group col-lg-2">ABSENCES:</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->Absent }} hrs</div>
+                            <div class="form-group col-lg-2">{{ $data[0]->AbsentPay }}</div>
                         <div class = "form-group col-lg-12">
                                 <button type="submit" class="btn btn-primary float-left">Save</button>
                         </div>

@@ -129,7 +129,7 @@
                             {{-- <td width="70px;">
                                 {{-- <a href="{{ route('attendance.summaryattendance.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code]) }}"
                                     class="btn btn-sm btn-success">Payroll</a> --}}
-                            </td> --}}
+                            </td> 
                         </tr>
                     @endforeach
                     @endif

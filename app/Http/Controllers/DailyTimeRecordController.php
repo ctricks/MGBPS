@@ -113,7 +113,7 @@ class DailyTimeRecordController extends Controller
         $dtr->save();
         }catch(Exception $ex)
         {
-            dd($ex);   
+            return redirect()->route('attendance.raw.index')->with('Error',$ex);       
         }
         return redirect()->route('attendance.raw.index')->with('Success','DTR updated successfully');
     }
@@ -176,6 +176,36 @@ class DailyTimeRecordController extends Controller
         $employeecode = $request->employeecode;
 
         return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode'));
+    }
+    private function UpdateDTRSummary($criteria)
+    {
+        return "
+            Select
+                cu.Month,
+                cu.id as 'cutoffid',
+                cu.StartDate,cu.EndDate,
+                dtr.employee_code,
+                emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
+                CAST(SUM(dtr.WorkingHours) / 8 as DECIMAL(9,2)) as 'WorkingDays',
+                SUM(dtr.WorkingHours) as 'WorkingHours',
+                SUM(dtr.NightDiffHours) as 'NDHours',
+                SUM(dtr.OTHours) as 'OTHours',
+                SUM(dtr.Leaves) as 'Leaves',
+                SUM(dtr.Absent) as 'Absent',
+                SUM(dtr.Late) as 'Late',
+                SUM(dtr.Undertime) as 'Undertime',
+                ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday'
+                FROM 
+                    daily_time_records dtr
+                left join employees emp on dtr.employee_code = emp.employeenumber
+                left join cutoff cu on dtr.cutoff = cu.id
+				left join payroll p on p.employeecode = emp.employeenumber 
+                where [date] between cu.StartDate and cu.EndDate
+                " . $Criteria . "
+                group by 
+                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
+                order by emp.lastname desc
+        ";
     }
     private function DTRUpdate($criteria,$cutoff)
     {
@@ -392,8 +422,108 @@ class DailyTimeRecordController extends Controller
         // $Criteria = "where 
         //     dtr.date between '?' and '?' and
         //     dtr.employee_code = '?'";
-    $data = DB::statement($this->DTRUpdate($Criteria,$cutoff));
+
+        $data = DB::statement($this->DTRUpdate($Criteria,$cutoff));
+
+
+        $recordFound = DB::select("
+                                SELECT count(id) as 'RecordFound'
+                                FROM summary_attendance
+                                where employeecode = '".$empcode."' and
+                                StartDateCutoff = '".$StartDate."' and 
+                                EndDateCutoff = '".$EndDate."'"
+                            );
+                            
+        if($recordFound[0]->RecordFound > 0)
+        {
+            //Append
+            DB::statement($this->UpdateQuery($Criteria));
+        }else
+        {
+            //Insert
+            DB::statement($this->InsertQuery($Criteria));
+        }
+
         return response()->json($data);
+    }
+    public function UpdateQuery($criteria)
+    {
+        return "
+                    Update summary_attendance
+            set 
+                SummaryKey = Grouped.SummaryKey,
+                StartDateCutoff = Grouped.StartDate,
+                EndDateCutoff = Grouped.EndDate,
+                RequiredWorkingHours = 0,
+                WorkHours = Grouped.WorkingHours,
+                NDHours = Grouped.NDHours,
+                OTHours = Grouped.OTHours,
+                Absent = Grouped.Absent,
+                Late = Grouped.Late,
+                Undertime = Grouped.Undertime,
+                Holiday = Grouped.Holiday,
+                updated_at = CURRENT_TIMESTAMP
+            FROM 
+                (Select
+                Concat(dtr.employee_code,cu.StartDate,cu.EndDate) as 'SummaryKey',
+                dtr.employee_code as 'employee_code',
+                cu.StartDate as 'StartDate',
+                cu.EndDate as 'EndDate', 
+                0 as 'RequiredWorkingHours',
+                SUM(dtr.WorkingHours) as 'WorkingHours',
+                CAST(SUM(dtr.WorkingHours) / 8 as DECIMAL(9,2)) as 'WorkingDays',
+                SUM(dtr.NightDiffHours) as 'NDHours',
+                SUM(dtr.OTHours) as 'OTHours',
+                SUM(dtr.Leaves) as 'Leaves',
+                SUM(dtr.Absent) as 'Absent',
+                SUM(dtr.Late) as 'Late',
+                SUM(dtr.Undertime) as 'Undertime',
+                ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday'
+                FROM 
+                    daily_time_records dtr
+                left join employees emp on dtr.employee_code = emp.employeenumber
+                left join cutoff cu on dtr.cutoff = cu.id
+                left join payroll p on p.employeecode = emp.employeenumber 
+                --where [date] between cu.StartDate and cu.EndDate 
+                ".$criteria."                
+                group by 
+                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename) as Grouped
+                where summary_attendance.employeecode = Grouped.employee_code and 
+                summary_attendance.StartDateCutoff = Grouped.StartDate and summary_attendance.EndDateCutoff = Grouped.EndDate
+        ";
+    }
+    public function InsertQuery($criteria)
+    {
+        return "
+        insert into summary_attendance 
+            ([SummaryKey],[employeecode],[StartDateCutoff],[EndDateCutoff],[RequiredWorkingHours],[WorkHours]
+                ,[NDHours],[ND8Hours],[OTHours],[OT8Hours],[Absent],[Late],[Undertime],[Holiday],[created_at])
+            Select
+                Concat(dtr.employee_code,cu.StartDate,cu.EndDate) as 'SummaryKey',
+                dtr.employee_code,
+                cu.StartDate,
+                cu.EndDate,
+                0 as 'RequiredWorkingHours',
+                SUM(dtr.WorkingHours) as 'WorkingHours',
+                CAST(SUM(dtr.WorkingHours) / 8 as DECIMAL(9,2)) as 'WorkingDays',
+                SUM(dtr.NightDiffHours) as 'NDHours',
+                SUM(dtr.OTHours) as 'OTHours',
+                SUM(dtr.Leaves) as 'Leaves',
+                SUM(dtr.Absent) as 'Absent',
+                SUM(dtr.Late) as 'Late',
+                SUM(dtr.Undertime) as 'Undertime',
+                ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday',
+                CURRENT_TIMESTAMP
+                FROM 
+                    daily_time_records dtr
+                left join employees emp on dtr.employee_code = emp.employeenumber
+                left join cutoff cu on dtr.cutoff = cu.id
+                left join payroll p on p.employeecode = emp.employeenumber 
+                --where [date] between cu.StartDate and cu.EndDate  
+                ". $criteria ."               
+                group by 
+                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
+        ";
     }
     public function downloadFileTemplate()
     {

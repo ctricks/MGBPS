@@ -195,7 +195,7 @@ unset($__sessionArgs); ?>
                                     class="btn btn-sm btn-primary">View Details</a>
                             </td>
                             
-                            </td> --}}
+                            </td> 
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>

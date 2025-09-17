@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('summary_attendance', function (Blueprint $table) {
             $table->id();
+            $table->string('SummaryKey')->unique();
             $table->string('employeecode');
             $table->date('StartDateCutoff');
             $table->date('EndDateCutoff');
@@ -25,6 +26,8 @@ return new class extends Migration
             $table->double('Absent', 8, 2)->default(0.00);
             $table->double('Late', 8, 2)->default(0.00);
             $table->double('Undertime', 8, 2)->default(0.00);
+            $table->double('Holiday', 8, 2)->default(0.00);
+            $table->double('Leave', 8, 2)->default(0.00);
             $table->timestamps();
         });
     }

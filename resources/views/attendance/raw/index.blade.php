@@ -281,7 +281,7 @@ function PayrollProcess(){
                                     var len = 0;
                                     console.log(response);
                                     if (response === true) {
-                                        alert('Done: Employee Code:' + empcode);
+                                        alert('Done: Employee Code: ' + empcode);
                                     }
 
                                 }

@@ -72,7 +72,7 @@
                             <td>{{ $empDTR->RestDay }}</td>
                             <td>{{ $empDTR->Final_IN }}</td>
                             <td>{{ $empDTR->Final_OUT }}</td>
-                            @if($empDTR->WorkingHours < 8)
+                            @if($empDTR->WorkingHours < 8 && $empDTR->RestDay <> 'RD')
                                 <td style="color:red;">{{ number_format($empDTR->WorkingHours,2) }}</td>
                             @else
                                 <td>{{ number_format($empDTR->WorkingHours,2) }}</td>

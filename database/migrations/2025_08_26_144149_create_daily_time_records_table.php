@@ -38,6 +38,7 @@ return new class extends Migration
             $table->integer('ProcessedBy')->nullable()->default(-1);
             $table->integer('LastUpdateBy')->nullable()->default(-1);
             $table->timestamp('LastUpdateDate')->nullable();
+            $table->string('Reference', 100)->nullable()->default('');
             $table->timestamps();
         });
     }
