@@ -13,7 +13,7 @@
         <div class="card-header">
             <h3 class="card-title">Raw Attendance Table</h3>
             <div class="card-tools">
-                <a href="<?php echo e(route('attendance.raw.create')); ?>" class="btn btn-sm btn-info">New</a>
+                
             </div>
         </div>
 
@@ -357,7 +357,7 @@ function PayrollProcess(){
                                     var len = 0;
                                     console.log(response);
                                     if (response === true) {
-                                        alert('Done: Employee Code:' + empcode);
+                                        alert('Done: Employee Code: ' + empcode);
                                     }
 
                                 }

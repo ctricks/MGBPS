@@ -20,6 +20,11 @@ return new class extends Migration
             $table->integer('NoOfPayment');
             $table->decimal('AmountDeduction', 5, 2)->default(0.00);
             $table->decimal('SemiMonthlyInterest', 5, 2)->default(0.00);
+            $table->string('Status')->nullable()->default('New');
+            $table->integer('ApprovedBy')->nullable();
+            $table->date('ApprovedDate')->nullable();
+            $table->integer('CreatedBy')->default(-1);
+            $table->integer('isActive')->default(1);
             $table->timestamps();
         });
     }

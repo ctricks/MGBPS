@@ -120,11 +120,18 @@ class PayrollController extends Controller
                 cu.id as 'cutoffid',
                 cu.StartDate,cu.EndDate,
                 dtr.employee_code as 'Employee_Code',
+                CAST((s.WorkHours / 8) as DECIMAL(9,2)) as 'WorkingDays',
                 emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
                 emp.DailyRate,
                 CAST(s.WorkHours * (emp.DailyRate / 8)as DECIMAL(9,2)) as 'BasicPay',
                 s.Absent,
-                CAST((s.Absent / 8 ) * emp.DailyRate as DECIMAL(9,2)) as 'AbsentPay'
+                CAST((s.Absent / 8 ) * emp.DailyRate as DECIMAL(9,2)) as 'AbsentPay',
+                0 as 'RegularOTHrs',
+                0.00 as 'RegularOTPay',
+                0 as 'SundayOTHrs',
+                0.00 as 'SundayOTPay',
+                0 as 'LateHrs',
+                0.00 as 'LatePay'
                 FROM 
                     daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber

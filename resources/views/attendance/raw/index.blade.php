@@ -4,7 +4,7 @@
         <div class="card-header">
             <h3 class="card-title">Raw Attendance Table</h3>
             <div class="card-tools">
-                <a href="{{ route('attendance.raw.create') }}" class="btn btn-sm btn-info">New</a>
+                {{-- <a href="{{ route('attendance.raw.create') }}" class="btn btn-sm btn-info">New</a> --}}
             </div>
         </div>
 

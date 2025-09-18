@@ -9,10 +9,12 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
     <?php $__env->startSection('title','View Payroll Summary'); ?>
+    
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title">Payroll Table Period: <?php echo e($cutoffDataSelected); ?></h3>
+            <h3 class="card-title">Payroll Table Period: <?php echo e($cutoffDataSelected); ?></h3><br>
+            <h3 class="card-title">Total Working Days: <?php echo e(number_format($data[0]->WorkingDays,2)); ?></h3>
             <div class="card-tools">
                 <a href="<?php echo e(route('payroll.payroll.index')); ?>" class="btn btn-sm btn-info">Back</a>
             </div>
@@ -104,19 +106,430 @@ unset($__sessionArgs); ?>
                             <div class="form-group col-lg-2">DEDUCTIONS</div>
                             <div class="form-group col-lg-2">HOUR/s</div>
                             <div class="form-group col-lg-2">AMOUNT</div>
-                            <div class="form-group col-lg-2">BASIC PAY:</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->DailyRate); ?> / day</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->BasicPay); ?></div>
-                            <div class="form-group col-lg-2">ABSENCES:</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->Absent); ?> hrs</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->AbsentPay); ?></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="BASIC PAY:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="dailyrate" id="dailyrate"
+                                    value="<?php echo e(number_format($data[0]->DailyRate,2)); ?> / day" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="basicpay" id="basicpay" 
+                                    value="<?php echo e(number_format($data[0]->BasicPay,2)); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="ABSENCES:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="employeename" required numeric
+                                    value="<?php echo e($data[0]->Absent); ?> hrs" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->AbsentPay); ?>" readonly>
+                            </div>
                             
-                            <div class="form-group col-lg-2">Regular OT:</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->DailyRate); ?> / day</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->BasicPay); ?></div>
-                            <div class="form-group col-lg-2">ABSENCES:</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->Absent); ?> hrs</div>
-                            <div class="form-group col-lg-2"><?php echo e($data[0]->AbsentPay); ?></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Regular OT:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="dailyrate" id="dailyrate"
+                                    value="<?php echo e(number_format($data[0]->RegularOTHrs,2)); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="basicpay" id="basicpay" 
+                                    value="<?php echo e(number_format($data[0]->RegularOTPay,2)); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="Half Day:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="employeename" required numeric
+                                    value="<?php echo e($data[0]->Absent); ?> hrs" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->AbsentPay); ?>" readonly>
+                            </div>     
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Sunday/DayOff OT:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="Late:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="employeename" required numeric
+                                    value="<?php echo e($data[0]->LateHrs); ?> hrs" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div> 
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Exceeding Hours:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="Undertime:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="employeename" required numeric
+                                    value="<?php echo e($data[0]->LateHrs); ?> hrs" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div> 
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Legal OT:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="SSS:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="" required numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div> 
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Exceeding Hours:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="PhilHealth:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div> 
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Special Non Working OT :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="HDMF :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div> 
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Exceeding Hours:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="TAX :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Day Off Legal OT:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="SSS Loans :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Exceeding Hours:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="HDMF Loans :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Day Off Special NW OT:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="Other Loans :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name=""  numeric
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Exceeding Hours:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Night Diff :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Allowance (Taxable) :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Allowance (E-Cola):" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Others (Taxable):" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Other (Non Taxable 2) :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Other (Non Taxable 3) :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Adjustment :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="OTHERS:" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="0.00" readonly>
+                            </div>
+                            <div class="form-group col-lg-12"></div>
+                            
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control" 
+                                    value="Total Earnings :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2"> 
+                                <input type="text" class="form-control" name="" id=""
+                                    value="0.00" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                 <input type="text" class="form-control" name="" id="" 
+                                    value="Total Deduction :" readonly></div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="0" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="Net Pay :" readonly>
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <input type="text" class="form-control"  
+                                    value="0.00" readonly>
+                            </div>
                         <div class = "form-group col-lg-12">
                                 <button type="submit" class="btn btn-primary float-left">Save</button>
                         </div>

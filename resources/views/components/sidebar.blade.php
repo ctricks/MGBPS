@@ -161,6 +161,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="{{ route('attendance.ssstable.index') }}"
+                    class="nav-link {{ Route::is('attendance.ssstable.index') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    SSS Reference Table
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         @endrole
@@ -231,8 +240,8 @@
             </a>
             <ul class="nav nav-treeview">
                <li class="nav-item">
-                    <a href="{{ route('payroll.payroll.index') }}"
-                        class="nav-link {{ Route::is('payroll.payroll.index') ? 'active' : '' }}">
+                    <a href="{{ route('deductions.loans.index') }}"
+                        class="nav-link {{ Route::is('deductions.loans.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt "></i>
                     <p style = "text-indent:15em;">
                         Filling Loans
@@ -240,11 +249,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('attendance.raw.index') }}"
-                        class="nav-link {{ Route::is('attendance.raw.index') ? 'active' : '' }}">
+                    <a href="{{ route('deductions.loandetails.index') }}"
+                        class="nav-link {{ Route::is('deductions.loandetails.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
-                        Paid Loans
+                        Loans Details
                     </p>
                     </a>
                 </li>

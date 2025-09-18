@@ -3,6 +3,7 @@
 use App\Http\Controllers\LoginWithOTPController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LoansController;
 use App\Http\Controllers\DailyTimeRecordController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -24,6 +25,8 @@ Route::get('/', function () {
 Route::get('/get-employee/{id}', [EmployeeController::class, 'getEmployeeData']);
 Route::get('/get-dtr-employee/{id}', [DailyTimeRecordController::class, 'getEmployeeDTRData']);
 Route::get('/get-cutoff/{id}', [DailyTimeRecordController::class, 'getCutoffData']);
+Route::get('/autocomplete', [EmployeeController::class, 'employeeautocomplete'])->name('autocomplete');
+Route::get('/getemployeelist/{empcode}', [EmployeeController::class, 'employeecodeautocomplete']);
 
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){
@@ -53,6 +56,9 @@ Route::prefix('oauth/')->group(function(){
 
 //Attendance routes
 require 'attendance.php';
+
+//Deductions routes
+require 'deduction.php';
 
 // Auth routes
 require __DIR__.'/auth.php';

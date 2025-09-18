@@ -128,6 +128,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="<?php echo e(route('attendance.ssstable.index')); ?>"
+                    class="nav-link <?php echo e(Route::is('attendance.ssstable.index') ? 'active' : ''); ?>">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    SSS Reference Table
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         <?php endif; ?>
@@ -198,8 +207,8 @@
             </a>
             <ul class="nav nav-treeview">
                <li class="nav-item">
-                    <a href="<?php echo e(route('payroll.payroll.index')); ?>"
-                        class="nav-link <?php echo e(Route::is('payroll.payroll.index') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('deductions.loans.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('deductions.loans.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-file-alt "></i>
                     <p style = "text-indent:15em;">
                         Filling Loans
@@ -207,11 +216,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo e(route('attendance.raw.index')); ?>"
-                        class="nav-link <?php echo e(Route::is('attendance.raw.index') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('deductions.loandetails.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('deductions.loandetails.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
-                        Paid Loans
+                        Loans Details
                     </p>
                     </a>
                 </li>

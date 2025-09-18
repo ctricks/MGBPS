@@ -19,6 +19,7 @@ use Illuminate\View\View;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
+use Illuminate\Http\JsonResponse;
 
 
 class EmployeeController extends Controller
@@ -195,5 +196,27 @@ class EmployeeController extends Controller
                 'details' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function employeeautocomplete(Request $request): JsonResponse
+    {
+        $data = Employee::select("lastname")
+                    ->where('lastname', 'LIKE', '%'. $request->get('query'). '%')
+                    ->take(10)
+                    ->get();
+        return response()->json($data);
+    }
+    public function employeecodeautocomplete($empID): JsonResponse
+    {
+        $data = DB::select(
+            "select 
+                employeenumber,
+                SSS_Number,
+                PHIC_Number,
+                HDMF_Number,
+                FORMAT(0, '000000') as 'LoanNumber'
+                from 
+                employees where id = " . $empID
+        );
+        return response()->json($data);
     }
 }

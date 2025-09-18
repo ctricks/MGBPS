@@ -4,7 +4,7 @@
         <div class="card-header">
             <h3 class="card-title">Payroll Process Table</h3>
             <div class="card-tools">
-                <a href="{{ route('payroll.payroll.create') }}" class="btn btn-sm btn-info">New</a>
+                {{-- <a href="{{ route('payroll.payroll.create') }}" class="btn btn-sm btn-info">New</a> --}}
             </div>
         </div>
     <div class="card-header">
