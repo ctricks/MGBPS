@@ -83,7 +83,7 @@ class DepartmentController extends Controller
         $department->Description = $request->description;
         $department->isActive = $request->isActive;
         $department->save();
-        return redirect()->route('admin.department.index')->with('Success','Department updated successfully');
+        return redirect()->route('admin.department.index')->with('success','Department updated successfully');
     }
 
     /**

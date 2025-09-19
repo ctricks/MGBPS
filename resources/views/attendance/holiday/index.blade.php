@@ -41,8 +41,6 @@
                     <button class="btn btn-success"><i class="fa fa-file"></i> Import User Data</button>
                     <a href="{{ route('attendance.holiday.downloadtemplate') }}" class="btn btn-primary">Download Template</a>
                 </div>
-                
-                
             </form>    
         </div>
         <div class="card-body">

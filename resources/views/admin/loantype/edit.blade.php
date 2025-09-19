@@ -1,16 +1,16 @@
 <x-admin>
-    @section('title', 'Edit Leave Type')
+    @section('title', 'Edit Loan Type')
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Leave Type</h3>
+                        <h3 class="card-title">Edit Loan Type</h3>
                         <div class="card-tools">
-                            <a href="{{ route('attendance.leavetype.index') }}" class="btn btn-info btn-sm">Back</a>
+                            <a href="{{ route('admin.loantype.index') }}" class="btn btn-info btn-sm">Back</a>
                         </div>
                     </div>
-                    <form class="needs-validation" novalidate action="{{ route('attendance.leavetype.update', $data) }}"
+                    <form class="needs-validation" novalidate action="{{ route('admin.loantype.update', $data) }}"
                         method="POST">
                         @method('PUT')
                         @csrf
@@ -18,10 +18,10 @@
                         <div class="card-body">
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="lblWorkSchedule" class="form-label">Leave Type Name:*</label>
-                                    <input type="text" class="form-control" id="LeaveType" name="LeaveType"
-                                        placeholder="Enter Leave Type Name" value="{{ $data->LeaveType }}" required>
-                                    <x-error>LeaveType</x-error>
+                                    <label for="lblloantype" class="form-label">Leave Type Name:*</label>
+                                    <input type="text" class="form-control" id="LoanType" name="LoanType"
+                                        placeholder="Enter Leave Type Name" value="{{ $data->LoanType }}" required>
+                                    <x-error>LoanType</x-error>
                                 </div>
                             </div>
                             <div class="col-lg-6">

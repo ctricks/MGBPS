@@ -81,17 +81,24 @@
                         <th>Status</th>
                         <th>Action</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($data as $ltDet)
                         <tr>
                             <td>{{ $ltDet->id }}</td>
-                            <td>{{ $ltDet->LoanType }}</td>
+                            <td>{{ Carbon\Carbon::parse($ltDet->LoanDate)->format('m-d-Y') }}</td>
+                            <td>{{ $ltDet->employeenumber }}</td>
+                            <td>{{ $ltDet->LoanType }} </td>
                             <td>{{ $ltDet->Description }}</td>
-                            <td>{{ $ltDet->isActive == 1 ? "Active":"In-active" }}</td>
-                            <td><a href="{{ route('admin.loantype.edit', encrypt($ltDet->id)) }}"
+                            <td>{{ $ltDet->Amount }}</td>
+                            <td>{{ $ltDet->NoOfPayment}}</td>
+                            <td>{{ str_replace('_',' ',$ltDet->Status) }}</td>
+                            <td><a href="{{ route('deductions.loans.edit', encrypt($ltDet->id)) }}"
                                     class="btn btn-sm btn-primary">Edit</a></td>
+                            <td><a href="{{ route('admin.loantype.edit', encrypt($ltDet->id)) }}"
+                                    class="btn btn-sm btn-primary">Approve</a></td>
                             <td>
                                 <form action="{{ route('admin.loantype.destroy', encrypt($ltDet->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
@@ -108,7 +115,7 @@
         @section('js')
         <script>
             $(function() {
-                $('#loantypeTable').DataTable({
+                $('#loanTable').DataTable({
                     "paging": true,
                     "searching": true,
                     "ordering": true,

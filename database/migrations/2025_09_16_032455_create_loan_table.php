@@ -13,16 +13,19 @@ return new class extends Migration
     {
         Schema::create('loan', function (Blueprint $table) {
             $table->id();
-            $table->string('Employeecode');
+            $table->integer('EmployeeID');
             $table->integer('Loantype');
-            $table->date('LoanDate');
-            $table->decimal('Amount', 5, 2)->default(0.00);
+            $table->timestamp('LoanDate');
+            $table->decimal('Amount', 9, 2)->default(0.00);
             $table->integer('NoOfPayment');
-            $table->decimal('AmountDeduction', 5, 2)->default(0.00);
-            $table->decimal('SemiMonthlyInterest', 5, 2)->default(0.00);
-            $table->string('Status')->nullable()->default('New');
-            $table->integer('ApprovedBy')->nullable();
-            $table->date('ApprovedDate')->nullable();
+            $table->decimal('AmountDeduction', 9, 2)->default(0.00);
+            $table->decimal('SemiMonthlyInterest', 9, 2)->default(0.00);
+            $table->decimal('TotalInterest', 9, 2)->default(0.00);
+            $table->decimal('InterestBalance', 9, 2)->default(0.00);
+            $table->decimal('Balance', 9, 2)->default(0.00);
+            $table->string('Status')->default('New');
+            $table->integer('ApprovedBy')->default(-1);
+            $table->timestamp('ApprovedDate')->nullable();
             $table->integer('CreatedBy')->default(-1);
             $table->integer('isActive')->default(1);
             $table->timestamps();

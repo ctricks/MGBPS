@@ -10,7 +10,7 @@ class Loan extends Model
     use HasFactory;
      protected $table = 'loan';
      protected $fillable = [
-        'Employeecode','LoanType','LoanDate','Amount','NoOfPayment','AmountDeduction','SemiMonthlyInterest',
+        'Employeeid','LoanType','LoanDate','Amount','NoOfPayment','AmountDeduction','SemiMonthlyInterest',
         'Status','ApprovedBy','ApprovedDate','CreatedBy','isActive'
     ];
 }

@@ -23,13 +23,14 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::get('processpayroll/{cutoff}/{empcode}',[DailyTimeRecordController::class,'processpayroll'])->name('raw.processpayroll');
         Route::patch('leaveapprove/{id}',[LeaveController::class,'approve'])->name('leave.approve');
         Route::patch('leavedecline/{id}',[LeaveController::class,'decline'])->name('leave.decline');
-        Route::get('restdayimport', [RestdayController::class,'import'])->name('restday.import');
+        Route::post('restdayimport', [RestdayController::class,'import'])->name('restday.import');
         Route::post('holidayimport', [HolidayController::class,'import'])->name('holiday.import');
         Route::post('ssstableimport', [SSSReferenceController::class,'import'])->name('ssstable.import');
         Route::post('rawattendanceimport', [DailyTimeRecordController::class,'import'])->name('rawattendance.import');
         Route::post('rawattendancelist', [DailyTimeRecordController::class,'getemployeelist'])->name('rawattendance.list');
         Route::post('summaryattendancelist', [SummaryAttendanceController::class,'getemployeelist'])->name('summaryattendance.list');
         Route::get('summary/{cutoff}/{empcode}', [SummaryAttendanceController::class,'getemployeesummary'])->name('summaryattendance.view');
+        Route::get('restdaydownloadtemplate', [RestdayController::class,'downloadFileTemplate'])->name('restday.downloadtemplate');
         Route::get('rawattendancedownloadtemplate', [DailyTimeRecordController::class,'downloadFileTemplate'])->name('rawattendance.downloadtemplate'); 
         Route::get('holidayattendancedownloadtemplate', [HolidayController::class,'downloadFileTemplate'])->name('holiday.downloadtemplate');
         Route::get('sssreferencedownloadtemplate', [SSSReferenceController::class,'downloadFileTemplate'])->name('sssreference.downloadtemplate');      

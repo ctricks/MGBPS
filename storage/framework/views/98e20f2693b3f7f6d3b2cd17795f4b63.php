@@ -14,6 +14,33 @@
             <h3 class="card-title">Department Table</h3>
             <div class="card-tools"><a href="<?php echo e(route('admin.department.create')); ?>" class="btn btn-sm btn-primary">Add</a></div>
         </div>
+            <div class="card-header">
+  
+            <?php $__sessionArgs = ['success'];
+if (session()->has($__sessionArgs[0])) :
+if (isset($value)) { $__sessionPrevious[] = $value; }
+$value = session()->get($__sessionArgs[0]); ?>
+                <div class="alert alert-success" role="alert"> 
+                    <?php echo e($value); ?>
+
+                </div>
+            <?php unset($value);
+if (isset($__sessionPrevious) && !empty($__sessionPrevious)) { $value = array_pop($__sessionPrevious); }
+if (isset($__sessionPrevious) && empty($__sessionPrevious)) { unset($__sessionPrevious); }
+endif;
+unset($__sessionArgs); ?>
+  
+            <?php if($errors->any()): ?>
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+            <?php endif; ?>    
+        </div>
         <div class="card-body">
             <table class="table table-striped" id="departmentTable">
                 <thead>

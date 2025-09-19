@@ -61,6 +61,8 @@ class LoanTypeController extends Controller
     public function edit(string $id)
     {
         //
+        $data = LoanType::where('id',decrypt($id))->first();
+        return view('admin.loantype.edit',compact('data'));
     }
 
     /**
@@ -69,6 +71,19 @@ class LoanTypeController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            "LoanType"=>'required','string','max:255',
+            "Description"=>'required','string','max:255',
+            "isActive"=>'required','integer',
+        ]);
+        
+        $loantype = LoanType::find($request->id);
+        $loantype->LoanKey = $request->LoanType.'_'.$request->Description;
+        $loantype->LoanType = $request->LoanType;
+        $loantype->Description = $request->Description;
+        $loantype->isActive = $request->isActive;
+        $loantype->save();
+        return redirect()->route('admin.loantype.index')->with('success','Loan Type updated successfully');
     }
 
     /**
@@ -77,5 +92,7 @@ class LoanTypeController extends Controller
     public function destroy(string $id)
     {
         //
+        LoanType::where('id',decrypt($id))->delete();
+        return redirect()->back()->with('success','Loan Type deleted successfully.');
     }
 }

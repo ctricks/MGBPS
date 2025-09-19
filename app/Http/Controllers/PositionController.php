@@ -84,7 +84,7 @@ class PositionController extends Controller
         $position->Description = $request->description;
         $position->isActive = $request->isActive;
         $position->save();
-        return redirect()->route('admin.position.index')->with('Success','Position updated successfully');
+        return redirect()->route('admin.position.index')->with('success','Position updated successfully');
     }
 
     /**

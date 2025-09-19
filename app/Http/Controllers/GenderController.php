@@ -80,7 +80,7 @@ class GenderController extends Controller
         $gender->gender = $request->gender;
         $gender->isActive = $request->isActive;
         $gender->save();
-        return redirect()->route('admin.gender.index')->with('Success','Gender updated successfully');
+        return redirect()->route('admin.gender.index')->with('success','Gender updated successfully');
     }
 
     /**

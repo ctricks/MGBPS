@@ -152,17 +152,24 @@ unset($__sessionArgs); ?>
                         <th>Status</th>
                         <th>Action</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ltDet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td><?php echo e($ltDet->id); ?></td>
-                            <td><?php echo e($ltDet->LoanType); ?></td>
+                            <td><?php echo e(Carbon\Carbon::parse($ltDet->LoanDate)->format('m-d-Y')); ?></td>
+                            <td><?php echo e($ltDet->employeenumber); ?></td>
+                            <td><?php echo e($ltDet->LoanType); ?> </td>
                             <td><?php echo e($ltDet->Description); ?></td>
-                            <td><?php echo e($ltDet->isActive == 1 ? "Active":"In-active"); ?></td>
-                            <td><a href="<?php echo e(route('admin.loantype.edit', encrypt($ltDet->id))); ?>"
+                            <td><?php echo e($ltDet->Amount); ?></td>
+                            <td><?php echo e($ltDet->NoOfPayment); ?></td>
+                            <td><?php echo e(str_replace('_',' ',$ltDet->Status)); ?></td>
+                            <td><a href="<?php echo e(route('deductions.loans.edit', encrypt($ltDet->id))); ?>"
                                     class="btn btn-sm btn-primary">Edit</a></td>
+                            <td><a href="<?php echo e(route('admin.loantype.edit', encrypt($ltDet->id))); ?>"
+                                    class="btn btn-sm btn-primary">Approve</a></td>
                             <td>
                                 <form action="<?php echo e(route('admin.loantype.destroy', encrypt($ltDet->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
@@ -179,7 +186,7 @@ unset($__sessionArgs); ?>
         <?php $__env->startSection('js'); ?>
         <script>
             $(function() {
-                $('#loantypeTable').DataTable({
+                $('#loanTable').DataTable({
                     "paging": true,
                     "searching": true,
                     "ordering": true,

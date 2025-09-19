@@ -84,7 +84,7 @@ class EmployeeStatusController extends Controller
         $employeestatus->Description = $request->description;
         $employeestatus->isActive = $request->isActive;
         $employeestatus->save();
-        return redirect()->route('admin.employeestatus.index')->with('Success','Employee Status updated successfully');
+        return redirect()->route('admin.employeestatus.index')->with('success','Employee Status updated successfully');
     }
 
     /**

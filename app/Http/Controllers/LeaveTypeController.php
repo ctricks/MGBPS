@@ -78,7 +78,7 @@ class LeaveTypeController extends Controller
         $leavetype->description = $request->Description;
         $leavetype->isActive = $request->isActive;
         $leavetype->save();
-        return redirect()->route('attendance.leavetype.index')->with('Success','Leave Type updated successfully');
+        return redirect()->route('attendance.leavetype.index')->with('success','Leave Type updated successfully');
     }
 
     /**

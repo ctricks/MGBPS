@@ -22,11 +22,11 @@ class LoansController extends Controller
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $data = DB::select("
             SELECT 
-                l.id,l.Employeecode,lt.LoanType,lt.Description,
+                l.id,emp.employeenumber,lt.LoanType,lt.Description,
                 l.LoanDate,l.Amount,l.NoOfPayment,l.AmountDeduction,l.SemiMonthlyInterest,
                 l.Status,u.name as 'ApprovedBy',l.ApprovedDate,c.name as 'CreatedBy'
             from loan l
-            left join employees emp on emp.employeenumber = l.Employeecode
+            left join employees emp on emp.id = l.Employeeid
             left join loantype lt on lt.id = l.Loantype
             left join users u on u.id = l.ApprovedBy
             left join users c on c.id = l.CreatedBy
@@ -65,15 +65,20 @@ if($request->SemiInterest != null)
 {
     $SemiInterest = $request->SemiInterest;
 }
+        $employee = Employee::where('employeenumber',$request->empcode)->get();
+        if($employee->count() == 0)
+        {
+            return redirect()->route('deductions.loans.index')->with('failed','Loan failed.');
+        }
         $data = Loan::create([
-            'Employeecode'=>strval($request->empcode),
+            'Employeeid'=>$employee[0]->id,
             'LoanType'=>$request->description,
             'LoanDate'=> Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-            'Amount'=>$request->loanAmount,
+            'Amount'=>(float) str_replace(',', '', number_format($request->loanAmount,2)),
             'NoOfPayment'=>$request->installment,
-            'AmountDeduction'=>$request->deductionAmount,
-            'SemiMonthlyInterest'=>$SemiInterest,
-            'Status'=>'For_Approval',
+            'AmountDeduction'=>(float) str_replace(',', '', number_format($request->deductionAmount,2)),
+            'SemiMonthlyInterest'=>(float) str_replace(',', '',number_format($SemiInterest,2)),
+            'Status'=>strval('For_Approval'),
             'CreatedBy'=>Auth::id(),
         ]);
 
@@ -94,6 +99,7 @@ if($request->SemiInterest != null)
     public function edit(string $id)
     {
         //
+        dd($id);
     }
 
     /**

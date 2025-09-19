@@ -80,7 +80,7 @@ class CivilStatusController extends Controller
         $civilstatus->civilstatus = $request->civilstatus;
         $civilstatus->isActive = $request->isActive;
         $civilstatus->save();
-        return redirect()->route('admin.civilstatus.index')->with('Success','Civil Status updated successfully');
+        return redirect()->route('admin.civilstatus.index')->with('success','Civil Status updated successfully');
     }
 
     /**

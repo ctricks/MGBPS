@@ -5,6 +5,25 @@
             <h3 class="card-title">Gender Table</h3>
             <div class="card-tools"><a href="{{ route('admin.gender.create') }}" class="btn btn-sm btn-primary">Add</a></div>
         </div>
+            <div class="card-header">
+  
+            @session('success')
+                <div class="alert alert-success" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+  
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif    
+        </div>
         <div class="card-body">
             <table class="table table-striped" id="genderTable">
                 <thead>

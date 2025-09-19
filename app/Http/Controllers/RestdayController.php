@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Imports\RestdayImport;
 use App\Models\Restday;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
+use Carbon\Carbon;
 
 class RestdayController extends Controller
 {
@@ -96,7 +100,7 @@ class RestdayController extends Controller
         $restday->isActive = $request->isActive;
         $restday->save();
         
-        return redirect()->route('attendance.restday.index')->with('Success','Restday updated successfully');
+        return redirect()->route('attendance.restday.index')->with('success','Restday updated successfully');
     }
 
     /**
@@ -134,7 +138,7 @@ class RestdayController extends Controller
             return back()->with('error', 'Data Imported Failed!\n'.'The file contains only the header row.');
         }
         
-        $import = new EmployeeImport();
+        $import = new RestdayImport();
 
             Excel::import($import, $request->file('file'));
 
@@ -144,5 +148,22 @@ class RestdayController extends Controller
             {
                 return back()->with('error', 'Data Imported Failed!'.$e->getMessage());
             }
+    }
+    public function downloadFileTemplate()
+    {
+        $filename = "RestdayTemplate.xls";
+        $path = storage_path("app/public/template/{$filename}");
+
+        try {
+            
+            return response()->download($path, $filename, [
+            'Content-Type' => 'application/text',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to download the file.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
