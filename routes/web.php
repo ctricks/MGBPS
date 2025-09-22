@@ -57,6 +57,9 @@ Route::prefix('oauth/')->group(function(){
 //Attendance routes
 require 'attendance.php';
 
+//Earnings routes
+require 'earnings.php';
+
 //Deductions routes
 require 'deduction.php';
 

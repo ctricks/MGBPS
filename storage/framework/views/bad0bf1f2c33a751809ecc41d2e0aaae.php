@@ -8,7 +8,7 @@
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <?php $__env->startSection('title', 'Create User'); ?>
+    <?php $__env->startSection('title', 'Create Civil Status'); ?>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Create Civil Status</h3>

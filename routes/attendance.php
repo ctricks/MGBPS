@@ -9,6 +9,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\SSSReferenceController;
+use App\Http\Controllers\OvertimeTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('attendance')->name('attendance.')->group(function(){
@@ -20,6 +21,7 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::resource('leave',LeaveController::class);
         Route::resource('holiday',HolidayController::class);
         Route::resource('ssstable',SSSReferenceController::class);
+        Route::resource('overtimetype',OvertimeTypeController::class);
         Route::get('processpayroll/{cutoff}/{empcode}',[DailyTimeRecordController::class,'processpayroll'])->name('raw.processpayroll');
         Route::patch('leaveapprove/{id}',[LeaveController::class,'approve'])->name('leave.approve');
         Route::patch('leavedecline/{id}',[LeaveController::class,'decline'])->name('leave.decline');

@@ -15,6 +15,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeStatusController;
 use App\Http\Controllers\LoanTypeController;
+use App\Http\Controllers\OvertimeTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
@@ -37,6 +38,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
         Route::resource('position',PositionController::class);
         Route::resource('department',DepartmentController::class);
         Route::resource('employeestatus',EmployeeStatusController::class);
+        Route::resource('overtimetype',OvertimeTypeController::class);
         Route::get('/get-employee-data', [EmployeeController::class, 'getEmployeeData'])->name('employee.search');
         Route::post('employeeimport', [EmployeeController::class,'import'])->name('employee.import');
         Route::get('employeedownloadtemplate', [EmployeeController::class,'downloadFileTemplate'])->name('employee.downloadtemplate');

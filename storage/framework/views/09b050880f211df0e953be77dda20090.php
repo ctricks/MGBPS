@@ -137,6 +137,15 @@
                    </p>
                 </a>
                 </li>
+                <li class="nav-item">
+                <a href="<?php echo e(route('attendance.overtimetype.index')); ?>"
+                    class="nav-link <?php echo e(Route::is('attendance.overtimetype.index') ? 'active' : ''); ?>">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    Overtime Type
+                   </p>
+                </a>
+                </li>
             </ul>
           </li>
         <?php endif; ?>
@@ -221,6 +230,35 @@
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
                         Loans Details
+                    </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
+                Earnings
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                    <a href="<?php echo e(route('deductions.loans.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('deductions.loans.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-file-alt "></i>
+                    <p style = "text-indent:15em;">
+                        Overtime
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo e(route('deductions.loandetails.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('deductions.loandetails.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        Allowances
                     </p>
                     </a>
                 </li>

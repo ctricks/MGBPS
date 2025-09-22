@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeStatusSeeder::class);
         $this->call(DefaultWorkScheduleSeeder::class);
         $this->call(LoanTypeSeeder::class);
+        $this->call(OvertimeTypeSeeder::class);
     }
 }
