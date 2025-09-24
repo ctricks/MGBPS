@@ -67,13 +67,16 @@ class SummaryAttendanceController extends Controller
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
 
+        $empcode = explode(':',$request->employeecode);
+        $empcode = trim($empcode[1]);
+
         if($cutoffData[0] != null)
         {
-            if($request->employeecode != "")
+            if($empcode != "")
             {
                 $criteria = "and
                         dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'".
-                        "and dtr.employee_code = '" . $request->employeecode. "'";
+                        "and dtr.employee_code = '" . $empcode. "'";
             }else
             {
                 $criteria = "and

@@ -246,9 +246,40 @@ unset($__sessionArgs); ?>
                                         // Append the new option to the dropdown
                                         $('#cutoff').append(newOption);
                                     });
+                                    GetEmployeeNumber();
                                 }
                             }
                         });
+                        const GetEmployeeNumber = () => {
+                        $('#employeecode').find('option').remove().end();
+                        const seletedCutoff = document.getElementById('cutoff').value;
+                        
+                        if(seletedCutoff > 0)
+                        {
+                        //$('#employeecode').find('option').remove().end();
+                        // AJAX request 
+                        $.ajax({
+                            url: '/get-dtr-employee/' + seletedCutoff,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                if (response.length > 0) {
+                                    response.forEach(response => {
+                                        // Create a new option
+                                        const EmpName = response.lastname + ',' + response.firstname + ' ' + response.middlename + ' : ' + response.employee_code;
+                                        const EmployeeName = EmpName.replace('null','No name yet').replace(',null null','');
+                                        
+                                        const newOption = new Option( EmployeeName, response.id);
+                                        // Append the new option to the dropdown
+                                        $('#employeecode').append(newOption);
+                                    });
+                                }
+
+                            }
+                        });
+                        }
+                       }
                     });
                 });
             </script>

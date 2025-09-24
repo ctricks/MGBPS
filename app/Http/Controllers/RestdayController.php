@@ -27,7 +27,7 @@ class RestdayController extends Controller
         //
         $data = DB::table('restday')
     ->join('employees', 'restday.employee_id', '=', 'employees.id') // Inner Join
-    ->select('employees.id', 'employees.employeenumber','employees.lastname','employees.firstname','employees.middlename','restday.restday','restday.isActive') // Select specific columns
+    ->select('restday.id', 'employees.employeenumber','employees.lastname','employees.firstname','employees.middlename','restday.restday','restday.isActive') // Select specific columns
     ->get();
         return view('attendance.restday.index',compact('data'));
     }
@@ -50,7 +50,7 @@ class RestdayController extends Controller
         //
         Restday::updateOrCreate(
             [
-                'EmployeeCodeKey'=>$request->empcode . "-" . $request->Restday,
+                'EmployeeCodeKey'=>$request->empcode, //. "-" . $request->Restday,
                 'employee_id'=>$request->empcode,
                 'RestDay'=>$request->Restday,
                 'Remarks'=>$request->Remarks,

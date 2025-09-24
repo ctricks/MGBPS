@@ -211,6 +211,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('attendance.dtrcorrection.index') }}"
+                        class="nav-link {{ Route::is('attendance.dtrcorrection.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        DTR Correction
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('attendance.restday.index') }}"
                         class="nav-link {{ Route::is('attendance.restday.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-building "></i>

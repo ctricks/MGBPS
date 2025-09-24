@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     @yield('css')
 </head>
 
@@ -103,8 +104,7 @@
     </div>
     <!-- ./wrapper -->
     <footer class="main-footer">
-        <strong>Copyright © 2023-{{ date('Y') }} 
-            {{-- <a href="nihirz.netlify.app">Zala Nihir</a>.</strong>  --}}
+        <strong>Copyright © {{ date('Y') }} 
                 All rights reserved.
     </footer>
     <!-- ./wrapper -->

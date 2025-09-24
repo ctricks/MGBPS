@@ -41,6 +41,7 @@
             <table class="table table-striped" id="restdayTable">
                 <thead>
                     <tr>
+                        <th>Record ID</th>
                         <th>Employee Code</th>
                         <th>Employee</th>
                         <th>Rest Day</th>
@@ -52,6 +53,7 @@
                 <tbody>
                     @foreach ($data as $empDet)
                         <tr>
+                            <td>{{ $empDet->id }}</td>
                             <td>{{ $empDet->employeenumber }}</td>
                             <td>{{ $empDet->lastname . ',' . $empDet->firstname }}</td>
                             <td>{{ $empDet->restday }}</td>

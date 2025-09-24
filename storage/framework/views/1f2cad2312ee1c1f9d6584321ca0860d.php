@@ -58,6 +58,7 @@ unset($__sessionArgs); ?>
             <table class="table table-striped" id="restdayTable">
                 <thead>
                     <tr>
+                        <th>Record ID</th>
                         <th>Employee Code</th>
                         <th>Employee</th>
                         <th>Rest Day</th>
@@ -69,6 +70,7 @@ unset($__sessionArgs); ?>
                 <tbody>
                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $empDet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
+                            <td><?php echo e($empDet->id); ?></td>
                             <td><?php echo e($empDet->employeenumber); ?></td>
                             <td><?php echo e($empDet->lastname . ',' . $empDet->firstname); ?></td>
                             <td><?php echo e($empDet->restday); ?></td>

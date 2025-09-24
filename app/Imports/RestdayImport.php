@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use Carbon\Carbon;
 use App\Models\Restday;
+use App\Models\Employee;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -29,7 +30,6 @@ class RestdayImport implements ToModel, WithStartRow, WithChunkReading
     }
     public function model(array $row)
     {
-        dd($this->$row[0]);
 
         // Check if the row contains an employee header (e.g., "AGOJO, GABRIELA MALAYO (0199)")
         if (isset($row[0]) && is_string($row[0]) && preg_match('/\((.*?)\)/', $row[0], $matches)) {
@@ -37,18 +37,19 @@ class RestdayImport implements ToModel, WithStartRow, WithChunkReading
             return null; // Don't insert this row.
         }
 
+        $employee = Employee::where('employeenumber','=',$row[0])->get();
+        if($employee->count() == 0)
+            return null;
+
         // Check if the row contains a date, indicating it's a data row
         if (isset($row[0])) {
       
                 return Restday::updateOrCreate([
-                    'employee_id' => $this->employeeCode,
-                    'date' => $formattedDate,
-                    'in_1' => $in1,
-                    'out_1' => $out1,
-                    'in_2' => $in2,
-                    'out_2' => $out2,
-                    'in_3' => $in3,
-                    'out_3' => $out3,
+                     'EmployeeCodeKey' => $row[0],
+                     'employee_id' => $employee[0]->id,
+                     'RestDay'=>$row[1] ,
+                     'Remarks'=>$row[2] ,
+                     'isActive'=> 1 ,
                 ]);
             
         }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+
 class DailyTimeRecordController extends Controller
 {
     public function import(Request $request)
@@ -69,8 +70,10 @@ class DailyTimeRecordController extends Controller
         // $data = $RawAttendanceData->toQuery()->paginate(10);
         // }00
         //dd(count($RawAttendanceData));
-
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus'));
+        $selectedEmployee='';
+        $dayNow = Carbon::now();
+        $LastSearch = $dayNow->setTimezone('Asia/Manila');;
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','selectedEmployee','LastSearch'));
     }
 
     public function edit($id)
@@ -138,12 +141,11 @@ class DailyTimeRecordController extends Controller
     }
     public function getemployeelist(Request $request)
     {
-       
         $cutoffData = Cutoff::where('id',$request->cutoff)->get();
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $currentMonthName = Carbon::now()->format('F');
-
+        $selectedEmployee = "";
         $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
         
         $ProcessStatus = "Unprocess";
@@ -153,19 +155,23 @@ class DailyTimeRecordController extends Controller
             $this->createcufoff('');
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
+        $empcode = explode(':',$request->employeecode);
+        $empcode = trim($empcode[1]);
+
+        $employeeProcessed = Employee::where('employeenumber','=',$empcode)->get();
         
         if($cutoffData[0] != null)
         {
             $criteria = "where
                         dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
-                        and dtr.employee_code = ". $request->employeecode ."";
+                        and dtr.employee_code = ". $empcode."";
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             $data = DB::select($this->DTRQuery($criteria));
         }
 
         $CheckedProcess = "Select count(id) as 'RowCount' from daily_time_records where processedby = 1 and " .
                             "date between '". $cutoffData[0]->StartDate ."' and '" . 
-                            $cutoffData[0]->EndDate ."'and employee_code = ". $request->employeecode ."";
+                            $cutoffData[0]->EndDate ."'and employee_code = ". $empcode ."";
         
         $processeddata = DB::select($CheckedProcess);
         $processcount = $processeddata[0]->RowCount;
@@ -174,8 +180,13 @@ class DailyTimeRecordController extends Controller
             $ProcessStatus = 'Processed';
 
         $employeecode = $request->employeecode;
+        if($employeeProcessed->count() > 0)
+         $selectedEmployee = $employeeProcessed[0]->lastname . ',' . $employeeProcessed[0]->firstname . ' ' .$employeeProcessed[0]->middlename;
+        
+        $LastSearch = Carbon::now();
+        
 
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode'));
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode','selectedEmployee','LastSearch'));
     }
     private function UpdateDTRSummary($criteria)
     {
@@ -284,22 +295,27 @@ class DailyTimeRecordController extends Controller
         return "
             select dtr.id,dtr.employee_code,concat(emp.lastname,',',emp.firstname, ' ' , Left(emp.middlename,1)) as Employee,dtr.date,LEFT(Datename(WEEKDAY,dtr.date),3) as 'Day',
                         (Case 
+                            when (select count(id) from dtrcorrection where date = dtr.date and status = 'Approved') = 1 then 'WDCOR'
                             when (select count(id) from holiday where date = dtr.date) = 1 then 'HD'
                             when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then 'LD'      
-                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 then 'WD'
+                            when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) =  0 and dtr.DType <> 'WDCOR' then 'WD'
                             when (select count(id) from restday where employee_id = emp.id and isActive = 1 and RestDay = Datename(WEEKDAY,dtr.date)) = 1 then 'RD' 
-                                else '' end)as RestDay,
+                                else dtr.DType end)as RestDay,
                         convert(varchar, dtr.in_1, 108) as 'TimeIN',convert(varchar, dtr.in_2, 108) as 'TimeIN_2',convert(varchar, dtr.in_3, 108) as 'TimeIN_3',
                         convert(varchar, dtr.out_1, 108) as 'TimeOUT',convert(varchar, dtr.out_2, 108) as 'TimeOUT_2',convert(varchar, dtr.out_3, 108) as 'TimeOUT_3',
                         convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) as 'Final_IN',
                         convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) as 'Final_OUT',
-                        (case when dws.GracePeriodMins > 0 then 
+                        (case 
+                         when dws.GracePeriodMins > 0 then 
 							convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) 
 						 when dws.GracePeriodMins = 0 then
 							convert(varchar,dws.StartTime,108) 
 						 else convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) end) as 'StartTime',
                             convert(varchar,dws.EndTime,108) as 'EndTime',
-                       (case when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
+                       (case 
+                        when (dtr.DType = 'WDCOR' and (select count(id) from dtrcorrection where date = dtr.date and status = 'Approved') = 1) then 8
+                        when (dtr.DType = 'WDCOR' and (select count(id) from dtrcorrection where date = dtr.date and status = 'Approved') = 0) then 0
+                        when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
                                 convert(varchar,COALESCE(dtr.out_3,dtr.out_2,dtr.out_1),108) >= convert(varchar,dws.EndTime,108)
                                 then 8 
                                 when convert(varchar,DateADD(MINUTE,dws.GracePeriodMins,dws.StartTime),108) > convert(varchar,COALESCE(dtr.in_3,dtr.in_2,dtr.in_1),108) and
@@ -356,7 +372,7 @@ class DailyTimeRecordController extends Controller
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             $data = DB::table('daily_time_records')
             ->LeftJoin('employees','daily_time_records.employee_code','=','employees.employeenumber')
-            ->select('daily_time_records.employee_code')
+            ->select('daily_time_records.employee_code','employees.lastname','employees.firstname','employees.middlename')
             ->whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
             ->distinct()
             ->get();

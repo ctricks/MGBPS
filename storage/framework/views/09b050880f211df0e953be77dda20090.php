@@ -178,6 +178,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="<?php echo e(route('attendance.dtrcorrection.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('attendance.dtrcorrection.index') ? 'active' : ''); ?>">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        DTR Correction
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="<?php echo e(route('attendance.restday.index')); ?>"
                         class="nav-link <?php echo e(Route::is('attendance.restday.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-building "></i>

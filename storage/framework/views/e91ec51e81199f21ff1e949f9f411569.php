@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/styles.css')); ?>">
     <?php echo $__env->yieldContent('css'); ?>
 </head>
 
@@ -142,8 +143,7 @@
     </div>
     <!-- ./wrapper -->
     <footer class="main-footer">
-        <strong>Copyright © 2023-<?php echo e(date('Y')); ?> 
-            
+        <strong>Copyright © <?php echo e(date('Y')); ?> 
                 All rights reserved.
     </footer>
     <!-- ./wrapper -->
