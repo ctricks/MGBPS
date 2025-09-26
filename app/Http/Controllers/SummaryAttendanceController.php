@@ -21,11 +21,15 @@ class SummaryAttendanceController extends Controller
         //$data = 
         //Get Current Cut-off as default display
         $now = Carbon::now()->format('F');
-        $defaultCutoff = Cutoff::where('Month','=',$now)->get();
+        $defaultCutoff = Cutoff::where('Month','=',$now)->where('status','=','OPEN')->get();
         $data = DB::select($this->SummaryAttendanceQuery(''));
+
         if($defaultCutoff->count() > 0)
         {
             $data = DB::select($this->SummaryAttendanceQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
+        }else
+        {
+            $data = DB::select($this->SummaryAttendanceQuery("and    cu.status = 'OPEN' "));
         }
         return view('attendance.summary.index',compact('defaultCutoff','data'));
     }
@@ -57,7 +61,7 @@ class SummaryAttendanceController extends Controller
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $currentMonthName = Carbon::now()->format('F');
 
-        $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
+        $cutOFF = CutOff::where('id','=',$request->cutoff)->get();
         
         $ProcessStatus = "Not Process";
 

@@ -18,11 +18,14 @@ class PayrollController extends Controller
     {
         //
         $now = Carbon::now()->format('F');
-        $defaultCutoff = Cutoff::where('Month','=',$now)->get();
+        $defaultCutoff = Cutoff::where('Month','=',$now)->where('status','=','OPEN')->get();
         $data = DB::select($this->SummaryPayrollQuery(''));
         if($defaultCutoff->count() > 0)
         {
             $data = DB::select($this->SummaryPayrollQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
+        }else
+        {
+            $data = DB::select($this->SummaryPayrollQuery("and    cu.status = 'OPEN'"));
         }
         return view('payroll.summary.index',compact('defaultCutoff','data'));
     }

@@ -109,15 +109,7 @@
         </div>
     </div>
 </x-admin>
-<script>
-  const myDiv = document.getElementById("description");
-  const empNumber = document.getElementById("dropdownContent").textContent;
-  const eNumb = document.getElementById("empcode");
-  myDiv.onblur = function () {
-    eNumb.value = empNumber.trim().split(':')[0];
-  };
-</script>
-<script>
+{{-- <script>
         $(document).ready(function () {
             $('#dropdownDisplay').on('click', function () {
                 $('#dropdownContent').toggle();
@@ -142,4 +134,4 @@
                 }
             });
         });
-    </script>
+    </script> --}}

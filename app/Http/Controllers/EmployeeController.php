@@ -45,7 +45,8 @@ class EmployeeController extends Controller
                 ,emp.firstname
                 ,emp.middlename,
                 UPPER(dep.departmentname) as 'department',
-                UPPER(pos.PositionName) as 'position'
+                UPPER(pos.PositionName) as 'position',
+                UPPER(emp.SubDepartment) as 'SubDepartment'
             FROM employees emp
             left join departments dep on emp.department_id = dep.id 
             left join positions pos on emp.position_id = pos.id"
@@ -84,6 +85,7 @@ class EmployeeController extends Controller
             'gender_id' => $request->gender,
             'position_id' => $request->position,
             'department_id' => $request->departmentname,
+            'subdepartment' => $request->subdepartmentname,
             'employee_status_id'=>$request->employeestatus,
             'WorkDays'=>$request->workschedule,
             'DailyRate'=>$requet->dailyrate,
@@ -127,6 +129,7 @@ class EmployeeController extends Controller
         $employee->gender_id = $request->gender;
         $employee->position_id = $request->position;
         $employee->department_id = $request->departmentname;
+        $employee->SubDepartment = $request->subdepartmentname;
         $employee->employee_status_id = $request->employeestatus;
         $employee->WorkDays = $request->workschedule;
         $employee->DailyRate = $request->dailyrate;

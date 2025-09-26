@@ -213,6 +213,64 @@
             "closeButton": true,
         }
     </script>
+    <script>
+        $(document).ready(function () {
+            $('#dropdownDisplay').on('click', function () {
+                $('#dropdownContent').toggle();
+            });
+
+            $('#searchInput').on('input', function () {
+                let value = $(this).val().toLowerCase();
+                $('#dropdownList li').filter(function () {
+                    $(this).toggle($(this).text()
+                           .toLowerCase().indexOf(value) > -1);
+                });
+            });
+
+            $('#dropdownList').on('click', 'li', function () {
+                $('#dropdownDisplay').text($(this).text());
+                $('#dropdownContent').hide();
+            });     
+
+            const empNumber = document.getElementById("dropdownContent").textContent;
+            const empSelected = document.getElementById("dropdownDisplay").textContent;
+            
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.search-dropdown').length) {
+                    $('#dropdownContent').hide();
+                }
+                    const eNumb = document.getElementById("empcode");
+                    eNumb.value = empNumber.trim().split(':')[0];
+            });
+            
+        });
+    </script>
+    <script>
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), 1);;
+    const FirstDate = today.toLocaleDateString('en-CA'); // 'en-CA' uses the yyyy-mm-dd format
+    const LastDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const EndDate = LastDate.toLocaleDateString('en-CA'); 
+    
+    // Set the value of the input field
+    document.getElementById('startdate').value = FirstDate;
+    document.getElementById('enddate').value = EndDate;
+    $("#start-date").change(function(){
+    $("#end-date").prop("min", $(this).val());
+    $("#end-date").val(""); //clear end date input when start date changes
+    });
+  </script>
+  <script>
+        function getMonthName(monthNumber) {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    
+    // monthNumber should be 1–12
+    return monthNames[monthNumber - 1] || "Invalid month";
+    }
+  </script>
     <?php if (isset($component)) { $__componentOriginalb5e767ad160784309dfcad41e788743b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalb5e767ad160784309dfcad41e788743b = $attributes; } ?>
 <?php $component = App\View\Components\Alert::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>

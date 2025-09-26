@@ -29,26 +29,26 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3><?php echo e($employee); ?></h3>
+                    <h3><?php echo e($processAttendance); ?></h3>
                     <p>Processed Attendance</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="<?php echo e(route('admin.employee.index')); ?>" class="small-box-footer">View <i
+                <a href="<?php echo e(route('attendance.summary.index')); ?>" class="small-box-footer">View <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3><?php echo e($employee); ?></h3>
-                    <p>Processed Payroll</p>
+                    <h3><?php echo e($processPayroll); ?></h3>
+                    <p>For Process Payroll</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-bag"></i>
                 </div>
-                <a href="<?php echo e(route('admin.employee.index')); ?>" class="small-box-footer">View <i
+                <a href="<?php echo e(route('payroll.payroll.index')); ?>" class="small-box-footer">View <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>

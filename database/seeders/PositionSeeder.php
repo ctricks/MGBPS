@@ -17,9 +17,19 @@ class PositionSeeder extends Seeder
       DB::table('positions')->truncate();
 
       Position::create([
-            'positionname' => 'Staff',],);
+            'positionname' => 'QC Inspector',],);
       Position::create([
-            'positionname' => 'Manager',
+            'positionname' => 'HR Assistant',
       ],);
+      Position::create([
+            'positionname' => 'Machinist',
+      ],);
+      Position::create([
+            'positionname' => 'Safety Officer',
+      ],);
+      Position::create([
+            'positionname' => 'Pollution Control Officer',
+      ],);
+      
     }
 }

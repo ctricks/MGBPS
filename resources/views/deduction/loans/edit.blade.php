@@ -1,16 +1,16 @@
 <x-admin>
-    @section('title', 'Edit Leave Type')
+    @section('title', 'Edit Loan')
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Leave Type</h3>
+                        <h3 class="card-title">Edit Loan</h3>
                         <div class="card-tools">
-                            <a href="{{ route('attendance.leavetype.index') }}" class="btn btn-info btn-sm">Back</a>
+                            <a href="{{ route('deductions.loans.index') }}" class="btn btn-info btn-sm">Back</a>
                         </div>
                     </div>
-                    <form class="needs-validation" novalidate action="{{ route('attendance.leavetype.update', $data) }}"
+                    <form class="needs-validation" novalidate action="{{ route('deductions.loans.update', $data) }}"
                         method="POST">
                         @method('PUT')
                         @csrf

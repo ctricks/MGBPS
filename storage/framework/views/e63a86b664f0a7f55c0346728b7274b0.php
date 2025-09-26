@@ -66,6 +66,7 @@ unset($__sessionArgs); ?>
                         <th>Firstname</th>
                         <th>Middlename</th>
                         <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Position</th>
                         <th>Action</th>
                         <th></th>
@@ -80,6 +81,7 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($employee->firstname); ?></td>
                             <td><?php echo e($employee->middlename); ?></td>
                             <td><?php echo e($employee->department); ?></td>
+                            <td><?php echo e($employee->SubDepartment); ?></td>
                             <td><?php echo e($employee->position); ?></td>
                             <td>
                                 <a href="<?php echo e(route('admin.employee.edit', encrypt($employee->id))); ?>"

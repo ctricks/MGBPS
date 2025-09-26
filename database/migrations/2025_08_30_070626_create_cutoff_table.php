@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('Month');
             $table->date('StartDate');
             $table->date('EndDate');
+            $table->string('Status')->nullable();
+            $table->integer('OpenBy')->default(-1);
+            $table->timestamp('OpenDate')->nullable();
+            $table->integer('ClosedBy')->default(-1);
+            $table->timestamp('ClosedDate')->nullable();
             $table->timestamps();
         });
     }

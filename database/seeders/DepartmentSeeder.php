@@ -17,9 +17,9 @@ class DepartmentSeeder extends Seeder
       DB::table('departments')->truncate();
 
       Department::create([
-            'departmentname' => 'Human Resources',],);
+            'departmentname' => 'Production',],);
       Department::create([
-            'departmentname' => 'MIS',
+            'departmentname' => 'Admin',
       ],);
     }
 }

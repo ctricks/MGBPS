@@ -11,6 +11,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\SSSReferenceController;
 use App\Http\Controllers\OvertimeTypeController;
 use App\Http\Controllers\DTRCorrectionController;
+use App\Http\Controllers\CutoffConfigController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('attendance')->name('attendance.')->group(function(){
@@ -24,12 +25,16 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::resource('ssstable',SSSReferenceController::class);
         Route::resource('overtimetype',OvertimeTypeController::class);
         Route::resource('dtrcorrection',DTRCorrectionController::class);
+        Route::resource('cutoffconfig',CutoffConfigController::class);
+        Route::post('create-cutoff', [DailyTimeRecordController::class, 'createcufoff'])->name('cutoff.create');
         Route::post('dtrcorrectionlist',[DTRCorrectionController::class,'getdtrcorrection'])->name('dtrcorrection.list');
         Route::get('processpayroll/{cutoff}/{empcode}',[DailyTimeRecordController::class,'processpayroll'])->name('raw.processpayroll');
         Route::patch('leaveapprove/{id}',[LeaveController::class,'approve'])->name('leave.approve');
         Route::patch('leavedecline/{id}',[LeaveController::class,'decline'])->name('leave.decline');
         Route::patch('dtrcorrectionapprove/{id}',[DTRCorrectionController::class,'approve'])->name('dtrcorrection.approve');
         Route::patch('dtrcorrectiondecline/{id}',[DTRCorrectionController::class,'decline'])->name('dtrcorrection.decline');
+        Route::patch('cutoffconfigapprove/{id}',[CutoffConfigController::class,'open'])->name('cutoffconfig.open');
+        Route::patch('cutoffconfigdecline/{id}',[CutoffConfigController::class,'close'])->name('cutoffconfig.close');
         Route::get('viewdtrcorrection/{dtrnumber}', [DTRCorrectionController::class,'viewdtrcorrection'])->name('dtrcorrection.view');
         Route::post('restdayimport', [RestdayController::class,'import'])->name('restday.import');
         Route::post('holidayimport', [HolidayController::class,'import'])->name('holiday.import');

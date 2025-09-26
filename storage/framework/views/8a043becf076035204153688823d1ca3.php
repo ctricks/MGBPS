@@ -166,38 +166,5 @@ unset($__sessionArgs); ?>
 <?php $component = $__componentOriginal2812d824e80b3a65bceda8e6a9bfa7a0; ?>
 <?php unset($__componentOriginal2812d824e80b3a65bceda8e6a9bfa7a0); ?>
 <?php endif; ?>
-<script>
-  const myDiv = document.getElementById("description");
-  const empNumber = document.getElementById("dropdownContent").textContent;
-  const eNumb = document.getElementById("empcode");
-  myDiv.onblur = function () {
-    eNumb.value = empNumber.trim().split(':')[0];
-  };
-</script>
-<script>
-        $(document).ready(function () {
-            $('#dropdownDisplay').on('click', function () {
-                $('#dropdownContent').toggle();
-            });
 
-            $('#searchInput').on('input', function () {
-                let value = $(this).val().toLowerCase();
-                $('#dropdownList li').filter(function () {
-                    $(this).toggle($(this).text()
-                           .toLowerCase().indexOf(value) > -1);
-                });
-            });
-
-            $('#dropdownList').on('click', 'li', function () {
-                $('#dropdownDisplay').text($(this).text());
-                $('#dropdownContent').hide();
-            });
-
-            $(document).on('click', function (e) {
-                if (!$(e.target).closest('.search-dropdown').length) {
-                    $('#dropdownContent').hide();
-                }
-            });
-        });
-    </script>
 <?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/attendance/dtrcorrection/create.blade.php ENDPATH**/ ?>

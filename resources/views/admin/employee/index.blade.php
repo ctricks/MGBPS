@@ -70,6 +70,7 @@
                         <th>Firstname</th>
                         <th>Middlename</th>
                         <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Position</th>
                         <th>Action</th>
                         <th></th>
@@ -84,6 +85,7 @@
                             <td>{{ $employee->firstname }}</td>
                             <td>{{ $employee->middlename }}</td>
                             <td>{{ $employee->department }}</td>
+                            <td>{{ $employee->SubDepartment }}</td>
                             <td>{{ $employee->position }}</td>
                             <td>
                                 <a href="{{ route('admin.employee.edit', encrypt($employee->id)) }}"

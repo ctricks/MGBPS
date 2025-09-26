@@ -9,9 +9,14 @@
         </div>
 
         <div class="card-header">
-  
             @session('success')
                 <div class="alert alert-success" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+
+             @session('failed')
+                <div class="alert alert-danger" role="alert"> 
                     {{ $value }}
                 </div>
             @endsession
@@ -29,33 +34,68 @@
         </div>
 <div class="card-body">
             Filter:
-            <form action="{{ route('attendance.rawattendance.list') }}" method="POST">
+            <form action="{{ route('deductions.loans.list') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-2">
                         <div class="form-group">
+                            <label for="employeecode" class="form-label">Employee Code:*</label>
+                            <div class="search-dropdown">
+                                <div class="dropdown-display" 
+                                    id="dropdownDisplay">Select Employee</div>
+                                <div class="dropdown-content"
+                                    id="dropdownContent">
+                                    <input type="text" 
+                                        class="search-input" 
+                                        id="searchInput"
+                                        placeholder="Search Employee">
+                                    <ul id="dropdownList">
+                                        @foreach ($employee as $emp)
+                                        <li>{{ $emp->employeenumber }} : {{ $emp->lastname.','.$emp->firstname.' '.$emp->middlename }} </li>                                
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>  
+                            <x-error>employeecode</x-error>
+                        </div>
+                        <div class="form-group">
+                            <a href="#" class="btn btn-md btn-secondary">Clear All</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="employee">Employee Number:</label>
+                            <input type="string" class="form-control" id="empcode" name="empcode"
+                                placeholder="Enter Employee Number" required readonly >
+                            <x-error>employeecode</x-error>
+                        </div>    
+                    </div>
+                    <div class="col-lg-2">
+                    </div>
+                    <div class="col-lg-6"></div>
+                    {{-- <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="employee">Description:*</label>
+                            <input type="string" class="form-control" id="description" name="description"
+                                placeholder="Enter Description " required  >
+                            <x-error>description</x-error>
+                        </div>
+                    </div> --}}
+                    <div class="col-lg-2">
+                        <div class="form-group">
                             <label for="selectmonth">Start Date:</label>
-                            <input type="date" id="start-date" value=""/>
+                            <input type="date" id="startdate" value="" name="startdate"/>
                             <x-error>monthfilter</x-error>
                         </div>
                     </div>
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label for="selectmonth">End Date:</label>
-                            <input type="date" id="end-date" />
+                            <input type="date" id="enddate" name="enddate"/>
                             <x-error>monthfilter</x-error>
                         </div>
                     </div>
                     <div class="col-lg-8"></div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="employee">Employee:</label>
-                            <select name="employeecode" id="employeecode" class="form-control">
-                                <option value="" selected disabled>select employee</option>
-                            </select>
-                            <x-error>employeecode</x-error>
-                        </div>
-                    </div>
                     <div class="col-lg-12">
                         <div class="form-group">
                             <div class="button-container">
@@ -79,9 +119,10 @@
                         <th>Amount</th>
                         <th>No of Payment</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th width="350px;">Action</th>
+                        {{-- <th></th>
                         <th></th>
-                        <th></th>
+                        <th></th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -95,17 +136,31 @@
                             <td>{{ $ltDet->Amount }}</td>
                             <td>{{ $ltDet->NoOfPayment}}</td>
                             <td>{{ str_replace('_',' ',$ltDet->Status) }}</td>
-                            <td><a href="{{ route('deductions.loans.edit', encrypt($ltDet->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a></td>
-                            <td><a href="{{ route('admin.loantype.edit', encrypt($ltDet->id)) }}"
-                                    class="btn btn-sm btn-primary">Approve</a></td>
-                            <td>
-                                <form action="{{ route('admin.loantype.destroy', encrypt($ltDet->id)) }}" method="POST"
+                            <td><div style="display: flex; gap: 10px;">
+                                <a href="{{ route('deductions.deductiondetails.show', encrypt($ltDet->id)) }}"
+                                    class="btn btn-sm btn-primary">View Details</a>
+                                
+                                    {{-- <a href="{{ route('deductions.loans.edit', encrypt($ltDet->id)) }}"
+                                    class="btn btn-sm btn-primary">Edit</a> --}}
+                                <form action="{{ route('deductions.loan.approve', encrypt($ltDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to approve?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                </form>
+                                <form action="{{ route('deductions.loan.decline', encrypt($ltDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to Decline?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-warning">Decline</button>
+                                </form>
+                                <form action="{{ route('deductions.loans.destroy', encrypt($ltDet->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -125,18 +180,4 @@
         </script>
     @endsection
 </x-admin>
- <script>
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), 1);;
-    const FirstDate = today.toLocaleDateString('en-CA'); // 'en-CA' uses the yyyy-mm-dd format
-    const LastDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    const EndDate = LastDate.toLocaleDateString('en-CA'); 
-    
-    // Set the value of the input field
-    document.getElementById('start-date').value = FirstDate;
-    document.getElementById('end-date').value = EndDate;
-    $("#start-date").change(function(){
-    $("#end-date").prop("min", $(this).val());
-    $("#end-date").val(""); //clear end date input when start date changes
-    });
-  </script>
+ 

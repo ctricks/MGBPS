@@ -20,11 +20,12 @@ return new class extends Migration
             $table->string('middlename')->nullable();
             $table->string('Address')->nullable();
             $table->string('Telephone')->nullable();
-            $table->timestamp('Birthday')->nullable();
+            $table->datetime('Birthday')->nullable();
             $table->foreignId('civil_status_id')->reference('id')->on('civil_status');
             $table->foreignId('gender_id')->reference('id')->on('gender');
             $table->foreignId('position_id')->reference('id')->on('position');
             $table->foreignId('department_id')->reference('id')->on('department');
+            $table->string('SubDepartment')->nullable()->default('NULL');
             $table->foreignId('employee_status_id')->reference('id')->on('employee_status');
             $table->integer('WorkDays')->nullable();
             $table->double('DailyRate',8,2)->default('0.00');

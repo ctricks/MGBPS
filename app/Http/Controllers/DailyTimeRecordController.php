@@ -55,11 +55,11 @@ class DailyTimeRecordController extends Controller
         $ProcessStatus = "Not Process yet"; 
         $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         
-        if(isset($cutOFF))
-        {
-            $this->createcufoff('');
-            $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
-        }
+        // if(isset($cutOFF))
+        // {
+        //     $this->createcufoff('');
+        //     $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
+        // }
 
         $data = DB::select($this->DTRQuery(''));
 
@@ -71,9 +71,10 @@ class DailyTimeRecordController extends Controller
         // }00
         //dd(count($RawAttendanceData));
         $selectedEmployee='';
+        $empcode = $selectedEmployee;
         $dayNow = Carbon::now();
         $LastSearch = $dayNow->setTimezone('Asia/Manila');;
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','selectedEmployee','LastSearch'));
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','selectedEmployee','LastSearch','empcode'));
     }
 
     public function edit($id)
@@ -125,7 +126,7 @@ class DailyTimeRecordController extends Controller
     {
         $monthName = Carbon::create()->month($monthnum)->format('F');
         
-        $this->createcufoff($monthName);
+        // $this->createcufoff($monthName);
 
          $data = DB::select(
                         "
@@ -134,7 +135,7 @@ class DailyTimeRecordController extends Controller
                             ,[StartDate]
                             ,[EndDate]
                         FROM [cutoff]
-                        where [Month] = '". $monthName ."';
+                        where [Month] = '". $monthName ."' and status = 'OPEN';
                         "
                     );
         return response()->json($data);
@@ -152,7 +153,7 @@ class DailyTimeRecordController extends Controller
 
         if(isset($cutOFF))
         {
-            $this->createcufoff('');
+            // $this->createcufoff('');
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
         $empcode = explode(':',$request->employeecode);
@@ -180,13 +181,15 @@ class DailyTimeRecordController extends Controller
             $ProcessStatus = 'Processed';
 
         $employeecode = $request->employeecode;
-        if($employeeProcessed->count() > 0)
-         $selectedEmployee = $employeeProcessed[0]->lastname . ',' . $employeeProcessed[0]->firstname . ' ' .$employeeProcessed[0]->middlename;
         
+        if($employeeProcessed->count() > 0)
+        {
+            $selectedEmployee = $employeeProcessed[0]->lastname . ',' . $employeeProcessed[0]->firstname . ' ' .$employeeProcessed[0]->middlename;
+        }
         $LastSearch = Carbon::now();
         
 
-        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode','selectedEmployee','LastSearch'));
+        return view('attendance.raw.index',compact('data','cutOFF','ProcessStatus','employeecode','selectedEmployee','LastSearch','empcode'));
     }
     private function UpdateDTRSummary($criteria)
     {
@@ -365,7 +368,8 @@ class DailyTimeRecordController extends Controller
     }
     public function getEmployeeDTRData($empnum)
     {
-        $cutoffData = Cutoff::where('id',$empnum)->get();
+        $cutoffData = Cutoff::where('id',$empnum)
+                              ->where('status','OPEN')->get();
 
         if($cutoffData[0] != null)
         {
@@ -380,8 +384,10 @@ class DailyTimeRecordController extends Controller
 
         return response()->json($data);
     }
-    public function createcufoff($monthName)
+    public function createcufoff(Request $request)
     {
+        $monthName = Carbon::create()->month($request->monthfilter)->format('F');
+     
         try{
             $currentMonthName = Carbon::now()->format('F');
             $firstDayOfMonth = Carbon::now()->startOfMonth();
@@ -421,6 +427,7 @@ class DailyTimeRecordController extends Controller
                     'EndDate'=>$lastDayOfMonth,
                 ],
             );
+            return back()->with('success', 'Cut-off creation done! ');
         }catch(Exception $e)
         {
             return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());

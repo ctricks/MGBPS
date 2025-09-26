@@ -97,9 +97,10 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            <div>Selected Employee Code: <div name="empcode" id="empcode">{{ $empcode }}</div></div>
             <div>Selected Employee: {{ $selectedEmployee }}</div>
-            <div>Last Load Search: {{$LastSearch}}</div> 
+            <div>Last Load Search: {{$LastSearch}}</div>
+            </form> 
         </div>
         
         <div class="card-body">
@@ -293,23 +294,39 @@
         @endsection
 </x-admin>
 <script>
+function isValidNumber(value) {
+  return typeof value === "number" && !isNaN(value);
+}
 function PayrollProcess(){
-    const empcode = document.getElementById('employeecode').value.split(':')[1].trim();
-    console.log(empcode);
-    if(empcode == '')
+    
+    const cutoff = document.getElementById('cutoff').value;
+    const ecode = document.getElementById('employeecode').value;
+    console.log(cutoff);
+
+    if(cutoff == '')
     {
         alert('Please select filter the employee')   
     }
     else
     {
+
+    empcode = document.getElementById('employeecode').value.split(':')[1].trim();
+    let url = 'processpayroll/'+cutoff+'/'+empcode; 
+    
+    if(document.getElementById('employeecode').value != '')
+    {
+        empcode = document.getElementById('employeecode').value.split(':')[1].trim();
+    }
+    
+    if(empcode == '')
+    {
+       let url = 'processpayroll/'+cutoff+'/'+empcode; 
+    }
     let userResponse = confirm("Are you sure you want to proceed?");
     
-    const cutoff = document.getElementById('cutoff').value;
-    
-
         if (userResponse) {
             $.ajax({
-                                url: 'processpayroll/'+cutoff+'/'+empcode,
+                                url: url,
                                 type: 'get',
                                 dataType: 'json',
                                 success: function(response) {

@@ -10,6 +10,7 @@ use App\Models\Employee;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Component
 {
@@ -24,11 +25,32 @@ class Dashboard extends Component
         $employee = Employee::count();
         view()->share('employee',$employee);
         
-        // $product = Product::count();
-        // view()->share('product',$product);
+        $attendanceprocess = DB::select("select count(a.id) as 'AttendanceSummary' from summary_attendance a
+                                      left join cutoff c on a.StartDateCutoff = c.StartDate and a.EndDateCutoff = c.EndDate
+                                      --where CURRENT_TIMESTAMP between a.StartDateCutoff and a.EndDateCutoff
+                                      where c.status = 'OPEN'
+                                      "
+                                    );
+
+        $payrollprocess = DB::select("SELECT 
+                                        COUNT(DISTINCT(dtr.employee_code)) as PayrollProcess
+                                                FROM 
+                                                    daily_time_records dtr
+                                                left join employees emp on dtr.employee_code = emp.employeenumber
+                                                left join cutoff cu on dtr.cutoff = cu.id 
+                                                left join payroll pay on pay.EmployeeCode = emp.employeenumber and pay.Cutoff_id = cu.id
+                                                left join users u on u.id = pay.PreparedBy 
+                                                left join users a on a.id = pay.ApprovedBy
+                                                where 
+                                                    dtr.date between cu.StartDate and cu.EndDate and
+                                                    cu.Status = 'OPEN' 
+                                      "
+                                    );
+
+
         
-        // $collection = Collection::count();
-        // view()->share('collection',$collection);
+        view()->share('processAttendance',$attendanceprocess[0]->AttendanceSummary);
+        view()->share('processPayroll',$payrollprocess[0]->PayrollProcess);
     }
 
     /**

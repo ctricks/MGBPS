@@ -119,7 +119,14 @@
                             <x-error>department</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="department">Sub-Department:</label>
+                                    <input id="subdepartmentname" class="form-control" name="subdepartmentname" type="text" value="{{ old(subdepartment)}}" />
+                                <x-error>subdepartmentname</x-error>
+                            </div>
+                        </div>
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <label for="employeestatus">Employee Status:</label>
                             <select name="employeestatus" id="employeestatus" class="form-control" required>

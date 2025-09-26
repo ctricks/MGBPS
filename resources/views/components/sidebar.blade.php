@@ -192,6 +192,15 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('attendance.cutoffconfig.index') }}"
+                        class="nav-link {{ Route::is('attendance.cutoffconfig.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-building "></i>
+                    <p style = "text-indent:15em;">
+                        CUT-OFF Configuration
+                    </p>
+                    </a>
+                </li>
                <li class="nav-item">
                     <a href="{{ route('attendance.raw.index') }}"
                         class="nav-link {{ Route::is('attendance.raw.index') ? 'active' : '' }}">
