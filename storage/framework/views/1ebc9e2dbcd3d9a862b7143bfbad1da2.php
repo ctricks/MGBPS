@@ -8,29 +8,31 @@
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <?php $__env->startSection('title', 'Edit Leave Type'); ?>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Edit Leave Type</h3>
-                        <div class="card-tools">
-                            <a href="<?php echo e(route('attendance.leavetype.index')); ?>" class="btn btn-info btn-sm">Back</a>
-                        </div>
-                    </div>
-                    <form class="needs-validation" novalidate action="<?php echo e(route('attendance.leavetype.update', $data)); ?>"
-                        method="POST">
-                        <?php echo method_field('PUT'); ?>
-                        <?php echo csrf_field(); ?>
-                        <input type="hidden" name="id" value="<?php echo e($data->id); ?>">
-                        <div class="card-body">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="lblWorkSchedule" class="form-label">Leave Type Name:*</label>
-                                    <input type="text" class="form-control" id="LeaveType" name="LeaveType"
-                                        placeholder="Enter Leave Type Name" value="<?php echo e($data->LeaveType); ?>" required>
-                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+    <?php $__env->startSection('title', 'Edit Loan'); ?>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Loan</h3>
+            <div class="card-tools"><a href="<?php echo e(route('deductions.loans.index')); ?>" class="btn btn-sm btn-dark">Back</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="<?php echo e(route('deductions.loans.store')); ?>" method="POST" onsubmit="enableDropdown()">
+                <?php echo csrf_field(); ?>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="empnumber" class="form-label">Loan Type:*</label>
+                            
+                            <select name="LoanType" id="LoanType" class="form-control" required disabled>
+                                <option value="" disabled>select loan type</option>
+                                <?php $__currentLoopData = $loanType; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($lt->LoanType); ?>"
+                                        <?php echo e($lt->LoanType ==  $loanTypeSelected->LoanType  ? 'selected' : ''); ?>><?php echo e($lt->LoanType); ?>
+
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('error'); ?>
@@ -39,7 +41,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>LeaveType <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?>loantype <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
 <?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
@@ -49,14 +51,22 @@
 <?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
 <?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
 <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="lblRemarks" class="form-label">Description:*</label>
-                                    <input type="text" class="form-control" id="Description" name="Description"
-                                        placeholder="Enter Description" value=<?php echo e($data->Description); ?> required>
-                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="lbldesc" class="form-label">Description:*</label>
+                            
+                             <select name="description" id="description" class="form-control" required disabled>
+                                <option value="" >Select Description</option>
+                                <?php $__currentLoopData = $loanType; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($lt->id); ?>"
+                                        <?php echo e($lt->id ==  $loanTypeSelected->id  ? 'selected' : ''); ?>><?php echo e($lt->Description); ?>
+
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('error'); ?>
@@ -75,17 +85,20 @@
 <?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
 <?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
 <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="isActive" class="form-label">Active:*</label>
-                                    <select name="isActive" id="isActive" class="form-control" required>
-                                        <option value="" selected disabled>Select Record Status</option>
-                                        <option value="1" selected>Active</option>
-                                        <option value="0">In-active</option>
-                                    </select>
-                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+                        </div>
+                    </div>
+                    <div class="col-lg-8"></div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="name">Employee Code:*</label>
+                            <input class="form-control" id="empcode" name="empcode" type="text" value="<?php echo e($employee->employeenumber); ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="Employee" class="form-label">Employee:*</label>
+                            <input class="form-control" id="empname" name="empname" type="text" value=" <?php echo e($employee->lastname); ?> , <?php echo e($employee->firstname); ?> <?php echo e($employee->middlename); ?>" readonly>
+                            <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('error'); ?>
@@ -94,7 +107,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>isActive <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?>Employee <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
 <?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
@@ -104,15 +117,96 @@
 <?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
 <?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
 <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary float-right">Update</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="name">Loan Number:*</label>
+                            <input class="form-control" id="loannumber" name="loannumber" type="text" disabled>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="name">SSS Number:*</label>
+                            <input class="form-control" id="sssnumber" name="sssnumber" type="text" value="<?php echo e($employee->SSS_Number); ?>" disabled/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="name">PhilHealth Number:*</label>
+                            <input class="form-control" id="phicnumber" name="phicnumber" type="text" value="<?php echo e($employee->PHIC_Number); ?>" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="name">HDMF Number:*</label>
+                            <input class="form-control" id="hdmfnumber" name="hdmfnumber" type="text" value="<?php echo e($employee->HDMF_Number); ?>" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Select Date:</label>
+                            <input type="text" class="form-control datepicker" id="date" name="date"
+                                placeholder="YYYY-MM-DD" value ="<?php echo e(\Carbon\Carbon::parse($loan->LoanDate)->format('m/d/Y')); ?>" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Loan Amount:</label>
+                            <input type="number" class="form-control" id="loanAmount" value="<?php echo e($loan->Amount); ?>" name="loanAmount" placeholder="Enter Loan Amount">
+                        </div>
+                    </div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">No of Payments:</label>
+                            <input type="number" class="form-control" id="installment" name="installment" value="<?php echo e($loan->NoOfPayment); ?>" placeholder="Enter No of Payments"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Amount of Deduction:</label>
+                            <input type="decimal" class="form-control" id="deductionAmount" name="deductionAmount" value=<?php echo e($loan->AmountDeduction); ?> placeholder="Enter No of Payments" readonly>
+                        </div>
+                    </div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Semi-Monthly Interest(%):</label>
+                            <input type="number" class="form-control" id="SemiInterest" name="SemiInterest" placeholder="Enter No of Payments">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Total Interest:</label>
+                            <input type="number" class="form-control" id="TotalInterest" name="TotalInterest" placeholder="Enter No of Payments">
+                        </div>
+                    </div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Interest Balanace:</label>
+                            <input type="number" class="form-control" id="InterestBalance" name="InterestBalance" placeholder="Enter No of Payments">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="date">Balance:</label>
+                            <input type="number" class="form-control" id="Balance" name="Balance" placeholder="Enter No of Payments">
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-12">
+                        <div class="float-right">
+                            <button class="btn btn-primary" type="submit" >Save</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
  <?php echo $__env->renderComponent(); ?>
@@ -125,4 +219,37 @@
 <?php $component = $__componentOriginal2812d824e80b3a65bceda8e6a9bfa7a0; ?>
 <?php unset($__componentOriginal2812d824e80b3a65bceda8e6a9bfa7a0); ?>
 <?php endif; ?>
-<?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/deduction/loans/edit.blade.php ENDPATH**/ ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<script>
+    var date = new Date();
+    date.setDate(date.getDate()-1);
+    $(document).ready(function() {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd', // Adjust format as needed
+            autoclose: true,
+            todayHighlight: true,
+            minDate: date
+        });
+    });
+</script>
+<script>
+        $(document).ready(function () {
+            $('#installment').on('keypress', function (event) {
+                const inputValue = $(this).val() + String.fromCharCode(event.which);
+               
+                const partNum = parseFloat(inputValue);
+                const loanAmount = parseFloat(document.getElementById("loanAmount").value);
+                const deductionAmount = document.getElementById("deductionAmount");
+            
+                const deducAmt =  loanAmount / partNum ;
+                deductionAmount.value = deducAmt.toFixed(2);
+               
+            });
+        });
+    </script>
+    <script>
+  function enableDropdown() {
+        document.getElementById("LoanType").disabled = false;
+        document.getElementById("description").disabled = false;
+  }
+</script><?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/deduction/loans/edit.blade.php ENDPATH**/ ?>

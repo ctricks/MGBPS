@@ -73,14 +73,6 @@
                     <div class="col-lg-2">
                     </div>
                     <div class="col-lg-6"></div>
-                    {{-- <div class="col-lg-12">
-                        <div class="form-group">
-                            <label for="employee">Description:*</label>
-                            <input type="string" class="form-control" id="description" name="description"
-                                placeholder="Enter Description " required  >
-                            <x-error>description</x-error>
-                        </div>
-                    </div> --}}
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label for="selectmonth">Start Date:</label>
@@ -100,7 +92,8 @@
                         <div class="form-group">
                             <div class="button-container">
                                 <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
-                                <a href="{{ route('deductions.loans.index') }}" class="btn btn-md btn-info">Show All</a>
+                                <a href="{{ route('deductions.loans.index') }}" id="ShowAll" class="btn btn-md btn-info">Show All</a>
+                                @csrf
                             </div>
                         </div>
                     </div>
@@ -118,6 +111,9 @@
                         <th>Description</th>
                         <th>Amount</th>
                         <th>No of Payment</th>
+                        <th>Amortization</th>
+                        <th>Amount Paid</th>
+                        <th>Balances</th>
                         <th>Status</th>
                         <th width="350px;">Action</th>
                         {{-- <th></th>
@@ -128,20 +124,21 @@
                 <tbody>
                     @foreach ($data as $ltDet)
                         <tr>
-                            <td>{{ $ltDet->id }}</td>
+                            {{-- <td>{{ $ltDet->id }}</td> --}}
+                            <td><a href="{{ route('deductions.loans.details', encrypt($ltDet->id)) }}">{{ $ltDet->id }}</a></td>
                             <td>{{ Carbon\Carbon::parse($ltDet->LoanDate)->format('m-d-Y') }}</td>
                             <td>{{ $ltDet->employeenumber }}</td>
                             <td>{{ $ltDet->LoanType }} </td>
                             <td>{{ $ltDet->Description }}</td>
                             <td>{{ $ltDet->Amount }}</td>
                             <td>{{ $ltDet->NoOfPayment}}</td>
+                            <td>{{ $ltDet->AmountDeduction}}</td>
+                            <td>{{ $ltDet->Paid}}</td>
+                            <td>{{ $ltDet->Balances}}</td>
                             <td>{{ str_replace('_',' ',$ltDet->Status) }}</td>
                             <td><div style="display: flex; gap: 10px;">
-                                <a href="{{ route('deductions.deductiondetails.show', encrypt($ltDet->id)) }}"
-                                    class="btn btn-sm btn-primary">View Details</a>
-                                
-                                    {{-- <a href="{{ route('deductions.loans.edit', encrypt($ltDet->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a> --}}
+                                <a href="{{ route('deductions.loans.edit', encrypt($ltDet->id)) }}"
+                                    class="btn btn-sm btn-primary">Edit</a>
                                 <form action="{{ route('deductions.loan.approve', encrypt($ltDet->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to approve?')">
                                     @method('PATCH')

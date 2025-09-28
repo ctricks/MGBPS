@@ -20,7 +20,8 @@ return new class extends Migration
             $table->double('Amount',2)->default(0.00);
             $table->double('AmountPaid',2)->default(0.00);
             $table->date('DateDeducted')->nullable();
-            $table->integer('Reference')->default(-1);
+            $table->integer('LoanReference')->default(-1);
+            $table->integer('PaymentReference')->default(-1);
             $table->integer('ProcessedBy')->default(-1);
             $table->date('ProcessedDate')->nullable();
             $table->timestamps();

@@ -126,15 +126,19 @@ class PayrollController extends Controller
                 CAST((s.WorkHours / 8) as DECIMAL(9,2)) as 'WorkingDays',
                 emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
                 emp.DailyRate,
-                CAST(s.WorkHours * (emp.DailyRate / 8)as DECIMAL(9,2)) as 'BasicPay',
-                s.Absent,
+                CAST(s.WorkHours * ( emp.DailyRate  / 8) as DECIMAL(9,2)) as 'BasicPay',
+                (s.Absent / 8) as 'Absent',
                 CAST((s.Absent / 8 ) * emp.DailyRate as DECIMAL(9,2)) as 'AbsentPay',
                 0 as 'RegularOTHrs',
                 0.00 as 'RegularOTPay',
+                0 as 'HalfdayHrs',
+				0.00 as 'HalfdayPay',
                 0 as 'SundayOTHrs',
                 0.00 as 'SundayOTPay',
                 0 as 'LateHrs',
-                0.00 as 'LatePay'
+                0.00 as 'LatePay',
+                CAST(s.WorkHours * ( emp.DailyRate  / 8) as DECIMAL(9,2))
+                as 'TotalEarnings'
                 FROM 
                     daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber
@@ -153,7 +157,7 @@ class PayrollController extends Controller
                     emp.DailyRate,s.WorkHours,s.Absent
                 order by emp.lastname desc";
         
-$data = DB::select($PayrollQuery);
+        $data = DB::select($PayrollQuery); 
 
         return view('payroll.summary.view',compact('data','cutoffDataSelected'));
     }

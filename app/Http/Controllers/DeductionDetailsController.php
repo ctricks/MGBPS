@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeductionDetails;
+use App\Models\Loan;
 use Illuminate\Http\Request;
 
 class DeductionDetailsController extends Controller
@@ -48,8 +49,15 @@ class DeductionDetailsController extends Controller
     public function edit(string $id)
     {
         //
-        $data = DeductionDetails::where('id',decrypt($id))->first();
-        return view('deduction.loansdetails.edit',compact('data'));
+        $data = Loan::where('id',decrypt($id))->first();
+        
+        if($data->Status == "For_Approval")
+        {
+            return view('deduction.loans.edit',compact('data'));
+        }else
+        {
+            return redirect()->back()->with('failed','Cannot edit Loan. {Status must be For Approval}.');
+        }
     }
 
     /**

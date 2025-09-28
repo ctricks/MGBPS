@@ -22,7 +22,7 @@ class LoansController extends Controller
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $employee = Employee::where('employee_status_id','=',1)->get();
-        $criteria = "where LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
+        $criteria = "";//"where l.LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
         
         $data = DB::select($this->LoanQuery($criteria));
       
@@ -34,12 +34,20 @@ class LoansController extends Controller
             SELECT 
                 l.id,emp.employeenumber,lt.LoanType,lt.Description,
                 l.LoanDate,l.Amount,l.NoOfPayment,l.AmountDeduction,l.SemiMonthlyInterest,
-                l.Status,u.name as 'ApprovedBy',l.ApprovedDate,c.name as 'CreatedBy'
+                l.Status,u.name as 'ApprovedBy',l.ApprovedDate,c.name as 'CreatedBy',
+                sum(d.AmountPaid) as 'Paid',
+				l.Amount - sum(d.AmountPaid) as 'Balances' 
             from loan l
             left join employees emp on emp.id = l.Employeeid
             left join loantype lt on lt.id = l.Loantype
             left join users u on u.id = l.ApprovedBy
-            left join users c on c.id = l.CreatedBy " . $criteria;
+            left join users c on c.id = l.CreatedBy 
+            left join deduction_details d on d.loanReference = l.id
+            " . $criteria . 
+            "group by
+                l.id,emp.employeenumber,lt.LoanType,lt.Description,
+                l.LoanDate,l.Amount,l.NoOfPayment,l.AmountDeduction,l.SemiMonthlyInterest,
+                l.Status,u.name,l.ApprovedDate,c.name";
     }
     /**
      * Show the form for creating a new resource.
@@ -48,7 +56,7 @@ class LoansController extends Controller
     {
         //
         $loanType = LoanType::distinct()->select('LoanType')->where('isActive',1)->get();
-        $employee = Employee::orderby('Lastname','DESC')->get();
+        $employee = Employee::orderby('Lastname','ASC')->get();
         
         return view('deduction.loans.create',compact('loanType','employee'));
     }
@@ -65,7 +73,9 @@ class LoansController extends Controller
             "empcode"=>'required',
             "date"=>'required',
         ]);
+        
 $SemiInterest = 0;
+
 if($request->SemiInterest != null)
 {
     $SemiInterest = $request->SemiInterest;
@@ -75,7 +85,7 @@ if($request->SemiInterest != null)
         {
             return redirect()->route('deductions.loans.index')->with('failed','Loan failed.');
         }
-        $data = Loan::create([
+        $data = Loan::updateOrCreate([
             'Employeeid'=>$employee[0]->id,
             'LoanType'=>$request->description,
             'LoanDate'=> Carbon::parse($request->date)->format('Y-m-d H:i:s'),
@@ -87,7 +97,7 @@ if($request->SemiInterest != null)
             'CreatedBy'=>Auth::id(),
         ]);
 
-        return redirect()->route('deductions.loans.index')->with('success','Loan created successfully.');
+        return redirect()->route('deductions.loans.index')->with('success','Loan saved successfully.');
     }
 
     /**
@@ -101,14 +111,20 @@ if($request->SemiInterest != null)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id,string $status)
+    public function edit(string $id)
     {
-        //
-        $loantype = Loan::find($request->id);
-        $loantype->Status = decrypt($status);
-        $loantype->save();
-        return redirect()->route('admin.loantype.index')->with('success','Loan Type updated successfully');
-        return view('deduction.loans.index',compact('data'));
+        $loan = Loan::where('id',decrypt($id))->first();
+        $loanTypeSelected = LoanType::select('id','LoanType','Description')->where('isActive',1)->where('id',$loan->Loantype)->first();
+        
+        $employee = Employee::where('id',$loan->EmployeeID)->first();
+        $loanType = LoanType::OrderBy('id','ASC')->get();
+    
+
+        if($loan->Status <> "For_Approval")
+            return redirect()->back()->with('failed','Modification of Loan unsuccessful. [Status must be \'For Approval\']');
+        
+        
+        return view('deduction.loans.edit',compact('loan','employee','loanType','loanTypeSelected'));
     }
 
     /**
@@ -149,7 +165,7 @@ if($request->SemiInterest != null)
     public function getLoans(Request $request)
     {
         $criteria = "where
-                    l.loandate between '". $request->input('start-date') ."' and '". $request->input('end-date') ."'";
+                    l.loandate between '". $request->startdate ."' and '". $request->enddate ."'";
 
         $data = DB::select($this->LoanQuery($criteria));
         $employee = Employee::where('employee_status_id','=',1)->get();
@@ -158,6 +174,7 @@ if($request->SemiInterest != null)
     public function approve(Request $request,$id)
     {
         $loandet = Loan::find(decrypt($id));
+
         $loandet->status = "Approved";
         $loandet->ApprovedBy =$request->user()->id;
         $loandet->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
@@ -169,7 +186,7 @@ if($request->SemiInterest != null)
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         // return redirect()->back()->with('success','DTR Correction Approved successfully.');
-        $criteria = "where LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
+        $criteria = "where l.LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
         $data = DB::select($this->LoanQuery($criteria));
         return view('deduction.loans.index', compact('data','employee'));
     }
@@ -183,7 +200,7 @@ if($request->SemiInterest != null)
         $employee = Employee::where('employee_status_id','=',1)->get();
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
-        $criteria = "where LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
+        $criteria = "where l.LoanDate between '".$firstDayOfMonth."' and '".$lastDayOfMonth."'";
         $data = DB::select($this->LoanQuery($criteria));
         return view('deduction.loans.index', compact('data','employee'))->with('success','Declined of Loan successful.');
         
@@ -192,14 +209,39 @@ if($request->SemiInterest != null)
     {
          $loandet = Loan::find(decrypt($id));
          $noOfPayment = $loandet->NoOfPayment;
-         $DeductionKey = decrypt($id)._.$loandet->LoanType.'_'.$loandet->Amount.'_'.$noOfPayment;
-         
-         for($a=1;a<=$noOfPayment;$a++)
+         $loanDate = Carbon::parse($loandet->LoanDate)->format('Y-m-d');
+         $DeductionKey = decrypt($id).'_'.$loandet->Loantype.'_'.$loandet->Amount.'_'.$noOfPayment.'_'.$loanDate;
+        
+         for($a = 1; $a <= $noOfPayment; $a++)
          {
             $data = DeductionDetails::updateOrCreate(
                 ['DeductionKey' =>  $DeductionKey],
-                ['name' => request('name')]
+                ['LoanDate' => $loanDate,
+                    'Deduction'=> $loandet->Amount,
+                    'DeductionType'=>$loandet->Loantype,
+                    'Amount'=>$loandet->AmountDeduction,
+                    'LoanReference'=>decrypt($id)]
             );
+            $newDate = Carbon::parse($loanDate)->addDays(15); 
+            $loanDate =  $newDate;
+            $DeductionKey = decrypt($id).'_'.$loandet->Loantype.'_'.$loandet->Amount.'_'.$noOfPayment.'_'.$loanDate;
          }
+    }
+    public function LoanDetails($id)
+    {
+        $data = DB::select("
+                    select 
+                        d.id,d.LoanDate,d.Deduction,l.LoanType,l.Description,d.Amount,
+                        (d.Amount - d.AmountPaid) as 'Balances',
+                        d.AmountPaid,isNULL(Convert(Varchar,d.DateDeducted),'Not Yet') as DateDeducted,u.name as 'ProcessedBy',
+                        isNUll(d.PaymentReference,'-1') as 'Status',
+                        d.ProcessedDate,d.updated_at
+                    from 
+                        deduction_details d
+                    left join loantype l on d.DeductionType = l.id
+                    left join users u on d.ProcessedBy = u.id
+                    where LoanReference = ".decrypt($id));
+        
+        return view('deduction.loans.view',compact('data'));
     }
 }

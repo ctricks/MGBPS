@@ -11,8 +11,8 @@ class DeductionDetails extends Model
 
     protected $fillable = [
         'DeductionKey', 'DeductionDate','Deduction','DeductionType',
-        'Amount', 'AmountPaid','DateDeducted','Reference',
-        'ProcessedBy', 'ProcessedDate'
+        'Amount', 'AmountPaid','DateDeducted','LoanReference','PayReference',
+        'ProcessedBy', 'ProcessedDate','LoanDate'
     ];
 
 }

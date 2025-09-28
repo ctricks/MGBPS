@@ -38,7 +38,7 @@
             @endif
         </div>
     <div class="card-body">
-          <form class="needs-validation" novalidate action="{{ route('admin.category.store') }}" method="POST">
+          <form class="needs-validation" novalidate action="{{ route('payroll.payroll.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="form-group col-lg-4">
@@ -77,12 +77,12 @@
                                     value="ABSENCES:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="employeename" required numeric
-                                    value="{{ $data[0]->Absent }} hrs" readonly>
+                                <input type="text" class="form-control" name="AbsentDay" required numeric
+                                    value="{{ $data[0]->Absent }} day(s)" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->AbsentPay }}" readonly>
+                                    value="({{ $data[0]->AbsentPay }})" readonly>
                             </div>
                             {{-- second row --}}
                             <div class="form-group col-lg-2">
@@ -90,19 +90,19 @@
                                     value="Regular OT:" readonly>
                             </div>
                             <div class="form-group col-lg-2"> 
-                                <input type="text" class="form-control" name="dailyrate" id="dailyrate"
+                                <input type="text" class="form-control" name="regularOTHrs" id="regularOTHrs"
                                     value="{{ number_format($data[0]->RegularOTHrs,2) }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="basicpay" id="basicpay" 
+                                 <input type="text" class="form-control" name="regulartOTpay" id="regularOTPay" 
                                     value="{{ number_format($data[0]->RegularOTPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Half Day:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="employeename" required numeric
-                                    value="{{ $data[0]->Absent }} hrs" readonly>
+                                <input type="text" class="form-control" name="HalfdayHrs" required numeric
+                                    value="{{ $data[0]->HalfdayHrs }} hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
@@ -467,8 +467,8 @@
                                     value="Total Earnings :" readonly>
                             </div>
                             <div class="form-group col-lg-2"> 
-                                <input type="text" class="form-control" name="" id=""
-                                    value="0.00" readonly>
+                                <input type="text" class="form-control" name="TotalEarnings" id="TotalEarnings"
+                                    value="{{ $data[0]->TotalEarnings }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
@@ -552,3 +552,11 @@
                     });
                 });
             </script>
+    {{-- <script>
+        function computeSum() {
+            const BasicPay = parseFloat(document.getElementById('basicpay').value) || 0;
+            const regulartOTpay = parseFloat(document.getElementById('regulartOTpay').value) || 0;
+
+            document.getElementById('TotalEarnings').value = BasicPay + regulartOTpay;
+        }
+    </script> --}}

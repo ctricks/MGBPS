@@ -280,7 +280,7 @@
                         class="nav-link {{ Route::is('deductions.loandetails.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
-                        Loans Details
+                        Deduction Details
                     </p>
                     </a>
                 </li>

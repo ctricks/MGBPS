@@ -13,6 +13,9 @@ Route::prefix('deductions')->name('deductions.')->group(function(){
     Route::patch('loanapprove/{id}',[LoansController::class,'approve'])->name('loan.approve');
     Route::patch('loandecline/{id}',[LoansController::class,'decline'])->name('loan.decline');
     Route::get('/getloandesc/{id}', [LoansController::class, 'getLoanDesc']);
+    Route::post('/getdeductionlistbydate',[LoansController::class,'getLoans'])->name('loans.date.list');
+    Route::get('/getloandetails/{id}', [LoansController::class, 'LoanDetails'])->name('loans.details');
     Route::post('/deductionlist/{empcode}',[LoanDetailsController::class,'getDeductions'])->name('loans.list');
+    Route::post('/deductiondetaillist/{cutoff}/{empcode}',[DeductionDetailsController::class,'getDeductionsDetails'])->name('deductiondetails.list');
     Route::post('loanlist',[LoansController::class,'getLoans'])->name('loans.list');
 });

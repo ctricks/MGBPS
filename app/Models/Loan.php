@@ -9,6 +9,11 @@ class Loan extends Model
 {
     use HasFactory;
      protected $table = 'loan';
+
+     protected $casts = [
+                            'LoanDate' => 'datetime',
+                        ];
+
      protected $fillable = [
         'Employeeid','LoanType','LoanDate','Amount','NoOfPayment','AmountDeduction','SemiMonthlyInterest',
         'Status','ApprovedBy','ApprovedDate','CreatedBy','isActive'

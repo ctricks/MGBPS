@@ -195,13 +195,16 @@
 
             const empNumber = document.getElementById("dropdownContent").textContent;
             const empSelected = document.getElementById("dropdownDisplay").textContent;
-            
+            // console.log(empSelected);
+
             $(document).on('click', function (e) {
                 if (!$(e.target).closest('.search-dropdown').length) {
                     $('#dropdownContent').hide();
                 }
-                    const eNumb = document.getElementById("empcode");
-                    eNumb.value = empNumber.trim().split(':')[0];
+                    const eNumb = document.getElementById("dropdownDisplay").textContent;
+                    const empcode =  document.getElementById("empcode");
+                    console.log(eNumb);
+                    empcode.value = eNumb.trim().split(':')[0];
             });
             
         });

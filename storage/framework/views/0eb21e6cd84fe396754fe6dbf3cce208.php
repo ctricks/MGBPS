@@ -47,7 +47,7 @@ unset($__sessionArgs); ?>
             <?php endif; ?>
         </div>
     <div class="card-body">
-          <form class="needs-validation" novalidate action="<?php echo e(route('admin.category.store')); ?>" method="POST">
+          <form class="needs-validation" novalidate action="<?php echo e(route('payroll.payroll.store')); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         <div class="row">
                             <div class="form-group col-lg-4">
@@ -122,12 +122,12 @@ unset($__sessionArgs); ?>
                                     value="ABSENCES:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="employeename" required numeric
-                                    value="<?php echo e($data[0]->Absent); ?> hrs" readonly>
+                                <input type="text" class="form-control" name="AbsentDay" required numeric
+                                    value="<?php echo e($data[0]->Absent); ?> day(s)" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->AbsentPay); ?>" readonly>
+                                    value="(<?php echo e($data[0]->AbsentPay); ?>)" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -135,19 +135,19 @@ unset($__sessionArgs); ?>
                                     value="Regular OT:" readonly>
                             </div>
                             <div class="form-group col-lg-2"> 
-                                <input type="text" class="form-control" name="dailyrate" id="dailyrate"
+                                <input type="text" class="form-control" name="regularOTHrs" id="regularOTHrs"
                                     value="<?php echo e(number_format($data[0]->RegularOTHrs,2)); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="basicpay" id="basicpay" 
+                                 <input type="text" class="form-control" name="regulartOTpay" id="regularOTPay" 
                                     value="<?php echo e(number_format($data[0]->RegularOTPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Half Day:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="employeename" required numeric
-                                    value="<?php echo e($data[0]->Absent); ?> hrs" readonly>
+                                <input type="text" class="form-control" name="HalfdayHrs" required numeric
+                                    value="<?php echo e($data[0]->HalfdayHrs); ?> hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
@@ -512,8 +512,8 @@ unset($__sessionArgs); ?>
                                     value="Total Earnings :" readonly>
                             </div>
                             <div class="form-group col-lg-2"> 
-                                <input type="text" class="form-control" name="" id=""
-                                    value="0.00" readonly>
+                                <input type="text" class="form-control" name="TotalEarnings" id="TotalEarnings"
+                                    value="<?php echo e($data[0]->TotalEarnings); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
@@ -605,4 +605,5 @@ unset($__sessionArgs); ?>
                         }
                     });
                 });
-            </script><?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/summary/view.blade.php ENDPATH**/ ?>
+            </script>
+    <?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/summary/view.blade.php ENDPATH**/ ?>

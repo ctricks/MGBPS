@@ -134,7 +134,6 @@ unset($__sessionArgs); ?>
                     <div class="col-lg-2">
                     </div>
                     <div class="col-lg-6"></div>
-                    
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label for="selectmonth">Start Date:</label>
@@ -190,7 +189,8 @@ unset($__sessionArgs); ?>
                         <div class="form-group">
                             <div class="button-container">
                                 <button class="btn btn-success"><i class="fa fa-file"></i> Search</button>
-                                <a href="<?php echo e(route('deductions.loans.index')); ?>" class="btn btn-md btn-info">Show All</a>
+                                <a href="<?php echo e(route('deductions.loans.index')); ?>" id="ShowAll" class="btn btn-md btn-info">Show All</a>
+                                <?php echo csrf_field(); ?>
                             </div>
                         </div>
                     </div>
@@ -208,6 +208,9 @@ unset($__sessionArgs); ?>
                         <th>Description</th>
                         <th>Amount</th>
                         <th>No of Payment</th>
+                        <th>Amortization</th>
+                        <th>Amount Paid</th>
+                        <th>Balances</th>
                         <th>Status</th>
                         <th width="350px;">Action</th>
                         
@@ -216,19 +219,21 @@ unset($__sessionArgs); ?>
                 <tbody>
                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ltDet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td><?php echo e($ltDet->id); ?></td>
+                            
+                            <td><a href="<?php echo e(route('deductions.loans.details', encrypt($ltDet->id))); ?>"><?php echo e($ltDet->id); ?></a></td>
                             <td><?php echo e(Carbon\Carbon::parse($ltDet->LoanDate)->format('m-d-Y')); ?></td>
                             <td><?php echo e($ltDet->employeenumber); ?></td>
                             <td><?php echo e($ltDet->LoanType); ?> </td>
                             <td><?php echo e($ltDet->Description); ?></td>
                             <td><?php echo e($ltDet->Amount); ?></td>
                             <td><?php echo e($ltDet->NoOfPayment); ?></td>
+                            <td><?php echo e($ltDet->AmountDeduction); ?></td>
+                            <td><?php echo e($ltDet->Paid); ?></td>
+                            <td><?php echo e($ltDet->Balances); ?></td>
                             <td><?php echo e(str_replace('_',' ',$ltDet->Status)); ?></td>
                             <td><div style="display: flex; gap: 10px;">
-                                <a href="<?php echo e(route('deductions.deductiondetails.show', encrypt($ltDet->id))); ?>"
-                                    class="btn btn-sm btn-primary">View Details</a>
-                                
-                                    
+                                <a href="<?php echo e(route('deductions.loans.edit', encrypt($ltDet->id))); ?>"
+                                    class="btn btn-sm btn-primary">Edit</a>
                                 <form action="<?php echo e(route('deductions.loan.approve', encrypt($ltDet->id))); ?>" method="POST"
                                     onsubmit="return confirm('Are sure want to approve?')">
                                     <?php echo method_field('PATCH'); ?>

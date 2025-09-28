@@ -29,5 +29,25 @@ class LeaveTypeSeeder extends Seeder
             'LeaveType' => 'EL',
             'Description' => 'Emergency Leave'
         ],);
+        LeaveType::create([
+            'LeaveType' => 'HVL',
+            'Description' => 'Half Day Vacation Leave'
+        ],);
+        LeaveType::create([
+            'LeaveType' => 'HSL',
+            'Description' => 'Half Day Sick Leave'
+        ],);
+        LeaveType::create([
+            'LeaveType' => 'HEL',
+            'Description' => 'Half Day Emergency Leave'
+        ],);
+        LeaveType::create([
+            'LeaveType' => 'LWOP',
+            'Description' => 'Leave Without Pay'
+        ],);
+        LeaveType::create([
+            'LeaveType' => 'HDWP',
+            'Description' => 'Half Day with Pay'
+        ],);
     }
 }
