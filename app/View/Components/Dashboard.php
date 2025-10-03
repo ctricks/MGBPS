@@ -47,10 +47,22 @@ class Dashboard extends Component
                                       "
                                     );
 
+        $overtimeprocess = DB::select("select count(o.id) as 'OvertimeProcess' from overtime o
+                                       left join cutoff c on o.OTDate between c.StartDate and c.EndDate
+                                       where c.status = 'OPEN' and o.status = 'For Approval'
+                                      "
+                                    );
 
+        $leaveprocess = DB::select("select count(l.id) as 'LeaveProcess' from Leaves l
+                                       left join cutoff c on l.StartDate between c.StartDate and c.EndDate
+                                       where c.status = 'OPEN' and l.status = 'For Approval'
+                                      "
+                                    );
         
         view()->share('processAttendance',$attendanceprocess[0]->AttendanceSummary);
         view()->share('processPayroll',$payrollprocess[0]->PayrollProcess);
+        view()->share('processOvertime',$overtimeprocess[0]->OvertimeProcess);
+        view()->share('processLeave',$leaveprocess[0]->LeaveProcess);
     }
 
     /**

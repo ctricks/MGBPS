@@ -340,7 +340,9 @@ class DailyTimeRecordController extends Controller
                         end) as 'WorkingHours',
                         0 as 'NDHours',
                         0 as 'ND8Hours',
-                        0 as 'OTHours',
+                        --convert(varchar,CAST(DATEDIFF(MINUTE, dtr.EndTime,dtr.Final_OUT) / 60.0 AS DECIMAL(10, 2)) ,108) as 'OTHours',
+                        isnull((select OTHoursApproved from overtime where EmployeeCode = dtr.employee_code and OTDate = dtr.date and Status = 'Approved'),0.00) as 'OTHours',
+                        0 as 'ApprovedOT',
                         case when (select count(id) from leaves lvs where EmpCode = emp.id and lvs.isActive = 1 and dtr.date between lvs.StartDate and lvs.EndDate and lvs.Status = 'Approved') > 0 then
                         8 else 0 end as 'Leave',
                         0 as 'OT8Hours',

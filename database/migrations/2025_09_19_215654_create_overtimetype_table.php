@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('overtimetype', function (Blueprint $table) {
-            $table->id();
+            $table->id()->increment();
             $table->string('OvertimeType')->unique();
             $table->string('Description')->nullable();
             $table->string('isActive')->default(1);

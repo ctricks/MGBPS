@@ -5,6 +5,7 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoansController;
 use App\Http\Controllers\DailyTimeRecordController;
+use App\Http\Controllers\OvertimeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 /*
@@ -26,6 +27,7 @@ Route::get('/get-dtr-employee/{id}', [DailyTimeRecordController::class, 'getEmpl
 Route::get('/get-cutoff/{id}', [DailyTimeRecordController::class, 'getCutoffData']);
 Route::get('/autocomplete', [EmployeeController::class, 'employeeautocomplete'])->name('autocomplete');
 Route::get('/getemployeelist/{empcode}', [EmployeeController::class, 'employeecodeautocomplete']);
+Route::get('/getemployeeovertime/{empcode}/{date}', [OvertimeController::class, 'getEmployeeOT']);
 
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){

@@ -14,15 +14,20 @@ return new class extends Migration
         Schema::create('overtime', function (Blueprint $table) {
             $table->id();
             $table->string('OvertimeKey')->unique();
-            $table->integer('EmployeeID');
+            $table->string('EmployeeCode');
+            $table->date('OTDate');
             $table->timestamp('ActualIN');
             $table->timestamp('ActualOUT');
             $table->decimal('ActualOTHours');
-            $table->decimal('OTHoursApproved');
-            $table->string('Remarks');
+            $table->decimal('OTHoursApproved')->default(0.00);
+            $table->decimal('FiledOTHours');
+            $table->string('Remarks')->nullable();
             $table->integer('OverTimeTypeID');
+            $table->string('Status');
             $table->integer('CreatedBy');
-            $table->integer('ApprovedBy')->default(-1);
+            $table->integer('ApprovedBy')->nullable()->default(-1);
+            $table->integer('UpdatedBy')->nullable()->default(-1);
+            $table->timestamp('ApprovedDate')->nullable()->default(NULL);
             $table->timestamps();
         });
     }

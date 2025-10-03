@@ -296,8 +296,8 @@
             </a>
             <ul class="nav nav-treeview">
                <li class="nav-item">
-                    <a href="{{ route('deductions.loans.index') }}"
-                        class="nav-link {{ Route::is('deductions.loans.index') ? 'active' : '' }}">
+                    <a href="{{ route('earnings.overtime.index') }}"
+                        class="nav-link {{ Route::is('earnings.overtime.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt "></i>
                     <p style = "text-indent:15em;">
                         Overtime

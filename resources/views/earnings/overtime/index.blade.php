@@ -1,10 +1,10 @@
 <x-admin>
-    @section('title','Overtime Type')
+    @section('title','Overtime')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Overtime Type Table</h3>
+            <h3 class="card-title">Overtime Table</h3>
             <div class="card-tools">
-                <a href="{{ route('earnings.overtimetype.create') }}" class="btn btn-sm btn-info">New</a>
+                <a href="{{ route('earnings.overtime.create') }}" class="btn btn-sm btn-info">New</a>
             </div>
         </div>
 
@@ -15,6 +15,12 @@
                     {{ $value }}
                 </div>
             @endsession
+            @session('failed')
+                <div class="alert alert-danger" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+
   
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -34,27 +40,62 @@
                         <th>ID</th>
                         <th>Overtime Type Code</th>
                         <th>Description</th>
+                        <th>Employee Code</th>
+                        <th>Employee</th>
+                        <th>Actual IN</th>
+                        <th>Actual OUT</th>
+                        <th>Filed OT Hours</th>
+                        <th>Approved OT Hours</th>
                         <th>Status</th>
-                        <th width="50px;">Action</th>
-                        <th width="50px;"></th>
+                        <th>Prepared By</th>
+                        <th>Approved By</th>
+                        <th width="250px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $ottDet)
+                    @foreach ($data as $otDet)
                         <tr>
-                            <td>{{ $ottDet->id }}</td>
-                            <td>{{ $ottDet->OvertimeType }}</td>
-                            <td>{{ $ottDet->Description }} </td>
-                            <td>{{ $ottDet->isActive == 1 ? "Active":"In-active"}}</td>
-                            <td><a href="{{ route('earnings.overtimetype.edit', encrypt($ottDet->id)) }}"
-                                    class="btn btn-sm btn-primary">Edit</a></td>
+                            <td>{{ $otDet->id }}</td>
+                            <td>{{ $otDet->OvertimeType }}</td>
+                            <td>{{ $otDet->Description }} </td>
+                            <td>{{ $otDet->EmployeeCode }} </td>
+                            <td>{{ $otDet->EmployeeName }} </td>
+                            <td>{{ $otDet->ActualIN }} </td>
+                            <td>{{ $otDet->ActualOUT }} </td>
+                            <td>{{ number_format($otDet->FiledOTHours,2) }} </td>
+                            <td>{{ number_format($otDet->OTHoursApproved,2) }} </td>
+                            <td>{{ $otDet->status }}</td>
+                            <td>{{ $otDet->CreatedBy }} </td>
+                            <td>{{ $otDet->ApprovedBy }} </td>
                             <td>
-                                <form action="{{ route('earnings.overtimetype.destroy', encrypt($ottDet->id)) }}" method="POST"
+                                <div style="display:inline-block;margin-right:5px;">
+                                <a href="{{ route('earnings.overtime.edit', encrypt($otDet->id)) }}"
+                                    class="btn btn-sm btn-primary">Edit</a>
+                                </div>
+                                <div style="display:inline-block;margin-right:5px;">
+                                <form action="{{ route('earnings.overtime.destroy', encrypt($otDet->id)) }}" method="POST"
                                     onsubmit="return confirm('Are sure want to delete?')">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                 </form>
+                                </div>
+                                <div style="display:inline-block;margin-right:5px;">
+                                <form action="{{ route('earnings.overtime.approve', encrypt($otDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to approve?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                </form>
+                                </div>
+                                <div style="display:inline-block;margin-right:5px;">
+                                <form action="{{ route('earnings.overtime.decline', encrypt($otDet->id)) }}" method="POST"
+                                    onsubmit="return confirm('Are sure want to Decline?')">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-warning">Decline</button>
+                                </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

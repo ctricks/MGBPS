@@ -1,38 +1,67 @@
 <x-admin>
-    @section('title', 'Create Loan')
+    @section('title', 'Create Overtime')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Create Loan</h3>
-            <div class="card-tools"><a href="{{ route('deductions.loans.index') }}" class="btn btn-sm btn-dark">Back</a>
+            <h3 class="card-title">Create Overtime</h3>
+            <div class="card-tools"><a href="{{ route('earnings.overtime.index') }}" class="btn btn-sm btn-dark">Back</a>
             </div>
         </div>
+        <div class="card-header">
+  
+            @session('success')
+                <div class="alert alert-success" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+            @session('failed')
+                <div class="alert alert-danger" role="alert"> 
+                    {{ $value }}
+                </div>
+            @endsession
+  
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif    
+        </div>
         <div class="card-body">
-            <form action="{{ route('deductions.loans.store') }}" method="POST">
+            <form action="{{ route('earnings.overtime.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="empnumber" class="form-label">Loan Type:*</label>
-                            <select name="LoanType" id="LoanType" class="form-control" required>
-                                <option value="" selected disabled>select loan type</option>
-                                @foreach ($loanType as $lt)
-                                    <option value="{{ $lt->LoanType }}"
-                                        {{ $lt->LoanType == old('LoanType') ? 'selected' : '' }}>{{ $lt->LoanType }}
+                            <label for="empnumber" class="form-label">Overtime Type:*</label>
+                            <select name="OvertimeType" id="OvertimeType" class="form-control" required>
+                                <option value="" selected disabled>select overtime type</option>
+                                @foreach ($OvertimeType as $lt)
+                                    <option value="{{ $lt->Description }}"
+                                        {{ $lt->OvertimeType == old('LoanType') ? 'selected' : '' }}>{{ $lt->OvertimeType }}
                                     </option>
                                 @endforeach
                             </select>
-                            <x-error>loantype</x-error>
+                            <x-error>overtimetype</x-error>
                         </div>
                     </div>
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label for="LoanType" class="form-label">Description:*</label>
-                            <select name="description" id="description" class="form-control" required>
-                            </select>
-                            <x-error>loantype</x-error>
+                            <input class="form-control" id="overtime" name="overtime" type="text" readonly>
+                            <x-error>overtime</x-error>
                         </div>
                     </div>
-                    <div class="col-lg-8"></div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="date">Select Date:</label>
+                            <input type="date" id="date" name="date"
+                              class="form-control" placeholder="YYYY-MM-DD" required>
+                        </div>
+                    </div>
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label for="name">Employee Code:*</label>
@@ -45,105 +74,49 @@
                             <select name="Employee" id="Employee" class="form-control" required>
                                 <option value="" selected disabled>Select Employee</option>
                                 @foreach ($employee as $emp)
-                                    <option value="{{ $emp->id }}"
-                                        {{ $emp->id == old('Employee') ? 'selected' : '' }}>
+                                    <option value="{{ $emp->employeenumber }}"
+                                        {{ $emp->employeenumber == old('employee') ? 'selected' : '' }}>
                                         {{ $emp->lastname }} , {{ $emp->firstname }} {{ $emp->middlename }}</option>
                                 @endforeach
                             </select>
                             <x-error>Employee</x-error>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
+                    </div>  
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="name">Loan Number:*</label>
-                            <input class="form-control" id="loannumber" name="loannumber" type="text" disabled>
+                            <label for="date">Actual IN:</label>
+                            <input type="text" id="TimeIN" name="TimeIN"
+                              class="form-control" placeholder="00:00" required readonly>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="name">SSS Number:*</label>
-                            <input class="form-control" id="sssnumber" name="sssnumber" type="text" disabled>
+                            <label for="date">Actual OUT:</label>
+                            <input type="text" id="TimeOUT" name="TimeOUT"
+                              class="form-control" placeholder="00:00" required readonly>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="name">PhilHealth Number:*</label>
-                            <input class="form-control" id="phicnumber" name="phicnumber" type="text" disabled>
+                            <label for="date">Schedule OUT:</label>
+                            <input type="text" id="SchedOut" name="SchedOut"
+                              class="form-control" placeholder="00:00" required readonly>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="name">HDMF Number:*</label>
-                            <input class="form-control" id="hdmfnumber" name="hdmfnumber" type="text" disabled>
+                            <label for="date">Actual OT Hours:</label>
+                            <input type="text" id="ActualOTHours" name="ActualOTHours"
+                              class="form-control" placeholder="0.00" required readonly>
                         </div>
                     </div>
-                    <div class="col-lg-12">
-                        {{-- <a href="#" id="SearchEmployee" class="btn btn-primary">Search</a> --}}
-                    </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <label for="date">Select Date:</label>
-                            <input type="text" class="form-control datepicker" id="date" name="date"
-                                placeholder="YYYY-MM-DD" required>
+                            <label for="date">Apply OT Hours:</label>
+                            <input type="text" id="FiledOTHours" name="FiledOTHours"
+                              class="form-control" placeholder="0.00" required>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Loan Amount:</label>
-                            <input type="number" class="form-control" id="loanAmount" value="0" name="loanAmount" placeholder="Enter Loan Amount">
-                        </div>
-                    </div>
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">No of Payments:</label>
-                            <input type="number" class="form-control" id="installment" name="installment" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Amount of Deduction:</label>
-                            <input type="decimal" class="form-control" id="deductionAmount" name="deductionAmount" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Semi-Monthly Interest(%):</label>
-                            <input type="number" class="form-control" id="SemiInterest" name="SemiInterest" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Total Interest:</label>
-                            <input type="number" class="form-control" id="TotalInterest" name="TotalInterest" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Interest Balanace:</label>
-                            <input type="number" class="form-control" id="InterestBalance" name="InterestBalance" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="date">Balance:</label>
-                            <input type="number" class="form-control" id="Balance" name="Balance" placeholder="Enter No of Payments">
-                        </div>
-                    </div>
-                    {{-- <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="isActive" class="form-label">Active:*</label>
-                            <select name="isActive" id="isActive" class="form-control" required>
-                                <option value="" selected disabled>Select Record Status</option>
-                                <option value="1" selected>Active</option>
-                                <option value="0">In-active</option>
-                            </select>
-                            <x-error>isActive</x-error>
-                        </div>
-                    </div> --}}
                     <div class="col-lg-12">
                         <div class="float-right">
                             <button class="btn btn-primary" type="submit">Save</button>
@@ -157,86 +130,52 @@
 <script>
     $(document).ready(function() {
         // Cutoff Change
-        $('#LoanType').change(function() {
+        $('#OvertimeType').change(function() {
             // Cutoff id
             var lt = $(this).val();
-            $('#description').find('option').remove().end();
-            // AJAX request 
-            $.ajax({
-                url: '/deductions/getloandesc/' + lt,
-                type: 'get',
-                dataType: 'json',
-                success: function(response) {
-                    var len = 0;
-                    if (response.length > 0) {
-                        response.forEach(response => {
-                            // Create a new option
-                            const newOption = new Option(response.Description,
-                                response.id);
-                            // Append the new option to the dropdown
-                            $('#description').append(newOption);
-                        });
-                    }
-                }
-            });
+            console.log(lt);
+            const description = document.getElementById("overtime");
+            description.value = lt;
         });
     });
 </script>
 <script>
     $(document).ready(function() {
-        $('#Employee').change(function() {
-            var empID = $(this).val();
+        $('#Employee').change(function() 
+        {
+           var empCode = $(this).val(); 
+           CheckOvertime(empCode);
+        });
+        $('#date').change(function() 
+        {
+           empCode = document.getElementById("empcode").value;
+           CheckOvertime(empCode);
+           console.log(empCode);
+        });
+        const CheckOvertime = (empCode) =>{
+            // var empCode = document.getElementById("empcode").value;
+            document.getElementById("empcode").value = empCode;
+            var DateOT = document.getElementById("date").value;
             $.ajax({
-                url: '/getemployeelist/' + empID, // Replace with your server URL
+                url: '/getemployeeovertime/' + empCode + '/' + DateOT, // Replace with your server URL
                 type: 'GET',
                 data: {},
                 success: function(response) {
                     console.log(response[0].employeenumber);
-                    const employeecode = document.getElementById("empcode");
-                    const sssnumber = document.getElementById("sssnumber");
-                    const phicnumber = document.getElementById("phicnumber");
-                    const hdmfnumber = document.getElementById("hdmfnumber");
-                    const loannumber = document.getElementById("loannumber");
-
-                    loannumber.value = response[0].LoanNumber;
-                    sssnumber.value = response[0].SSS_Number;
-                    phicnumber.value = response[0].PHIC_Number;
-                    hdmfnumber.value = response[0].HDMF_Number;
-                    employeecode.value = response[0].employeenumber;
+                    const ActualIN = document.getElementById("TimeIN");
+                    ActualIN.value = response[0].FinalIN;
+                    const ActualOUT = document.getElementById("TimeOUT");
+                    ActualOUT.value = response[0].FinalOUT;
+                    const ScheduleOUT = document.getElementById("SchedOut");
+                    ScheduleOUT.value = response[0].EndTime;
+                    const ActualOTOUT = document.getElementById("ActualOTHours");
+                    ActualOTOUT.value = response[0].ActualOT;
 
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
-        });
+        }
     });
 </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-<script>
-    var date = new Date();
-    date.setDate(date.getDate()-1);
-    $(document).ready(function() {
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd', // Adjust format as needed
-            autoclose: true,
-            todayHighlight: true,
-            minDate: date
-        });
-    });
-</script>
-<script>
-        $(document).ready(function () {
-            $('#installment').on('keypress', function (event) {
-                const inputValue = $(this).val() + String.fromCharCode(event.which);
-               
-                const partNum = parseFloat(inputValue);
-                const loanAmount = parseFloat(document.getElementById("loanAmount").value);
-                const deductionAmount = document.getElementById("deductionAmount");
-                
-                const deducAmt =  loanAmount / partNum ;
-                deductionAmount.value = deducAmt.toFixed(2);
-               
-            });
-        });
-    </script>

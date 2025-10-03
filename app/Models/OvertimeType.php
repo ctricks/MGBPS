@@ -14,5 +14,9 @@ class OvertimeType extends Model
         'OvertimeType','Description','isActive'
     ];
     
+    public function overtime()
+    {
+        return $this->belongsTo(OvertimeType::class);
+    }
 
 }
