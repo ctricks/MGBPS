@@ -14,6 +14,7 @@ class DeductionDetailsController extends Controller
     public function index()
     {
         //
+        
         return view('deduction.deductiondetails.index', compact('data'));
     }
 

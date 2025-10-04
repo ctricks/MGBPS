@@ -261,6 +261,44 @@
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-building green"></i>
               <p>
+                Auto Deduction
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                    <a href="{{ route('deductions.loans.index') }}"
+                        class="nav-link {{ Route::is('deductions.loans.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        SSS
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('deductions.loandetails.index') }}"
+                        class="nav-link {{ Route::is('deductions.loandetails.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        PhilHealth
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('deductions.loandetails.index') }}"
+                        class="nav-link {{ Route::is('deductions.loandetails.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-money-bill "></i>
+                    <p style = "text-indent:15em;">
+                        PAG-IBIG (HDMF)
+                    </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-building green"></i>
+              <p>
                 Deduction
                 <i class="right fas fa-angle-left"></i>
               </p>
@@ -280,7 +318,7 @@
                         class="nav-link {{ Route::is('deductions.loandetails.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
-                        Deduction Details
+                        Loan Details
                     </p>
                     </a>
                 </li>

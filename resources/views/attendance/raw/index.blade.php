@@ -244,7 +244,7 @@
                                         // Create a new option
                                         const EmpName = response.lastname + ',' + response.firstname + ' ' + response.middlename + ' : ' + response.employee_code;
                                         const EmployeeName = EmpName.replace('null','No name yet').replace(',null null','');
-                                        
+                                        console.log(EmpName);
                                         const newOption = new Option( EmployeeName, response.id);
                                         // Append the new option to the dropdown
                                         $('#employeecode').append(newOption);
@@ -279,7 +279,10 @@
                                 if (response.length > 0) {
                                     response.forEach(response => {
                                         // Create a new option
-                                        const newOption = new Option(response.employee_code, response.id);
+                                        const EmpName = response.lastname + ',' + response.firstname + ' ' + response.middlename + ' : ' + response.employee_code;
+                                        const EmployeeName = EmpName.replace('null','No name yet').replace(',null null','');
+                                        console.log(EmpName);
+                                        const newOption = new Option( EmployeeName, response.id);
                                         // Append the new option to the dropdown
                                         $('#employeecode').append(newOption);
                                     });

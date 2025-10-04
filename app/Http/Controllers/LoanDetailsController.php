@@ -12,6 +12,7 @@ class LoanDetailsController extends Controller
     public function index()
     {
         //
+        
     }
 
     /**

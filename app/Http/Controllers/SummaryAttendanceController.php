@@ -150,7 +150,7 @@ public function createcufoff($monthName)
                 SUM(dtr.NightDiffHours) as 'NDHours',
                 SUM(dtr.OTHours) as 'OTHours',
                 SUM(dtr.Leaves) as 'Leaves',
-                SUM(dtr.Absent) as 'Absent',
+                SUM(dtr.Absent) / 8 as 'Absent',
                 SUM(dtr.Late) as 'Late',
                 SUM(dtr.Undertime) as 'Undertime',
                 ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday'

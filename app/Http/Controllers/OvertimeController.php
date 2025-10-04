@@ -213,4 +213,23 @@ class OvertimeController extends Controller
          ");
         return response()->json($data);
     }
+    public function getEmployeeOTByCutoff(string $cutoff,string $employeecode)
+    {
+        $data = DB::select("
+            select 
+            d.date as 'Date',
+            c.StartDate,
+            c.EndDate,
+            convert(varchar, Final_In, 108) as 'FinalIN',
+            convert(varchar, Final_Out, 108) as 'FinalOUT',
+            convert(varchar, EndTime, 108) as 'EndTime',
+            convert(varchar,CAST(DATEDIFF(MINUTE, EndTime, Final_Out) / 60.0 AS DECIMAL(10, 2)),108) AS ActualOT
+            from daily_time_records d
+            left join cutoff c on d.date between c.StartDate and c.EndDate
+            where 
+            CAST(DATEDIFF(MINUTE, EndTime, Final_Out) / 60.0 AS DECIMAL(10, 2)) > 0.00 and
+            d.employee_code = ".$employeecode." and c.id = ".$cutoff 
+            );
+        return response()->json($data);
+    }
 }

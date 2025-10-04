@@ -28,6 +28,7 @@ Route::get('/get-cutoff/{id}', [DailyTimeRecordController::class, 'getCutoffData
 Route::get('/autocomplete', [EmployeeController::class, 'employeeautocomplete'])->name('autocomplete');
 Route::get('/getemployeelist/{empcode}', [EmployeeController::class, 'employeecodeautocomplete']);
 Route::get('/getemployeeovertime/{empcode}/{date}', [OvertimeController::class, 'getEmployeeOT']);
+Route::get('/getemployeeovertimebycutoff/{cutoff}/{empcode}', [OvertimeController::class, 'getEmployeeOTByCutoff']);
 
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){
