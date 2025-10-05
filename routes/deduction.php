@@ -5,11 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoansController;
 use App\Http\Controllers\LoanDetailsController;
 use App\Http\Controllers\DeductionDetailsController;
+use App\Http\Controllers\AutoDeductionHDMFController;
 
 Route::prefix('deductions')->name('deductions.')->group(function(){
     Route::resource('loans',LoansController::class);
     Route::resource('loandetails',LoanDetailsController::class);
     Route::resource('deductiondetails',DeductionDetailsController::class);
+    Route::resource('hdmfdeductiondetails',AutoDeductionHDMFController::class);
+    Route::get('/processDeductionHDMF',[AutoDeductionHDMFController::class,'processAutoDeduction'])->name('autodeduction.hdmf');
     Route::patch('loanapprove/{id}',[LoansController::class,'approve'])->name('loan.approve');
     Route::patch('loandecline/{id}',[LoansController::class,'decline'])->name('loan.decline');
     Route::get('/getloandesc/{id}', [LoansController::class, 'getLoanDesc']);

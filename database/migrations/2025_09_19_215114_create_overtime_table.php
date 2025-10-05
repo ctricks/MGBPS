@@ -21,6 +21,9 @@ return new class extends Migration
             $table->decimal('ActualOTHours');
             $table->decimal('OTHoursApproved')->default(0.00);
             $table->decimal('FiledOTHours');
+            $table->decimal('Multiplier')->default(0.00);
+            $table->decimal('HourlyRate')->default(0.00);
+            $table->decimal('OTPay')->default(0.00);
             $table->string('Remarks')->nullable();
             $table->integer('OverTimeTypeID');
             $table->string('Status');

@@ -63,12 +63,13 @@ unset($__sessionArgs); ?>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Overtime Type Code</th>
+                        <th>Date</th>
                         <th>Description</th>
                         <th>Employee Code</th>
                         <th>Employee</th>
                         <th>Actual IN</th>
                         <th>Actual OUT</th>
+                        <th>Schedule OUT</th>
                         <th>Filed OT Hours</th>
                         <th>Approved OT Hours</th>
                         <th>Status</th>
@@ -81,12 +82,13 @@ unset($__sessionArgs); ?>
                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $otDet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td><?php echo e($otDet->id); ?></td>
-                            <td><?php echo e($otDet->OvertimeType); ?></td>
+                            <td><?php echo e($otDet->OTDate); ?></td>
                             <td><?php echo e($otDet->Description); ?> </td>
                             <td><?php echo e($otDet->EmployeeCode); ?> </td>
                             <td><?php echo e($otDet->EmployeeName); ?> </td>
                             <td><?php echo e($otDet->ActualIN); ?> </td>
                             <td><?php echo e($otDet->ActualOUT); ?> </td>
+                            <td><?php echo e($otDet->SchedOUT); ?> </td>
                             <td><?php echo e(number_format($otDet->FiledOTHours,2)); ?> </td>
                             <td><?php echo e(number_format($otDet->OTHoursApproved,2)); ?> </td>
                             <td><?php echo e($otDet->status); ?></td>

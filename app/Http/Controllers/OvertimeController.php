@@ -7,9 +7,11 @@ use App\Models\Overtime;
 use App\Models\OvertimeType;
 use App\Models\Employee;
 use App\Models\Holiday;
+use App\Models\DailyTimeRecord;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use DateTime;
 
 class OvertimeController extends Controller
 {
@@ -22,12 +24,15 @@ class OvertimeController extends Controller
         $data = DB::select("
                     select
                     o.id,
+                    o.OTDate,
                     ot.OvertimeType,
                     ot.Description,
                     o.EmployeeCode,e.lastname + ',' + e.firstname + ' ' + e.middlename as 'EmployeeName',
-                    convert(varchar,o.ActualIN,108) as 'ActualIN', convert(varchar,o.ActualOUT,108) as 'ActualOUT',o.FiledOTHours, o.OTHoursApproved,o.Remarks,o.status,
+                    convert(varchar,o.ActualIN,108) as 'ActualIN', convert(varchar,o.ActualOUT,108) as 'ActualOUT',
+                    convert(varchar,dtr.EndTime,108) as 'SchedOUT',o.FiledOTHours, o.OTHoursApproved,o.Remarks,o.status,
                     c.name as 'CreatedBy',o.created_at,u.name as 'ApprovedBy',o.updated_at
                     from overtime o
+                    left join daily_time_records dtr on o.OTdate = dtr.date and dtr.employee_code = o.EmployeeCode
                     left join employees e on o.employeeCode = e.employeenumber
                     left join overtimetype ot on o.OverTimeTypeID = ot.id
                     left join users c on o.CreatedBy = c.id
@@ -73,7 +78,11 @@ class OvertimeController extends Controller
              return redirect()->back()->with('failed','Error: Filed OT Hours excess to Actual OT Hours');
         }
         $overtimetype = Overtimetype::where('description','=',$request->OvertimeType)->first();
-      
+        $multiplier = $overtimetype->OTMultiplier;
+        $DailyRate = (float) Employee::where('employeenumber',$request->empcode)->first()->DailyRate;
+        $hourlyRate = (float) number_format($DailyRate / 8,2);
+        $OTPay = (float) (($hourlyRate * $multiplier) * ($request->FiledOTHours));
+       
         $overtime = Overtime::create([
             'OvertimeKey'=>$request->empcode.'_'.$request->date.'_'.$overtimetype->id,
             'EmployeeCode'=>$request->empcode,
@@ -85,6 +94,9 @@ class OvertimeController extends Controller
             'FiledOTHours'=>$request->FiledOTHours,
             'Remarks'=>'OT Filling',
             'OTDate'=>$request->date,
+            'Multiplier'=>(float) $multiplier,
+            'HourlyRate'=> (float) $hourlyRate,
+            'OTPay'=>(float) $OTPay,
             'Status'=>'For Approval',
             'CreatedBy'=>Auth::id(),
         ]);
@@ -185,6 +197,7 @@ class OvertimeController extends Controller
         $overtime = Overtime::find(decrypt($id));
         $overtime->status = "Approved";
         $overtime->ApprovedBy =$request->user()->id;
+        $overtime->OTHoursApproved = $overtime->FiledOTHours;
         $overtime->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
         $overtime->save();
 
@@ -199,6 +212,71 @@ class OvertimeController extends Controller
         $overtime->save();
 
         return redirect()->back()->with('success','Overtime Declined successfully.');
+    }
+    public function cancelfiling($id)
+    {
+        $dtr = DailyTimeRecord::where('id',$id)->first();
+
+        $employeecode = $dtr->employee_code;
+        $dtrDate = $dtr->date;
+        $OTType = 'Regular OT';
+        $Holiday = Holiday::where('date',$dtrDate)->get()->count();
+        
+        if($Holiday > 0)
+        {
+            $OTType = 'Holiday OT';
+        }
+        
+        $OvertimeType  = OvertimeType::where('description',$OTType)->first()->id;
+        
+        $OvertimeKey = $employeecode.'_'.$dtrDate.'_'.$OvertimeType;
+
+        $data = Overtime::where('OvertimeKey',$OvertimeKey)->first();
+        $data->Status = 'Cancel';
+        $data->save();
+
+        return redirect()->route('earnings.overtime.index')->with('Success','Cancel successfully');
+    }
+    public function filing($id)
+    {
+        $dtr = DailyTimeRecord::where('id',$id)->first();
+
+        $employeecode = $dtr->employee_code;
+        $dtrDate = $dtr->date;
+       
+         $datetime1 = Carbon::parse($dtr->Final_OUT);
+         $datetime2 =  Carbon::parse($dtr->EndTime);
+    
+        $interval =  number_format(($datetime1->diffInMinutes($datetime2))  / 60.0,2);
+
+        $OTType = 'Regular OT';
+
+        $Holiday = Holiday::where('date',$dtrDate)->get()->count();
+        
+        if($Holiday > 0)
+        {
+            $OTType = 'Holiday OT';
+        }
+        
+        $OvertimeType  = OvertimeType::where('description',$OTType)->first()->id;
+        
+        $OvertimeKey = $employeecode.'_'.$dtrDate.'_'.$OvertimeType;
+        
+        $overtime = Overtime::updateOrCreate([
+            'OvertimeKey'=>$OvertimeKey,
+            'EmployeeCode'=>$employeecode,
+            'ActualIN'=>Carbon::parse($dtr->Final_IN)->toTimeString(),
+            'ActualOUT'=>Carbon::parse($dtr->Final_OUT)->toTimeString(),
+            'ActualOTHours'=>$interval,
+            'OverTimeTypeID'=>$OvertimeType,
+            'OTHoursApproved'=>$interval,
+            'FiledOTHours'=>$interval,
+            'Remarks'=>'OT Filling',
+            'OTDate'=>$dtrDate,
+            'Status'=>'For Approval',
+            'CreatedBy'=>Auth::id(),
+        ]);
+        return redirect()->back()->with('success','Overtime Applied successfully.');
     }
     public function getEmployeeOT(string $employeecode,string $date)
     {
@@ -216,16 +294,21 @@ class OvertimeController extends Controller
     public function getEmployeeOTByCutoff(string $cutoff,string $employeecode)
     {
         $data = DB::select("
-            select 
+            select
+            d.id,
+            d.DType, 
             d.date as 'Date',
             c.StartDate,
             c.EndDate,
             convert(varchar, Final_In, 108) as 'FinalIN',
             convert(varchar, Final_Out, 108) as 'FinalOUT',
             convert(varchar, EndTime, 108) as 'EndTime',
-            convert(varchar,CAST(DATEDIFF(MINUTE, EndTime, Final_Out) / 60.0 AS DECIMAL(10, 2)),108) AS ActualOT
+            convert(varchar,CAST(DATEDIFF(MINUTE, EndTime, Final_Out) / 60.0 AS DECIMAL(10, 2)),108) AS ActualOT,
+            case when o.OTDate is not null then o.Status
+			else '' end as 'Status'
             from daily_time_records d
             left join cutoff c on d.date between c.StartDate and c.EndDate
+            left join overtime o on o.OTDate = d.date
             where 
             CAST(DATEDIFF(MINUTE, EndTime, Final_Out) / 60.0 AS DECIMAL(10, 2)) > 0.00 and
             d.employee_code = ".$employeecode." and c.id = ".$cutoff 

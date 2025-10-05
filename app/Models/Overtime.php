@@ -13,7 +13,7 @@ class Overtime extends Model
 
     protected $fillable = [
         'OvertimeKey','EmployeeCode','OTDate','ActualIN','ActualOUT','ActualOTHours','OTHoursApproved','FiledOTHours',
-        'Remarks','OverTimeTypeID','CreatedBy','ApprovedBy','Status'
+        'Remarks','OverTimeTypeID','CreatedBy','ApprovedBy','Status','Multiplier','HourlyRate','OTPay'
     ];
 
     public function user()

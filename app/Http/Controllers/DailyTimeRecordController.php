@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DailyTimeRecord;
 use App\Models\CutOff;
 use App\Models\Employee;
+use App\Models\autodeduction;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\DailyTimeRecordImport;
@@ -450,7 +451,6 @@ class DailyTimeRecordController extends Controller
 
         $data = DB::statement($this->DTRUpdate($Criteria,$cutoff));
 
-
         $recordFound = DB::select("
                                 SELECT count(id) as 'RecordFound'
                                 FROM summary_attendance
@@ -469,8 +469,32 @@ class DailyTimeRecordController extends Controller
             DB::statement($this->InsertQuery($Criteria));
         }
 
+        //AutoDeductions
+        $Deduction = 'HDMF';
+        $Amount = 200.00;
+        $DeductKey = $Deduction.'_'.$empcode.'_'.$EndDate;
+        $ddate = Carbon::createFromFormat('Y-m-d', $EndDate)->format('d');
+        
+        if($ddate == 15)
+        {
+            $AD_HDMF = autodeduction::where('autodeductionkey',$DeductKey)->count();
+
+            if($AD_HDMF == 0)
+            {
+                DB::statement($this->InsertDeduction($DeductKey,$Deduction,$empcode,$EndDate,$Amount));
+            }
+        }
+
         return response()->json($data);
     }
+
+    public function InsertDeduction($DeductKey,$Deduction,$employeecode,$Date,$Amount)
+    {
+        return "insert into autodeduction(autodeductionkey,EmployeeCode,AD_Date,DeductionName,Amount,PaidAmount,DateProcess,ProcessedBy,Remarks,created_at)".
+        "values('".$DeductKey."','".$employeecode."','".$Date."','".$Deduction."',".$Amount.",".$Amount.",FORMAT(GETDATE(), 'yyyy/MM/dd'),".Auth::id().",'Auto Deduction for ". $Deduction ."',getdate());";
+    }
+
+
     public function UpdateQuery($criteria)
     {
         return "

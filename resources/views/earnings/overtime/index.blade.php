@@ -38,12 +38,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Overtime Type Code</th>
+                        <th>Date</th>
                         <th>Description</th>
                         <th>Employee Code</th>
                         <th>Employee</th>
                         <th>Actual IN</th>
                         <th>Actual OUT</th>
+                        <th>Schedule OUT</th>
                         <th>Filed OT Hours</th>
                         <th>Approved OT Hours</th>
                         <th>Status</th>
@@ -56,12 +57,13 @@
                     @foreach ($data as $otDet)
                         <tr>
                             <td>{{ $otDet->id }}</td>
-                            <td>{{ $otDet->OvertimeType }}</td>
+                            <td>{{ $otDet->OTDate }}</td>
                             <td>{{ $otDet->Description }} </td>
                             <td>{{ $otDet->EmployeeCode }} </td>
                             <td>{{ $otDet->EmployeeName }} </td>
                             <td>{{ $otDet->ActualIN }} </td>
                             <td>{{ $otDet->ActualOUT }} </td>
+                            <td>{{ $otDet->SchedOUT }} </td>
                             <td>{{ number_format($otDet->FiledOTHours,2) }} </td>
                             <td>{{ number_format($otDet->OTHoursApproved,2) }} </td>
                             <td>{{ $otDet->status }}</td>

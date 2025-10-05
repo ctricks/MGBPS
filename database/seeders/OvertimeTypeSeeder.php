@@ -18,11 +18,33 @@ class OvertimeTypeSeeder extends Seeder
 
       OvertimeType::create([
             'overtimetype' => 'REGOT',
-            'description' =>'Regular OT'
+            'description' =>'Regular OT',
+            'OTMultiplier' => 1.25,
       ],);
       OvertimeType::create([
-            'overtimetype' => 'HOLOT',
-            'description' =>'Holiday OT'
+            'overtimetype' => 'SNWHOLOT',
+            'description' =>'Special NW Holiday OT',
+            'OTMultiplier' => 1.30
+      ],);
+      OvertimeType::create([
+            'overtimetype' => 'RHOLOT',
+            'description' =>'Regular Holiday OT',
+            'OTMultiplier' => 2
+      ],);
+      OvertimeType::create([
+            'overtimetype' => 'RDOT',
+            'description' =>'RestDay OT',
+            'OTMultiplier' => 1.30
+      ],);
+      OvertimeType::create([
+            'overtimetype' => 'RHRDOT',
+            'description' =>'Regular Holiday RestDay OT',
+            'OTMultiplier' => 1.30
+      ],);
+      OvertimeType::create([
+            'overtimetype' => 'SHRDOT',
+            'description' =>'Special Holiday RestDay OT',
+            'OTMultiplier' => 1.30
       ],);
     }
 }

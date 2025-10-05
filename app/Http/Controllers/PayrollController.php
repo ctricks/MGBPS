@@ -129,24 +129,38 @@ class PayrollController extends Controller
                 CAST(s.WorkHours * ( emp.DailyRate  / 8) as DECIMAL(9,2)) as 'BasicPay',
                 (s.Absent / 8) as 'Absent',
                 CAST((s.Absent / 8 ) * emp.DailyRate as DECIMAL(9,2)) as 'AbsentPay',
-                0 as 'RegularOTHrs',
-                0.00 as 'RegularOTPay',
+                isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'REGOT')),0) as 'RegularOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'REGOT')),0) as 'RegularOTPay',
                 0 as 'HalfdayHrs',
 				0.00 as 'HalfdayPay',
-                0 as 'SundayOTHrs',
-                0.00 as 'SundayOTPay',
+                isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RDOT')),0) as 'SundayOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RDOT')),0) as 'SundayOTPay',
+                isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RHOLOT')),0) as 'LegalOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RHOLOT')),0) as 'LegalOTPay',
+                isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'SNWHOLOT')),0) as 'SplNWOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'SNWHOLOT')),0) as 'SplNWOTPay',
+                isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'SHRDOT')),0) as 'SplRDOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'SHRDOT')),0) as 'SplRDOTPay',
+                 isnull((select sum(o.OTHoursApproved) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RHRDOT')),0) as 'LGRDOTHrs',
+                isnull((select sum(o.OTPay) from overtime o where o.OTDate between cu.StartDate and cu.EndDate and o.EmployeeCode = dtr.employee_code and o.Status = 'Approved' and OverTimeTypeID = (select id from overtimetype where OverTimeType = 'RHRDOT')),0) as 'LGRDOTPay',
+                0 as 'ExceedingHrs',
+                0.00 as 'ExceedingHrsPay',
                 0 as 'LateHrs',
                 0.00 as 'LatePay',
+                0.00 as 'HalfdayPay',
+
                 CAST(s.WorkHours * ( emp.DailyRate  / 8) as DECIMAL(9,2))
-                as 'TotalEarnings'
+                as 'TotalEarnings',
+                isnull(d.Amount,0.00) as 'HDMF'
                 FROM 
                     daily_time_records dtr
                 left join employees emp on dtr.employee_code = emp.employeenumber
                 left join cutoff cu on dtr.cutoff = cu.id
-				left join payroll p on p.employeecode = emp.employeenumber 
+				left join payroll p on p.employeecode = emp.employeenumber  
 				left join users u on u.id = p.PreparedBy 
                 left join users a on a.id = p.ApprovedBy
                 left join summary_attendance s on s.employeecode = emp.employeenumber and s.StartDateCutoff = cu.StartDate and s.EndDateCutoff = cu.EndDate
+                left join autodeduction d on d.employeecode = dtr.employee_code and d.deductionname = 'HDMF' and d.AD_Date =  cu.EndDate
                 where [date] between cu.StartDate and cu.EndDate
                 and
 				cu.id = ". $cutoff ." 
@@ -154,7 +168,7 @@ class PayrollController extends Controller
                 dtr.employee_code = ". $empcode ."
                 group by 
                     cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename,
-                    emp.DailyRate,s.WorkHours,s.Absent
+                    emp.DailyRate,s.WorkHours,s.Absent,d.Amount
                 order by emp.lastname desc";
         
         $data = DB::select($PayrollQuery); 

@@ -252,8 +252,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo e(route('deductions.loandetails.index')); ?>"
-                        class="nav-link <?php echo e(Route::is('deductions.loandetails.index') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('deductions.hdmfdeductiondetails.index')); ?>"
+                        class="nav-link <?php echo e(Route::is('deductions.hdmfdeductiondetails.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">
                         PAG-IBIG (HDMF)

@@ -77,12 +77,12 @@
                                     value="ABSENCES:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentDay" required numeric
+                                <input type="text" class="form-control" name="AbsentDay" id="AbsentDay" required numeric
                                     value="{{ $data[0]->Absent }} day(s)" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="({{ $data[0]->AbsentPay }})" readonly>
+                                <input type="text" class="form-control" name="Absents" id="Absents" required numeric
+                                    value="{{ $data[0]->AbsentPay }}" readonly>
                             </div>
                             {{-- second row --}}
                             <div class="form-group col-lg-2">
@@ -106,7 +106,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->AbsentPay }}" readonly>
+                                    value="{{ number_format($data[0]->HalfdayPay,2) }}" readonly>
                             </div>     
                             {{-- Third Lane --}}
                             <div class="form-group col-lg-2">
@@ -130,7 +130,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->LatePay }}" readonly>
+                                    value="{{ number_format($data[0]->LatePay,2) }}" readonly>
                             </div> 
                             {{-- Fourth Lane --}}
                             <div class="form-group col-lg-2">
@@ -139,11 +139,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ $data[0]->ExceedingHrs }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ $data[0]->ExceedingHrsPay }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Undertime:" readonly>
@@ -154,7 +154,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->LatePay }}" readonly>
+                                    value="{{ number_format($data[0]->LatePay,2) }}" readonly>
                             </div> 
                             {{-- Fifth Lane --}}
                             <div class="form-group col-lg-2">
@@ -163,11 +163,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ number_format($data[0]->LegalOTHrs,2) }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ number_format($data[0]->LegalOTPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="SSS:" readonly>
@@ -187,11 +187,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ $data[0]->ExceedingHrs }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ number_format($data[0]->ExceedingHrsPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="PhilHealth:" readonly>
@@ -211,11 +211,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ number_format($data[0]->SplNWOTHrs,2) }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ number_format($data[0]->SplNWOTPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="HDMF :" readonly>
@@ -225,8 +225,8 @@
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->LatePay }}" readonly>
+                                <input type="text" class="form-control" id="HDMF_P" name="HDMF_P" required numeric
+                                    value="{{ number_format($data[0]->HDMF,2)}}" readonly>
                             </div> 
                             {{-- Eighth Lane --}}
                             <div class="form-group col-lg-2">
@@ -235,11 +235,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ $data[0]->ExceedingHrs }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ $data[0]->ExceedingHrsPay }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="TAX :" readonly>
@@ -259,11 +259,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ number_format($data[0]->LGRDOTHrs,2) }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ number_format($data[0]->LGRDOTPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="SSS Loans :" readonly>
@@ -283,11 +283,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ $data[0]->ExceedingHrs }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ $data[0]->ExceedingHrsPay }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="HDMF Loans :" readonly>
@@ -307,11 +307,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ number_format($data[0]->SplRDOTHrs,2) }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ number_format($data[0]->SplRDOTPay,2) }}" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Other Loans :" readonly>
@@ -331,11 +331,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ $data[0]->ExceedingHrs }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ $data[0]->ExceedingHrsPay }}" readonly></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -347,11 +347,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="{{ 0 }}" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                    value="{{ 0.00 }}" readonly></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -363,11 +363,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="AllowansTax" id="AllowansTax" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -379,11 +379,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="AllowanceECOLA" id="AllowanceECOLA" 
+                                   value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -395,11 +395,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax" id="othnontax" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -411,11 +411,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax2" id="othnontax2" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -423,15 +423,15 @@
                             {{-- Eighteen Lane --}}
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" 
-                                    value="Other (Non Taxable 3) :" readonly>
+                                    value="Other(Non-Tax 3):" >
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax3" id="othnontax3" 
+                                   value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -443,11 +443,11 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="{{ $data[0]->SundayOTHrs }}" readonly>
+                                    value="" readonly >
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="{{ $data[0]->SundayOTPay }}" readonly></div>
+                                 <input type="text" class="form-control" name="EarningsAdj" id="EarningsAdj" 
+                                    value="0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="OTHERS:" readonly>
@@ -457,8 +457,8 @@
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
-                                    value="0.00" readonly>
+                                <input type="text" class="form-control" id="DeducOTH" name="DeducOTH" 
+                                   value="0" placeholder="0.00" oninput="handleTyping(event);" >
                             </div>
                             <div class="form-group col-lg-12"></div>
                             {{-- Last Lane --}}
@@ -468,21 +468,21 @@
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="TotalEarnings" id="TotalEarnings"
-                                    value="{{ $data[0]->TotalEarnings }}" readonly>
+                                    value="0.00" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
                                     value="Total Deduction :" readonly></div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
-                                    value="0" readonly>
+                                <input type="text" class="form-control" id="TotalDeduction" name="TotalDeduction"
+                                    value="0.00" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Net Pay :" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
+                                <input type="text" class="form-control" id="NetAmount" name="NetAmount" 
                                     value="0.00" readonly>
                             </div>
                         <div class = "form-group col-lg-12">
@@ -552,11 +552,37 @@
                     });
                 });
             </script>
-    {{-- <script>
-        function computeSum() {
-            const BasicPay = parseFloat(document.getElementById('basicpay').value) || 0;
-            const regulartOTpay = parseFloat(document.getElementById('regulartOTpay').value) || 0;
-
-            document.getElementById('TotalEarnings').value = BasicPay + regulartOTpay;
+  <script>
+    // Executes after the entire page has loaded
+    window.onload = function () {
+      computeSum();
+    };
+  </script>
+    <script>
+        function handleTyping(event) {
+            computeSum();
         }
-    </script> --}}
+        function computeSum() {
+            
+            const BasicPay = document.getElementById('basicpay').value.replace(/,/g, '');
+            const regularOTpay = document.getElementById('regularOTPay').value.replace(/,/g, '');
+            const AdjEarnings = document.getElementById('EarningsAdj').value.replace(/,/g, '');
+            const NonTax3 = document.getElementById('othnontax3').value.replace(/,/g, '');
+            const NonTax2 = document.getElementById('othnontax2').value.replace(/,/g, '');
+            const NonTax = document.getElementById('othnontax').value.replace(/,/g, '');
+            const AllowanceECOLA = document.getElementById('AllowanceECOLA').value.replace(/,/g, '');
+            const AllowanceTax = document.getElementById('AllowansTax').value.replace(/,/g, '');
+            const Earnings = parseFloat(BasicPay) + parseFloat(regularOTpay) + parseFloat(AdjEarnings) 
+                             + parseFloat(NonTax3) + parseFloat(NonTax2) + parseFloat(NonTax) + 
+                             parseFloat(AllowanceECOLA) +parseFloat(AllowanceTax);
+            const AbsentPay = document.getElementById('Absents').value.replace(/,/g, '');
+            const HDMF = document.getElementById('HDMF_P').value.replace(/,/g, '');
+            const DeducOther = document.getElementById('DeducOTH').value.replace(/,/g, '');
+            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay) + parseFloat(DeducOther);
+            const NetAmount = Earnings - Deduction;
+            
+            document.getElementById('TotalEarnings').value = Earnings.toFixed(2);
+            document.getElementById('TotalDeduction').value = Deduction.toFixed(2);
+            document.getElementById('NetAmount').value = NetAmount.toFixed(2);
+        }
+    </script>

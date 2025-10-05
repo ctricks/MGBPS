@@ -122,12 +122,12 @@ unset($__sessionArgs); ?>
                                     value="ABSENCES:" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentDay" required numeric
+                                <input type="text" class="form-control" name="AbsentDay" id="AbsentDay" required numeric
                                     value="<?php echo e($data[0]->Absent); ?> day(s)" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="(<?php echo e($data[0]->AbsentPay); ?>)" readonly>
+                                <input type="text" class="form-control" name="Absents" id="Absents" required numeric
+                                    value="<?php echo e($data[0]->AbsentPay); ?>" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -151,7 +151,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->AbsentPay); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->HalfdayPay,2)); ?>" readonly>
                             </div>     
                             
                             <div class="form-group col-lg-2">
@@ -175,7 +175,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->LatePay,2)); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">
@@ -184,11 +184,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e($data[0]->ExceedingHrs); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e($data[0]->ExceedingHrsPay); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Undertime:" readonly>
@@ -199,7 +199,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->LatePay,2)); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">
@@ -208,11 +208,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->LegalOTHrs,2)); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(number_format($data[0]->LegalOTPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="SSS:" readonly>
@@ -232,11 +232,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e($data[0]->ExceedingHrs); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(number_format($data[0]->ExceedingHrsPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="PhilHealth:" readonly>
@@ -256,11 +256,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->SplNWOTHrs,2)); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(number_format($data[0]->SplNWOTPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="HDMF :" readonly>
@@ -270,8 +270,8 @@ unset($__sessionArgs); ?>
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                <input type="text" class="form-control" id="HDMF_P" name="HDMF_P" required numeric
+                                    value="<?php echo e(number_format($data[0]->HDMF,2)); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">
@@ -280,11 +280,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e($data[0]->ExceedingHrs); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e($data[0]->ExceedingHrsPay); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="TAX :" readonly>
@@ -304,11 +304,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->LGRDOTHrs,2)); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(number_format($data[0]->LGRDOTPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="SSS Loans :" readonly>
@@ -328,11 +328,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e($data[0]->ExceedingHrs); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e($data[0]->ExceedingHrsPay); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="HDMF Loans :" readonly>
@@ -352,11 +352,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->SplRDOTHrs,2)); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(number_format($data[0]->SplRDOTPay,2)); ?>" readonly></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Other Loans :" readonly>
@@ -376,11 +376,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e($data[0]->ExceedingHrs); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e($data[0]->ExceedingHrsPay); ?>" readonly></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -392,11 +392,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="<?php echo e(0); ?>" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                    value="<?php echo e(0.00); ?>" readonly></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -408,11 +408,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="AllowansTax" id="AllowansTax" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -424,11 +424,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="AllowanceECOLA" id="AllowanceECOLA" 
+                                   value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -440,11 +440,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax" id="othnontax" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -456,11 +456,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax2" id="othnontax2" 
+                                    value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -468,15 +468,15 @@ unset($__sessionArgs); ?>
                             
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" 
-                                    value="Other (Non Taxable 3) :" readonly>
+                                    value="Other(Non-Tax 3):" >
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="othnontax3" id="othnontax3" 
+                                   value = "0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-6">
                                 <input type="text" class="form-control"  
                                     value="" readonly>
@@ -488,11 +488,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="" id=""
-                                    value="<?php echo e($data[0]->SundayOTHrs); ?>" readonly>
+                                    value="" readonly >
                             </div>
                             <div class="form-group col-lg-2">
-                                 <input type="text" class="form-control" name="" id="" 
-                                    value="<?php echo e($data[0]->SundayOTPay); ?>" readonly></div>
+                                 <input type="text" class="form-control" name="EarningsAdj" id="EarningsAdj" 
+                                    value="0" placeholder="0.00" oninput="handleTyping(event);"></div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="OTHERS:" readonly>
@@ -502,8 +502,8 @@ unset($__sessionArgs); ?>
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
-                                    value="0.00" readonly>
+                                <input type="text" class="form-control" id="DeducOTH" name="DeducOTH" 
+                                   value="0" placeholder="0.00" oninput="handleTyping(event);" >
                             </div>
                             <div class="form-group col-lg-12"></div>
                             
@@ -513,21 +513,21 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2"> 
                                 <input type="text" class="form-control" name="TotalEarnings" id="TotalEarnings"
-                                    value="<?php echo e($data[0]->TotalEarnings); ?>" readonly>
+                                    value="0.00" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                  <input type="text" class="form-control" name="" id="" 
                                     value="Total Deduction :" readonly></div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
-                                    value="0" readonly>
+                                <input type="text" class="form-control" id="TotalDeduction" name="TotalDeduction"
+                                    value="0.00" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control"  
                                     value="Net Pay :" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control"  
+                                <input type="text" class="form-control" id="NetAmount" name="NetAmount" 
                                     value="0.00" readonly>
                             </div>
                         <div class = "form-group col-lg-12">
@@ -606,4 +606,38 @@ unset($__sessionArgs); ?>
                     });
                 });
             </script>
-    <?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/summary/view.blade.php ENDPATH**/ ?>
+  <script>
+    // Executes after the entire page has loaded
+    window.onload = function () {
+      computeSum();
+    };
+  </script>
+    <script>
+        function handleTyping(event) {
+            computeSum();
+        }
+        function computeSum() {
+            
+            const BasicPay = document.getElementById('basicpay').value.replace(/,/g, '');
+            const regularOTpay = document.getElementById('regularOTPay').value.replace(/,/g, '');
+            const AdjEarnings = document.getElementById('EarningsAdj').value.replace(/,/g, '');
+            const NonTax3 = document.getElementById('othnontax3').value.replace(/,/g, '');
+            const NonTax2 = document.getElementById('othnontax2').value.replace(/,/g, '');
+            const NonTax = document.getElementById('othnontax').value.replace(/,/g, '');
+            const AllowanceECOLA = document.getElementById('AllowanceECOLA').value.replace(/,/g, '');
+            const AllowanceTax = document.getElementById('AllowansTax').value.replace(/,/g, '');
+            const Earnings = parseFloat(BasicPay) + parseFloat(regularOTpay) + parseFloat(AdjEarnings) 
+                             + parseFloat(NonTax3) + parseFloat(NonTax2) + parseFloat(NonTax) + 
+                             parseFloat(AllowanceECOLA) +parseFloat(AllowanceTax);
+            const AbsentPay = document.getElementById('Absents').value.replace(/,/g, '');
+            const HDMF = document.getElementById('HDMF_P').value.replace(/,/g, '');
+            const DeducOther = document.getElementById('DeducOTH').value.replace(/,/g, '');
+            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay) + parseFloat(DeducOther);
+            const NetAmount = Earnings - Deduction;
+            
+            document.getElementById('TotalEarnings').value = Earnings.toFixed(2);
+            document.getElementById('TotalDeduction').value = Deduction.toFixed(2);
+            document.getElementById('NetAmount').value = NetAmount.toFixed(2);
+        }
+    </script>
+<?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/summary/view.blade.php ENDPATH**/ ?>

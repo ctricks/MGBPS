@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id()->increment();
             $table->string('OvertimeType')->unique();
             $table->string('Description')->nullable();
+            $table->decimal('OTMultiplier')->default(0.00);
             $table->string('isActive')->default(1);
             $table->timestamps();
         });

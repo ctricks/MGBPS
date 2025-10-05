@@ -323,13 +323,16 @@ unset($__sessionArgs); ?>
                 <table class="table table-striped" id="overtimeTable">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Date</th>
+                            <th>Date Type</th>
                             <th>Cutoff Start Date</th>
                             <th>Cutoff End Date</th>
                             <th>Final In</th>
                             <th>Final Out</th>
                             <th>Schedule Out</th>
                             <th>Actual OT Hours</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -397,7 +400,11 @@ $(document).ready(function() {
                      $.each(response, function (key, value) {
                             otdata += '<tr>';
                             otdata += '<td>' + 
+                                value.id + '</td>';
+                            otdata += '<td>' + 
                                 value.Date + '</td>';
+                            otdata += '<td>' + 
+                                value.DType + '</td>';
                             otdata += '<td>' + 
                                 value.StartDate + '</td>';
                             otdata += '<td>' + 
@@ -410,6 +417,15 @@ $(document).ready(function() {
                                 value.EndTime + '</td>';
                             otdata += '<td>' + 
                                 value.ActualOT + '</td>';
+                            otdata += '<td>' + 
+                                value.Status + '</td>';
+                            if(value.Status == "")
+                            {
+                                otdata += '<td><a href="../overtimefile/'+ value.id +'" onclick="return ProcessOvertime(\'filing\');">Apply</a></td>';
+                            }else
+                            {
+                                otdata += '<td><a href="../overtimefilecancel/'+ value.id +'" onclick="return ProcessOvertime(\'cancel\');">Cancel</a></td>';
+                            }
                             otdata += '</tr>';
                             totalActualOT = totalActualOT + parseFloat(value.ActualOT);
                         });
@@ -422,7 +438,24 @@ $(document).ready(function() {
                 }
             });
         }
+        // const ProcessOvertime = (id) => {
+        //     let cont = confirm('Would you like to continue?');
+        //     if(cont == true)
+        //     {
+                
+        //     }
+        // }
     });
+</script>
+<script type="text/javascript">
+    function ProcessOvertime  (process) {
+        let proc = process === 'filing'  ? 'Apply':'Cancel';
+        let cont = confirm('Would you like to continue '+ proc +' process?');
+            if(cont != true)
+            {
+                return false;
+            }
+    }
 </script>
 <script>
     $(document).ready(function() {
