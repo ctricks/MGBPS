@@ -262,6 +262,13 @@ class OvertimeController extends Controller
         
         $OvertimeKey = $employeecode.'_'.$dtrDate.'_'.$OvertimeType;
         
+        $overtimetype = Overtimetype::where('description','=',$OTType)->first();
+        $multiplier = $overtimetype->OTMultiplier;
+        $DailyRate = (float) Employee::where('employeenumber',$employeecode)->first()->DailyRate;
+        $hourlyRate = (float) number_format($DailyRate / 8,2);
+        $OTPay = (float) (($hourlyRate * $multiplier) * ($interval));
+
+
         $overtime = Overtime::updateOrCreate([
             'OvertimeKey'=>$OvertimeKey,
             'EmployeeCode'=>$employeecode,
@@ -273,6 +280,9 @@ class OvertimeController extends Controller
             'FiledOTHours'=>$interval,
             'Remarks'=>'OT Filling',
             'OTDate'=>$dtrDate,
+            'Multiplier'=>(float) $multiplier,
+            'HourlyRate'=> (float) $hourlyRate,
+            'OTPay'=>(float) $OTPay,
             'Status'=>'For Approval',
             'CreatedBy'=>Auth::id(),
         ]);
