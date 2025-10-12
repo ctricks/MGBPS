@@ -1,8 +1,8 @@
 <x-admin>
-    @section('title','Payroll Processing')
+    @section('title','Payslip Processing')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Payroll Process Table</h3>
+            <h3 class="card-title">Payslip Process Table</h3>
             <div class="card-tools">
                 {{-- <a href="{{ route('payroll.payroll.create') }}" class="btn btn-sm btn-info">New</a> --}}
             </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="card-body">
             Filter:
-            <form action="{{ route('payroll.summarypayroll.list') }}" method="POST">
+            <form action="{{ route('payroll.payslip.list') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-3">

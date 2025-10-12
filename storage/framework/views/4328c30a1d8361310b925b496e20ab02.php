@@ -8,10 +8,10 @@
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <?php $__env->startSection('title','Payroll Processing'); ?>
+    <?php $__env->startSection('title','Payslip Processing'); ?>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Payroll Process Table</h3>
+            <h3 class="card-title">Payslip Process Table</h3>
             <div class="card-tools">
                 
             </div>
@@ -45,7 +45,7 @@ unset($__sessionArgs); ?>
         </div>
         <div class="card-body">
             Filter:
-            <form action="<?php echo e(route('payroll.summarypayroll.list')); ?>" method="POST">
+            <form action="<?php echo e(route('payroll.payslip.list')); ?>" method="POST">
                 <?php echo csrf_field(); ?>
                 <div class="row">
                     <div class="col-lg-3">
@@ -300,4 +300,4 @@ unset($__sessionArgs); ?>
                         }
                     });
                 });
-            </script><?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/summary/index.blade.php ENDPATH**/ ?>
+            </script><?php /**PATH D:\PAYROLL\PS\adminlte-laravel10\resources\views/payroll/payslip/index.blade.php ENDPATH**/ ?>

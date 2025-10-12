@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoansController;
 use App\Http\Controllers\DailyTimeRecordController;
 use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\TAXReferenceController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 /*
@@ -29,7 +30,7 @@ Route::get('/autocomplete', [EmployeeController::class, 'employeeautocomplete'])
 Route::get('/getemployeelist/{empcode}', [EmployeeController::class, 'employeecodeautocomplete']);
 Route::get('/getemployeeovertime/{empcode}/{date}', [OvertimeController::class, 'getEmployeeOT']);
 Route::get('/getemployeeovertimebycutoff/{cutoff}/{empcode}', [OvertimeController::class, 'getEmployeeOTByCutoff']);
-
+Route::get('/computetax/{Earnings}', [TAXReferenceController::class, 'computetax']);
 // Login with OTP Routes
 Route::prefix('/otp')->middleware('guest')->name('otp.')->controller(LoginWithOTPController::class)->group(function(){
     Route::get('/login','login')->name('login');

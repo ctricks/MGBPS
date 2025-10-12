@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\DailyTimeRecord;
 use App\Models\CutOff;
 use App\Models\Employee;
+use App\Models\Payroll;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\DailyTimeRecordController;
+use Illuminate\Support\Facades\Auth;
 
-class SummaryAttendanceController extends Controller
+class PayslipController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,50 +19,37 @@ class SummaryAttendanceController extends Controller
     public function index()
     {
         //
-        //$data = 
-        //Get Current Cut-off as default display
         $now = Carbon::now()->format('F');
         $defaultCutoff = Cutoff::where('Month','=',$now)->where('status','=','OPEN')->get();
-        $data = DB::select($this->SummaryAttendanceQuery(''));
-
+        $data = DB::select($this->SummaryPayslipQuery(''));
         if($defaultCutoff->count() > 0)
         {
-            $data = DB::select($this->SummaryAttendanceQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
+            $data = DB::select($this->SummaryPayslipQuery("and    cu.Month = '" . $defaultCutoff[0]->Month . "'"));
         }else
         {
-            $data = DB::select($this->SummaryAttendanceQuery("and    cu.status = 'OPEN' "));
+            $data = DB::select($this->SummaryPayslipQuery("and    cu.status = 'OPEN'"));
         }
-        return view('attendance.summary.index',compact('defaultCutoff','data'));
+        return view('payroll.payslip.index',compact('defaultCutoff','data'));
     }
-    public function getemployeesummary($cutoff,$empcode)
+    public function SummaryPayslipQuery($criteria)
     {
-        $cutoffData = Cutoff::where('id',$cutoff)->get();
-        
-        $DTRController = new DailyTimeRecordController();
-
-        $criteria = "where dtr.employee_code = ". $empcode ."";
-        
-        if($cutoffData[0] != null)
-        {
-            $criteria = "where
-                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'
-                        and dtr.employee_code = ". $empcode ."";
-        }
-
-        $DTRQuery = $DTRController->DTRQuery($criteria);
-        
-        $data = DB::select($DTRQuery);
-
-        return view('attendance.summary.view',compact('data'));
+        return "select 
+                p.id,
+                p.EmployeeCode,
+                e.lastname + ',' + e.firstname + ' ' + e.middlename as 'EmployeeName'
+                from payroll p 
+                left join employees e on e.employeenumber = p.EmployeeCode 
+                left join cutoff cu on cu.id = p.Cutoff_id
+                where p.Status = 'Approved' " . $criteria;
     }
-    public function getemployeelist(Request $request)
+    public function getpaysliplist(Request $request)
     {
         $cutoffData = Cutoff::where('id',$request->cutoff)->get();
         $firstDayOfMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->lastOfMonth();
         $currentMonthName = Carbon::now()->format('F');
 
-        $cutOFF = CutOff::where('id','=',$request->cutoff)->get();
+        $cutOFF = CutOff::where('Month','=',$currentMonthName)->get();
         
         $ProcessStatus = "Not Process";
 
@@ -71,27 +59,26 @@ class SummaryAttendanceController extends Controller
             $cutOFF = Cutoff::where('Month','=',$currentMonthName)->get();
         }
 
-        $empcode = explode(':',$request->employeecode);
-        $empcode = trim($empcode[1]);
-
         if($cutoffData[0] != null)
         {
-            if($empcode != "")
-            {
-                $criteria = "and
-                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'".
-                        "and dtr.employee_code = '" . $empcode. "'";
-            }else
-            {
-                $criteria = "and
-                        dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'";
-            }
+            // if($request->employeecode != "")
+            // {
+            //     $criteria = "and
+            //             dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'".
+            //             "and dtr.employee_code = '" . $request->employeecode. "'";
+            // }else
+            // {
+            //     $criteria = "and
+            //             dtr.date between '". $cutoffData[0]->StartDate ."' and '" . $cutoffData[0]->EndDate ."'";
+            // }
             //$data = DailyTimeRecord::whereBetween("date",[$cutoffData[0]->StartDate,$cutoffData[0]->EndDate])
-            $data = DB::select($this->SummaryAttendanceQuery($criteria));
+            $criteria = '';
+            
+            $data = DB::select($this->SummaryPayslipQuery($criteria));
         }
-        return view('attendance.summary.index',compact('data','cutOFF','ProcessStatus'));
+        return view('payroll.payslip.index',compact('data','cutOFF','ProcessStatus'));
     }
-public function createcufoff($monthName)
+    public function createcufoff($monthName)
     {
         try{
             $currentMonthName = Carbon::now()->format('F');
@@ -137,35 +124,21 @@ public function createcufoff($monthName)
             return back()->with('error', 'Cut-off creation failed! '. $e->getMessage());
         }
     }
-    public function SummaryAttendanceQuery($Criteria)
+    public function getemployeesummary($cutoff,$empcode)
     {
-        return "Select
-                cu.Month,
-                cu.id as 'cutoffid',
-                cu.StartDate,cu.EndDate,
-                dtr.employee_code,
-                emp.lastname + ',' + emp.firstname + ' ' + emp.middlename  as 'EmployeeName',
-                CAST(SUM(dtr.WorkingHours) / 8 as DECIMAL(9,2)) as 'WorkingDays',
-                SUM(dtr.WorkingHours) as 'WorkingHours',
-                SUM(dtr.NightDiffHours) as 'NDHours',
-                SUM(dtr.OTHours) as 'OTHours',
-                SUM(dtr.Leaves) as 'Leaves',
-                SUM(dtr.Absent) / 8 as 'Absent',
-                SUM(dtr.Late) as 'Late',
-                SUM(dtr.Undertime) as 'Undertime',
-                ((select count(id) from holiday where date between cu.StartDate and cu.EndDate) * 8) as 'Holiday'
-                FROM 
-                    daily_time_records dtr
-                left join employees emp on dtr.employee_code = emp.employeenumber
-                left join cutoff cu on dtr.cutoff = cu.id
-				left join payroll p on p.employeecode = emp.employeenumber 
-                where [date] between cu.StartDate and cu.EndDate and cu.status = 'OPEN'
-                " . $Criteria . "
-                group by 
-                    cu.Month,cu.id,cu.StartDate,cu.EndDate,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename
-                order by emp.lastname desc
-        ";
-    }   
+        $cutoffData = Cutoff::where('id',$cutoff)->get();
+        $cutoffDataSelected = "";
+        if($cutoffData->count() > 0)
+        {
+            $cutoffDataSelected = $cutoffData[0]->StartDate ." to " . $cutoffData[0]->EndDate;
+        }
+        $PayrollQuery = $this->payrollQuery($cutoff,$empcode);
+            
+        $data = DB::select($PayrollQuery); 
+
+        return view('payroll.summary.view',compact('data','cutoffDataSelected','cutoff'));
+    }
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -180,6 +153,18 @@ public function createcufoff($monthName)
     public function store(Request $request)
     {
         //
+        
+        $payrollKey = $request->empcode.'_'.$request->cutoffid;
+
+        $payroll = Payroll::updateOrCreate([
+            'PayrollKey' =>$payrollKey,],[
+            'EmployeeCode'=>$request->empcode,
+            'Cutoff_id'=>$request->cutoffid,
+            'PreparedDate' => Carbon::now()->timezone('Asia/Manila'),
+            'PreparedBy'=>Auth::id(),
+        ]);
+
+        return redirect()->back()->with('success','Payroll created successfully. [Awaiting for approval]');
     }
 
     /**
@@ -193,7 +178,7 @@ public function createcufoff($monthName)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $id)
+    public function edit(string $id)
     {
         //
     }
@@ -212,5 +197,27 @@ public function createcufoff($monthName)
     public function destroy(string $id)
     {
         //
+        Payroll::where('id',decrypt($id))->delete();
+        return redirect()->back()->with('success','Payroll deleted successfully.');
+    }
+    public function approve(Request $request,$id)
+    {
+        $payroll = Payroll::find(decrypt($id));
+        $payroll->status = "Approved";
+        $payroll->ApprovedBy =$request->user()->id;
+        $payroll->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
+        $payroll->save();
+
+        return redirect()->back()->with('success','Payroll Approved successfully.');
+    }
+    public function decline(Request $request,$id)
+    {
+        $payroll = Payroll::find(decrypt($id));
+        $payroll->status = "Declined";
+        $payroll->ApprovedBy =$request->user()->id;
+        $payroll->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
+        $payroll->save();
+
+        return redirect()->back()->with('success','Payroll Declined successfully.');
     }
 }

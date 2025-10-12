@@ -52,7 +52,7 @@ unset($__sessionArgs); ?>
                         <div class="row">
                             <div class="form-group col-lg-4">
                                 <label for="employeenumber" class="form-label">Employee Number:*</label>
-                                <input type="text" class="form-control" name="employeenumber" required numeric
+                                <input type="text" class="form-control" name="empcode" id="empcode" required numeric
                                     value="<?php echo e($data[0]->Employee_Code); ?>" readonly>
                                     <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
@@ -98,8 +98,33 @@ unset($__sessionArgs); ?>
 <?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
 <?php endif; ?>
                             </div>
-
-                            <div class="form-group col-lg-4"></div>
+                            <div class="form-group col-lg-2">
+                                <label for="employeenumber" class="form-label">Cut-off:*</label>
+                                <input type="text" class="form-control" width = "20" name="cutoffid" id="cutoffid" required numeric
+                                    value="<?php echo e($cutoff); ?>" hidden>
+                                <input type="text" class="form-control" name="cutoffdetails" id="cutoffdetails" required numeric
+                                    value="<?php echo e($cutoffDataSelected); ?>" readonly>
+                                    <?php if (isset($component)) { $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.error','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>employeenumber <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $attributes = $__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__attributesOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46)): ?>
+<?php $component = $__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46; ?>
+<?php unset($__componentOriginal26e98e8e5cc4164d9d54ab94efc26e46); ?>
+<?php endif; ?>
+                            </div>
+                            <div class="form-group col-lg-2"></div>
                             <div class="form-group col-lg-2">EARNINGS</div>
                             <div class="form-group col-lg-2">HOUR/s</div>
                             <div class="form-group col-lg-2">AMOUNT</div>
@@ -294,8 +319,8 @@ unset($__sessionArgs); ?>
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                <input type="text" class="form-control" name="TaxPay" id = "TaxPay" required numeric
+                                    value="<?php echo e(number_format($data[0]->TaxPay)); ?>" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -318,8 +343,8 @@ unset($__sessionArgs); ?>
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                <input type="text" class="form-control" name="SSSLoans" id = "SSSLoans" required numeric
+                                    value="<?php echo e(number_format($data[0]->SSSLoans,2)); ?>" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -342,8 +367,8 @@ unset($__sessionArgs); ?>
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                <input type="text" class="form-control" name="HDMFLoans" required numeric
+                                    value="<?php echo e(number_format($data[0]->HDMFLoans,2)); ?>" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -367,7 +392,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                    value="<?php echo e(number_format($data[0]->OtherLoans,2)); ?>" readonly>
                             </div>
                             
                             <div class="form-group col-lg-2">
@@ -609,7 +634,11 @@ unset($__sessionArgs); ?>
   <script>
     // Executes after the entire page has loaded
     window.onload = function () {
-      computeSum();
+        computeSum();
+        const ecode = document.getElementById('empcode');
+        console.log(ecode);
+        ecode.readOnly = true;
+        
     };
   </script>
     <script>
@@ -617,7 +646,7 @@ unset($__sessionArgs); ?>
             computeSum();
         }
         function computeSum() {
-            
+
             const BasicPay = document.getElementById('basicpay').value.replace(/,/g, '');
             const regularOTpay = document.getElementById('regularOTPay').value.replace(/,/g, '');
             const AdjEarnings = document.getElementById('EarningsAdj').value.replace(/,/g, '');
@@ -626,14 +655,35 @@ unset($__sessionArgs); ?>
             const NonTax = document.getElementById('othnontax').value.replace(/,/g, '');
             const AllowanceECOLA = document.getElementById('AllowanceECOLA').value.replace(/,/g, '');
             const AllowanceTax = document.getElementById('AllowansTax').value.replace(/,/g, '');
+            const DeducOther = document.getElementById('DeducOTH').value.replace(/,/g, '');
             const Earnings = parseFloat(BasicPay) + parseFloat(regularOTpay) + parseFloat(AdjEarnings) 
                              + parseFloat(NonTax3) + parseFloat(NonTax2) + parseFloat(NonTax) + 
-                             parseFloat(AllowanceECOLA) +parseFloat(AllowanceTax);
+                             parseFloat(AllowanceECOLA) +parseFloat(AllowanceTax) + parseFloat(DeducOther);
             const AbsentPay = document.getElementById('Absents').value.replace(/,/g, '');
             const HDMF = document.getElementById('HDMF_P').value.replace(/,/g, '');
-            const DeducOther = document.getElementById('DeducOTH').value.replace(/,/g, '');
-            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay) + parseFloat(DeducOther);
+            const SSSLoans = document.getElementById('SSSLoans').value.replace(/,/g, '');
+            
+                        $.ajax({
+                            url: '/computetax/' + Earnings,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response) {
+                                var len = 0;
+                                if (response.length > 0) {
+                                    response.forEach(response => {
+                                        // Create a new option
+                                        // Append the new option to the dropdown
+                                        console.log(response.Tax);
+                                        document.getElementById('TaxPay').value = response.Tax.toFixed(2);
+                                       
+                                    });
+                                }
+                            }
+                        });
+            const TaxPay =  document.getElementById('TaxPay').value.replace(/,/g, '');
+            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay)  + parseFloat(TaxPay) + parseFloat(SSSLoans);
             const NetAmount = Earnings - Deduction;
+            
             
             document.getElementById('TotalEarnings').value = Earnings.toFixed(2);
             document.getElementById('TotalDeduction').value = Deduction.toFixed(2);

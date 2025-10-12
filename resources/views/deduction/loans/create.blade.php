@@ -83,7 +83,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="date">Select Date:</label>
-                            <input type="text" class="form-control datepicker" id="date" name="date"
+                            <input type="date" class="form-control" id="loandate" name="loandate"
                                 placeholder="YYYY-MM-DD" required>
                         </div>
                     </div>

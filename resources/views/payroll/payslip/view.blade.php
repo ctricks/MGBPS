@@ -280,8 +280,8 @@
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="SSSLoans" id = "SSSLoans" required numeric
-                                    value="{{ number_format($data[0]->SSSLoans,2) }}" readonly>
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="{{ $data[0]->LatePay }}" readonly>
                             </div>
                             {{-- Tenth Lane --}}
                             <div class="form-group col-lg-2">
@@ -304,8 +304,8 @@
                                     value="" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="HDMFLoans" required numeric
-                                    value="{{ number_format($data[0]->HDMFLoans,2) }}" readonly>
+                                <input type="text" class="form-control" name="AbsentPay" required numeric
+                                    value="{{ $data[0]->LatePay }}" readonly>
                             </div>
                             {{-- Eleventh Lane --}}
                             <div class="form-group col-lg-2">
@@ -329,7 +329,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ number_format($data[0]->OtherLoans,2) }}" readonly>
+                                    value="{{ $data[0]->LatePay }}" readonly>
                             </div>
                             {{-- Twelveth Lane --}}
                             <div class="form-group col-lg-2">
@@ -589,7 +589,7 @@
                              parseFloat(AllowanceECOLA) +parseFloat(AllowanceTax) + parseFloat(DeducOther);
             const AbsentPay = document.getElementById('Absents').value.replace(/,/g, '');
             const HDMF = document.getElementById('HDMF_P').value.replace(/,/g, '');
-            const SSSLoans = document.getElementById('SSSLoans').value.replace(/,/g, '');
+            
             
                         $.ajax({
                             url: '/computetax/' + Earnings,
@@ -609,7 +609,7 @@
                             }
                         });
             const TaxPay =  document.getElementById('TaxPay').value.replace(/,/g, '');
-            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay)  + parseFloat(TaxPay) + parseFloat(SSSLoans);
+            const Deduction = parseFloat(HDMF) + parseFloat(AbsentPay)  + parseFloat(TaxPay);
             const NetAmount = Earnings - Deduction;
             
             

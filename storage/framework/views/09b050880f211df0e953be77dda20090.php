@@ -138,6 +138,15 @@
                 </a>
                 </li>
                 <li class="nav-item">
+                <a href="<?php echo e(route('attendance.taxtable.index')); ?>"
+                    class="nav-link <?php echo e(Route::is('attendance.taxtable.index') ? 'active' : ''); ?>">
+                  <i class="nav-icon fas fa-building "></i>
+                   <p style = "text-indent:15em;">
+                    TAX Reference Table
+                   </p>
+                </a>
+                </li>
+                <li class="nav-item">
                 <a href="<?php echo e(route('attendance.overtimetype.index')); ?>"
                     class="nav-link <?php echo e(Route::is('attendance.overtimetype.index') ? 'active' : ''); ?>">
                   <i class="nav-icon fas fa-building "></i>
@@ -339,7 +348,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo e(route('attendance.raw.index')); ?>"
+                    <a href="<?php echo e(route('payroll.payslip.index')); ?>"
                         class="nav-link <?php echo e(Route::is('attendance.raw.index') ? 'active' : ''); ?>">
                     <i class="nav-icon fas fa-money-bill "></i>
                     <p style = "text-indent:15em;">

@@ -50,6 +50,9 @@ return new class extends Migration
             $table->double('SSSLoans', 8, 2)->nullable()->default(0.00);
             $table->double('HDMFLoans',8,2)->nullable()->default(0.00);
             $table->double('OtherLoans', 8, 2)->nullable()->default(0.00);
+            $table->double('TotalEarnings', 8, 2)->nullable()->default(0.00);
+            $table->double('TotalDeductions', 8, 2)->nullable()->default(0.00);
+            $table->double('NetAmount', 8, 2)->nullable()->default(0.00);
             $table->string('Status')->default('For Approval');
             $table->integer('PreparedBy')->default(-1);
             $table->timestamp('PreparedDate')->nullable();

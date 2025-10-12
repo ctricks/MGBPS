@@ -71,7 +71,7 @@ class LoansController extends Controller
             "LoanType"=>'required','string','max:255',
             "description"=>'required','integer',
             "empcode"=>'required',
-            "date"=>'required',
+            "loandate"=>'required',
         ]);
         
 $SemiInterest = 0;
@@ -88,7 +88,7 @@ if($request->SemiInterest != null)
         $data = Loan::updateOrCreate([
             'Employeeid'=>$employee[0]->id,
             'LoanType'=>$request->description,
-            'LoanDate'=> Carbon::parse($request->date)->format('Y-m-d H:i:s'),
+            'LoanDate'=> Carbon::parse($request->loandate)->format('Y-m-d H:i:s'),
             'Amount'=>(float) str_replace(',', '', number_format($request->loanAmount,2)),
             'NoOfPayment'=>$request->installment,
             'AmountDeduction'=>(float) str_replace(',', '', number_format($request->deductionAmount,2)),
@@ -209,7 +209,7 @@ if($request->SemiInterest != null)
     {
          $loandet = Loan::find(decrypt($id));
          $noOfPayment = $loandet->NoOfPayment;
-         $loanDate = Carbon::parse($loandet->LoanDate)->format('Y-m-d');
+         $loanDate = Carbon::parse($loandet->LoanDate)->addDays(15)->format('Y-m-d');
          $DeductionKey = decrypt($id).'_'.$loandet->Loantype.'_'.$loandet->Amount.'_'.$noOfPayment.'_'.$loanDate;
         
          for($a = 1; $a <= $noOfPayment; $a++)
@@ -222,7 +222,7 @@ if($request->SemiInterest != null)
                     'Amount'=>$loandet->AmountDeduction,
                     'LoanReference'=>decrypt($id)]
             );
-            $newDate = Carbon::parse($loanDate)->addDays(15); 
+            $newDate = Carbon::parse($loanDate)->addDays(16); 
             $loanDate =  $newDate;
             $DeductionKey = decrypt($id).'_'.$loandet->Loantype.'_'.$loandet->Amount.'_'.$noOfPayment.'_'.$loanDate;
          }

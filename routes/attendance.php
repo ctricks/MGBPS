@@ -12,6 +12,8 @@ use App\Http\Controllers\SSSReferenceController;
 use App\Http\Controllers\OvertimeTypeController;
 use App\Http\Controllers\DTRCorrectionController;
 use App\Http\Controllers\CutoffConfigController;
+use App\Http\Controllers\TAXReferenceController;
+use App\Http\Controllers\PayslipController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('attendance')->name('attendance.')->group(function(){
@@ -23,6 +25,7 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::resource('leave',LeaveController::class);
         Route::resource('holiday',HolidayController::class);
         Route::resource('ssstable',SSSReferenceController::class);
+        Route::resource('taxtable',TAXReferenceController::class);
         Route::resource('overtimetype',OvertimeTypeController::class);
         Route::resource('dtrcorrection',DTRCorrectionController::class);
         Route::resource('cutoffconfig',CutoffConfigController::class);
@@ -39,6 +42,7 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::post('restdayimport', [RestdayController::class,'import'])->name('restday.import');
         Route::post('holidayimport', [HolidayController::class,'import'])->name('holiday.import');
         Route::post('ssstableimport', [SSSReferenceController::class,'import'])->name('ssstable.import');
+        Route::post('taxtableimport', [TAXReferenceController::class,'import'])->name('taxtable.import');
         Route::post('rawattendanceimport', [DailyTimeRecordController::class,'import'])->name('rawattendance.import');
         Route::post('rawattendancelist', [DailyTimeRecordController::class,'getemployeelist'])->name('rawattendance.list');
         Route::post('summaryattendancelist', [SummaryAttendanceController::class,'getemployeelist'])->name('summaryattendance.list');
@@ -46,12 +50,17 @@ Route::prefix('attendance')->name('attendance.')->group(function(){
         Route::get('restdaydownloadtemplate', [RestdayController::class,'downloadFileTemplate'])->name('restday.downloadtemplate');
         Route::get('rawattendancedownloadtemplate', [DailyTimeRecordController::class,'downloadFileTemplate'])->name('rawattendance.downloadtemplate'); 
         Route::get('holidayattendancedownloadtemplate', [HolidayController::class,'downloadFileTemplate'])->name('holiday.downloadtemplate');
-        Route::get('sssreferencedownloadtemplate', [SSSReferenceController::class,'downloadFileTemplate'])->name('sssreference.downloadtemplate');      
+        Route::get('sssreferencedownloadtemplate', [SSSReferenceController::class,'downloadFileTemplate'])->name('sssreference.downloadtemplate'); 
+        Route::get('taxreferencedownloadtemplate', [TaxReferenceController::class,'downloadFileTemplate'])->name('taxreference.downloadtemplate');      
     });
 
 Route::prefix('payroll')->name('payroll.')->group(function(){
     Route::resource('payroll',PayrollController::class);
+    Route::resource('payslip',PayslipController::class);
+    Route::post('summarypaysliplist', [PayslipController::class,'getpaysliplist'])->name('payslip.list');
     Route::post('summarypayrolllist', [PayrollController::class,'getemployeelist'])->name('summarypayroll.list');
     Route::get('summary/{cutoff}/{empcode}', [PayrollController::class,'getemployeesummary'])->name('summarypayroll.view');
+    Route::patch('payrollapprove/{id}',[PayrollController::class,'approve'])->name('payroll.approve');
+    Route::patch('payrolldecline/{id}',[PayrollController::class,'decline'])->name('payroll.decline');
 });    
 
