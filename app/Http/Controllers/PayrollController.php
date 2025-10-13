@@ -149,9 +149,18 @@ class PayrollController extends Controller
                 0.00 as 'ExceedingHrsPay',
                 0.00 as 'NightDiff',
                 0 as 'HalfDay',
-                0 as 'LateHrs',
-                0.00 as 'LatePay',
+                (case when (select sum(d.Late) as 'Late' from daily_time_records d 
+left join cutoff c on d.date between cu.StartDate and cu.EndDate
+where d.employee_code = emp.employeenumber and lower(cu.Month) = cu.Month) >= 0.5 then (select sum(d.Late) as 'Late' from daily_time_records d 
+left join cutoff c on d.date between cu.StartDate and cu.EndDate
+where d.employee_code = emp.employeenumber and c.id = cu.id) else 0 end) as 'LateHrs',
+                 ((emp.DailyRate / 8)  *  (case when (select sum(d.Late) as 'Late' from daily_time_records d 
+left join cutoff c on d.date between cu.StartDate and cu.EndDate
+where d.employee_code = emp.employeenumber and lower(cu.Month) = cu.Month) >= 0.5 then (select sum(d.Late) as 'Late' from daily_time_records d 
+left join cutoff c on d.date between cu.StartDate and cu.EndDate
+where d.employee_code = emp.employeenumber and c.id = cu.id) else 0 end)) as 'LatePay',
                 0.00 as 'HalfdayPay',
+                0.00 as 'UndertimeHrs',
                 0.00 as 'Undertime',
                 0.00 as 'SSS',
                 0.00 as 'PHILHEALTH',
@@ -193,7 +202,7 @@ class PayrollController extends Controller
                 dtr.employee_code = ". $empcode ."
                 group by 
                     cu.Month,cu.id,cu.StartDate,cu.EndDate,emp.id,dtr.employee_code,emp.lastname,emp.firstname,emp.middlename,
-                    emp.DailyRate,s.WorkHours,s.Absent,d.Amount
+                    emp.DailyRate,s.WorkHours,s.Absent,d.Amount,emp.employeenumber
                 order by emp.lastname desc";
     }
     public function getemployeesummary($cutoff,$empcode)
@@ -363,16 +372,21 @@ pay.Status,u.name,a.name,pay.PreparedDate,pay.ApprovedDate
     }
     public function approve(Request $request,$id)
     {
+        
         $payroll = Payroll::find(decrypt($id));
         $payroll->status = "Approved";
         $payroll->ApprovedBy =$request->user()->id;
         $payroll->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
         $payroll->save();
 
-        $updateLoanPayment = DeductionDetails::where('PaymentReference',decrypt($id))->firstorfail();
-        $updateLoanPayment->DateDeducted = Carbon::now()->timezone('Asia/Manila');
-        $updateLoanPayment->ProcessedBy = $request->user()->id;
-        $updateLoanPayment->save();
+        $updateLoanPayment = DeductionDetails::where('PaymentReference',decrypt($id))->get();
+
+        if($updateLoanPayment->count() > 0)
+        {
+            $updateLoanPayment->DateDeducted = Carbon::now()->timezone('Asia/Manila');
+            $updateLoanPayment->ProcessedBy = $request->user()->id;
+            $updateLoanPayment->save();
+        }
 
         return redirect()->back()->with('success','Payroll Approved successfully.');
     }

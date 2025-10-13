@@ -196,7 +196,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="employeename" required numeric
-                                    value="<?php echo e($data[0]->LateHrs); ?> hrs" readonly>
+                                    value="<?php echo e(number_format($data[0]->LateHrs,2)); ?> hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
@@ -220,11 +220,11 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="employeename" required numeric
-                                    value="<?php echo e($data[0]->LateHrs); ?> hrs" readonly>
+                                    value="<?php echo e($data[0]->UndertimeHrs); ?> hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e(number_format($data[0]->LatePay,2)); ?>" readonly>
+                                <input type="text" class="form-control" name="Undertime" id="Undertime" required numeric
+                                    value="<?php echo e(number_format($data[0]->Undertime,2)); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">
@@ -248,7 +248,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                    value="<?php echo e($data[0]->SSS); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">
@@ -272,7 +272,7 @@ unset($__sessionArgs); ?>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="<?php echo e($data[0]->LatePay); ?>" readonly>
+                                    value="<?php echo e($data[0]->PHILHEALTH); ?>" readonly>
                             </div> 
                             
                             <div class="form-group col-lg-2">

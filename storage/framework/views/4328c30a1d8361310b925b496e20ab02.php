@@ -163,6 +163,7 @@ unset($__sessionArgs); ?>
                         <th>Cutoff</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Net Amount</th>
                         <th>Prepared By</th>
                         <th>Prepared Date</th>
                         <th>Approved By</th>
@@ -180,37 +181,14 @@ unset($__sessionArgs); ?>
                             <td><?php echo e($empDTR->StartDate); ?> to <?php echo e($empDTR->EndDate); ?></td>
                             <td><?php echo e($empDTR->employee_code); ?></td>
                             <td><?php echo e($empDTR->EmployeeName); ?></td>
+                            <td><?php echo e(number_format($empDTR->NetAmount,2)); ?></td>
                             <td><?php echo e($empDTR->PreparedBy); ?></td>
                             <td><?php echo e($empDTR->PreparedDate); ?></td>
                             <td><?php echo e($empDTR->ApprovedBy); ?></td>
                             <td><?php echo e($empDTR->ApprovedDate); ?></td>
                             <td><?php echo e($empDTR->Status); ?></td>
-                            <td><a href="<?php echo e(route('payroll.summarypayroll.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code])); ?>"
-                                    class="btn btn-sm btn-primary">View Details</a>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="<?php echo e(route('payroll.payroll.approve', encrypt($empDTR->id))); ?>" method="POST"
-                                    onsubmit="return confirm('Are sure want to approve?')">
-                                    <?php echo method_field('PATCH'); ?>
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                                </form>
-                                </div>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="<?php echo e(route('payroll.payroll.decline', encrypt($empDTR->id))); ?>" method="POST"
-                                    onsubmit="return confirm('Are sure want to Decline?')">
-                                    <?php echo method_field('PATCH'); ?>
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="btn btn-sm btn-warning">Decline</button>
-                                </form>
-                                </div>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="<?php echo e(route('payroll.payroll.destroy', encrypt($empDTR->id))); ?>" method="POST"
-                                    onsubmit="return confirm('Are sure want to delete?')">
-                                    <?php echo method_field('DELETE'); ?>
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                                </div>
+                            <td>
+                                <a href="<?php echo e(route('payroll.payslip.report',['empcode'=>$empDTR->employee_code,'cutoff'=>$empDTR->CutoffID])); ?>" class="btn btn-sm btn-primary">Download Payslip</a>
                             </td>
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

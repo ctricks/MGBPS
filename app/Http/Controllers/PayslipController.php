@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MyDataImport;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PayslipController extends Controller
 {
@@ -35,12 +39,33 @@ class PayslipController extends Controller
     {
         return "select 
                 p.id,
-                p.EmployeeCode,
-                e.lastname + ',' + e.firstname + ' ' + e.middlename as 'EmployeeName'
+                p.EmployeeCode as employee_code,
+                e.lastname + ',' + e.firstname + ' ' + e.middlename as 'EmployeeName',
+                p.NetAmount,
+                cu.Month,
+                cu.id as 'CutoffID',
+                cu.StartDate,cu.EndDate,
+                u.Name as 'PreparedBy',
+                ua.Name as 'ApprovedBy',
+                p.ApprovedDate,
+                p.PreparedDate,
+                concat(p.BasicPay,'/day') as 'BasicPay',
+                p.TotalWorkingDays * p.BasicPay as 'BasicPayAmount',
+                p.TotalWorkingDays,
+				p.RegularOTHours,
+				p.RegularOTPay,
+                p.Status,
+                p.TotalEarnings,
+                p.TotalDeductions,
+                p.NetAmount
                 from payroll p 
                 left join employees e on e.employeenumber = p.EmployeeCode 
+                left join users u on u.id = p.PreparedBy               
+                left join users ua on ua.id = p.ApprovedBy
                 left join cutoff cu on cu.id = p.Cutoff_id
                 where p.Status = 'Approved' " . $criteria;
+
+
     }
     public function getpaysliplist(Request $request)
     {
@@ -200,24 +225,52 @@ class PayslipController extends Controller
         Payroll::where('id',decrypt($id))->delete();
         return redirect()->back()->with('success','Payroll deleted successfully.');
     }
-    public function approve(Request $request,$id)
+   
+    public function downloadFileTemplate($empcode,$cutoff)
     {
-        $payroll = Payroll::find(decrypt($id));
-        $payroll->status = "Approved";
-        $payroll->ApprovedBy =$request->user()->id;
-        $payroll->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
-        $payroll->save();
+        $filename = "Payslip.xls";
+        $path = storage_path("app/public/template/{$filename}");
+        
+        $data = DB::select($this->SummaryPayslipQuery(' and cu.id = '.$cutoff.' and e.employeenumber='.$empcode));
+        //dd($data);
+        $cutoffDates = $data[0]->StartDate." to ".$data[0]->EndDate;
+        $employee = "(".$data[0]->employee_code.") ".$data[0]->EmployeeName;
+        $newFilename = "Payslip_".$empcode."_".$cutoffDates.".xlsx";
 
-        return redirect()->back()->with('success','Payroll Approved successfully.');
-    }
-    public function decline(Request $request,$id)
-    {
-        $payroll = Payroll::find(decrypt($id));
-        $payroll->status = "Declined";
-        $payroll->ApprovedBy =$request->user()->id;
-        $payroll->ApprovedDate = Carbon::now()->timezone('Asia/Manila');
-        $payroll->save();
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+            $sheet = $spreadsheet->getActiveSheet();
 
-        return redirect()->back()->with('success','Payroll Declined successfully.');
+            // Modify data (e.g., update cell A1)
+            $sheet->setCellValue('C4', $employee);
+            $sheet->setCellValue('C5', $cutoffDates);
+            $sheet->SetCellValue('C9',$data[0]->BasicPay);
+            $sheet->SetCellValue('C10',$data[0]->RegularOTHours == 0 ? '':number_format($data[0]->RegularOTHours,2));
+            $sheet->SetCellValue('E9',number_format($data[0]->BasicPayAmount,2));
+            $sheet->SetCellValue('E10',$data[0]->RegularOTPay == 0 ? '':number_format($data[0]->RegularOTPay,2));
+            $sheet->SetCellValue('C37',number_format($data[0]->TotalEarnings,2));
+            $sheet->SetCellValue('E37',number_format($data[0]->TotalDeductions,2));
+            $sheet->SetCellValue('G37',number_format($data[0]->NetAmount,2));
+            $sheet->SetCellValue('I30',$employee);
+            $sheet->SetCellValue('I19',number_format($data[0]->NetAmount,2));
+            // Add new data (e.g., add a new row)
+            
+
+            // Save the modified file to a new location
+            $dlFilename = storage_path("app/public/{$newFilename}");
+            
+            $writer = new Xlsx($spreadsheet);
+            
+            $writer->save($dlFilename);
+            
+            return response()->download($dlFilename, $newFilename, [
+            'Content-Type' => 'application/text',
+            ])->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to download the file.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

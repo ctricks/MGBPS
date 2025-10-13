@@ -95,6 +95,7 @@
                         <th>Cutoff</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Net Amount</th>
                         <th>Prepared By</th>
                         <th>Prepared Date</th>
                         <th>Approved By</th>
@@ -112,37 +113,14 @@
                             <td>{{ $empDTR->StartDate }} to {{ $empDTR->EndDate}}</td>
                             <td>{{ $empDTR->employee_code }}</td>
                             <td>{{ $empDTR->EmployeeName }}</td>
+                            <td>{{ number_format($empDTR->NetAmount,2) }}</td>
                             <td>{{ $empDTR->PreparedBy }}</td>
                             <td>{{ $empDTR->PreparedDate }}</td>
                             <td>{{ $empDTR->ApprovedBy }}</td>
                             <td>{{ $empDTR->ApprovedDate }}</td>
                             <td>{{ $empDTR->Status }}</td>
-                            <td><a href="{{ route('payroll.summarypayroll.view',['cutoff' => $empDTR->cutoffid, 'empcode' => $empDTR->employee_code]) }}"
-                                    class="btn btn-sm btn-primary">View Details</a>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="{{ route('payroll.payroll.approve', encrypt($empDTR->id)) }}" method="POST"
-                                    onsubmit="return confirm('Are sure want to approve?')">
-                                    @method('PATCH')
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                                </form>
-                                </div>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="{{ route('payroll.payroll.decline', encrypt($empDTR->id)) }}" method="POST"
-                                    onsubmit="return confirm('Are sure want to Decline?')">
-                                    @method('PATCH')
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-warning">Decline</button>
-                                </form>
-                                </div>
-                                <div style="display:inline-block;margin-right:5px;">
-                                <form action="{{ route('payroll.payroll.destroy', encrypt($empDTR->id)) }}" method="POST"
-                                    onsubmit="return confirm('Are sure want to delete?')">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                                </div>
+                            <td>
+                                <a href="{{ route('payroll.payslip.report',['empcode'=>$empDTR->employee_code,'cutoff'=>$empDTR->CutoffID]) }}" class="btn btn-sm btn-primary">Download Payslip</a>
                             </td>
                         </tr>
                     @endforeach

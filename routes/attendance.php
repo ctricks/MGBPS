@@ -62,5 +62,8 @@ Route::prefix('payroll')->name('payroll.')->group(function(){
     Route::get('summary/{cutoff}/{empcode}', [PayrollController::class,'getemployeesummary'])->name('summarypayroll.view');
     Route::patch('payrollapprove/{id}',[PayrollController::class,'approve'])->name('payroll.approve');
     Route::patch('payrolldecline/{id}',[PayrollController::class,'decline'])->name('payroll.decline');
+    Route::patch('payslipapprove/{id}',[PayslipController::class,'approve'])->name('payslip.approve');
+    Route::patch('payslipdecline/{id}',[PayslipController::class,'decline'])->name('payslip.decline');
+    Route::get('payslipreport/{empcode}/{cutoff}', [PayslipController::class,'downloadFileTemplate'])->name('payslip.report');
 });    
 

@@ -133,7 +133,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="employeename" required numeric
-                                    value="{{ $data[0]->LateHrs }} hrs" readonly>
+                                    value="{{ number_format($data[0]->LateHrs,2) }} hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
@@ -157,11 +157,11 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="employeename" required numeric
-                                    value="{{ $data[0]->LateHrs }} hrs" readonly>
+                                    value="{{ $data[0]->UndertimeHrs }} hrs" readonly>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ number_format($data[0]->LatePay,2) }}" readonly>
+                                <input type="text" class="form-control" name="Undertime" id="Undertime" required numeric
+                                    value="{{ number_format($data[0]->Undertime,2) }}" readonly>
                             </div> 
                             {{-- Fifth Lane --}}
                             <div class="form-group col-lg-2">
@@ -185,7 +185,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->LatePay }}" readonly>
+                                    value="{{ $data[0]->SSS }}" readonly>
                             </div> 
                             {{-- Sixth Lane --}}
                             <div class="form-group col-lg-2">
@@ -209,7 +209,7 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <input type="text" class="form-control" name="AbsentPay" required numeric
-                                    value="{{ $data[0]->LatePay }}" readonly>
+                                    value="{{ $data[0]->PHILHEALTH }}" readonly>
                             </div> 
                             {{-- Seventh Lane --}}
                             <div class="form-group col-lg-2">
