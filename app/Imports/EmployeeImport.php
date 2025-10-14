@@ -37,6 +37,7 @@ class EmployeeImport implements ToModel
             return null;
         }else
         {
+            
             $civilstatus = CivilStatus::where('civilstatus',$row[7])->first();
             $gender = Gender::where('gender',$row[8])->first();
             $position = Position::where('PositionName',$row[9])->first();
@@ -44,6 +45,8 @@ class EmployeeImport implements ToModel
             $employeestatus = EmployeeStatus::where('employeestatus',$row[12])->first();
             $workshedule = workschedule::where('KeySchedule',$row[18])->first();
             
+            
+
             $daily_rate = 0;
 
             if (is_numeric($row[13])) {

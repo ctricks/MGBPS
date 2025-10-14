@@ -122,7 +122,7 @@
                     <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="department">Sub-Department:</label>
-                                    <input id="subdepartmentname" class="form-control" name="subdepartmentname" type="text" value="{{ old(subdepartment)}}" />
+                                    <input type="text" id="subdepartmentname" class="form-control" name="subdepartmentname"  value=old(subdepartment) />
                                 <x-error>subdepartmentname</x-error>
                             </div>
                         </div>
